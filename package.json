@@ -1,9 +1,9 @@
 {
     "name": "windy-plugin-everest-mhews",
-    "version": "1.9.0",
+    "version": "2.0.0",
     "private": true,
     "type": "module",
-    "description": "NASA GIBS imagery layers for the Windy map.",
+    "description": "Multi-hazard status and NASA GIBS imagery context for the Windy map.",
     "scripts": {
         "build": "rollup -c",
         "build:win": "rollup -c",

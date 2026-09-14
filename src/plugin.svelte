@@ -3,6 +3,25 @@
     <div class="plugin__title plugin__title--chevron-back" on:click={() => bcast.emit('rqstOpen', 'menu')}>{title}</div>
     <p class="intro">NASA GIBS imagery for map context. Imagery is not a hazard decision layer.</p>
 
+    <details class="hazard-overview" open>
+        <summary><span>MULTI-HAZARD EXPERIMENTS</span><strong>EXPERIMENTAL</strong></summary>
+        <div class="hazard-overview__content">
+            <p>点击类别即可切换到对应的实验性地图上下文。结果用于浏览和人工复核，不会发布正式路线关闭、撤离或 CAP 告警。</p>
+            <div class="hazard-grid">
+                {#each hazardStatuses as hazard}
+                    <div class="hazard-card">
+                        <span>{hazard.name}</span>
+                        <strong>{hazard.status}</strong>
+                        <small>{hazard.source}</small>
+                        <button on:click={() => openExperimentalHazard(hazard)}>查看地图</button>
+                    </div>
+                {/each}
+            </div>
+            <div class="integration-status"><span>路线治理</span><strong>EXPERIMENTAL</strong><small>接口骨架已就绪，暂无授权路线网络</small></div>
+            <div class="integration-status"><span>CAP 告警</span><strong>EXPERIMENTAL</strong><small>CAP 草案序列化已就绪，未连接分发渠道</small></div>
+        </div>
+    </details>
+
     <div class="catalog-status" class:ready={catalogStatus === 'ready'}>
         <i></i>{catalogStatus === 'ready' ? `${catalogLayers.length} NASA GIBS layers ready` : catalogStatus.toUpperCase()}
         <button on:click={loadCatalog}>更新图层</button>
@@ -92,6 +111,7 @@
 
     type GIBSLayer = { id: string; title: string; template: string; tileMatrixSet: string; maxZoom: number; timeEnabled: boolean; defaultTime: string; legendUrl: string };
     type ThemeFilter = { id: string; label: string; terms: string[] };
+    type HazardStatus = { name: string; status: 'EXPERIMENTAL'; source: string; filterId: string; query: string };
 
     const { title } = config;
     const capabilitiesUrl = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml';
@@ -101,6 +121,16 @@
         { id: 'MODIS_Terra_CorrectedReflectance_TrueColor', title: 'MODIS Terra True Color', template: 'https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/{Time}/GoogleMapsCompatible_Level9/{TileMatrix}/{TileRow}/{TileCol}.jpg', tileMatrixSet: 'GoogleMapsCompatible_Level9', maxZoom: 9, timeEnabled: true, defaultTime: initialDate, legendUrl: '' },
         { id: 'MODIS_Aqua_CorrectedReflectance_TrueColor', title: 'MODIS Aqua True Color', template: 'https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Aqua_CorrectedReflectance_TrueColor/default/{Time}/GoogleMapsCompatible_Level9/{TileMatrix}/{TileRow}/{TileCol}.jpg', tileMatrixSet: 'GoogleMapsCompatible_Level9', maxZoom: 9, timeEnabled: true, defaultTime: initialDate, legendUrl: '' },
         { id: 'VIIRS_NOAA20_CorrectedReflectance_TrueColor', title: 'VIIRS NOAA-20 True Color', template: 'https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_NOAA20_CorrectedReflectance_TrueColor/default/{Time}/GoogleMapsCompatible_Level9/{TileMatrix}/{TileRow}/{TileCol}.jpg', tileMatrixSet: 'GoogleMapsCompatible_Level9', maxZoom: 9, timeEnabled: true, defaultTime: initialDate, legendUrl: '' },
+    ];
+    const hazardStatuses: HazardStatus[] = [
+        { name: '冰崩 / 冰川变化', status: 'EXPERIMENTAL', source: '冰雪与真彩色影像', filterId: 'frozen-area', query: '' },
+        { name: '雪崩', status: 'EXPERIMENTAL', source: '积雪覆盖与雪指数影像', filterId: 'snow-cover', query: '' },
+        { name: '岩崩', status: 'EXPERIMENTAL', source: '高分辨率真彩色上下文', filterId: '', query: 'true color' },
+        { name: '滑坡', status: 'EXPERIMENTAL', source: 'SAR 与真彩色上下文', filterId: 'rtc-sar', query: '' },
+        { name: '泥石流', status: 'EXPERIMENTAL', source: '土壤湿度与水体影像', filterId: 'soil-moisture', query: '' },
+        { name: 'GLOF / 山洪', status: 'EXPERIMENTAL', source: '洪水与地表水影像', filterId: 'flood', query: '' },
+        { name: '地震', status: 'EXPERIMENTAL', source: '震后地图影像上下文', filterId: '', query: 'true color' },
+        { name: '高山天气', status: 'EXPERIMENTAL', source: '云图与基础地图上下文', filterId: '', query: 'true color' },
     ];
     const cryosphereFilters: ThemeFilter[] = [
         { id: 'freeze-thaw', label: '冷冻/解冻', terms: ['freeze', 'thaw'] },
@@ -257,6 +287,11 @@
         activeFilter = activeFilter === filterId ? '' : filterId;
         query = '';
     };
+    const openExperimentalHazard = (hazard: HazardStatus) => {
+        activeFilter = hazard.filterId;
+        query = hazard.query;
+        focusEverest();
+    };
 
     const loadCatalog = async () => {
         catalogController?.abort();
@@ -324,7 +359,7 @@
 </script>
 
 <style lang="less">
-    .plugin__content { padding: 12px 14px 24px; color: #e8edf0; background: #11191e; min-height: 100%; } .intro { color: #a8babf; font-size: 12px; line-height: 1.5; margin: 12px 0 18px; }
+    .plugin__content { padding: 12px 14px 24px; color: #e8edf0; background: #11191e; min-height: 100%; } .intro { color: #a8babf; font-size: 12px; line-height: 1.5; margin: 12px 0 18px; } .hazard-overview { border:1px solid #304047; border-left:3px solid #52b6c7; margin:0 0 14px; padding:8px 10px; } .hazard-overview summary { display:flex; align-items:center; justify-content:space-between; color:#d7e1e3; font-size:11px; letter-spacing:1px; } .hazard-overview summary strong,.hazard-card strong,.integration-status strong { color:#52b6c7; font-size:10px; } .hazard-overview__content > p { color:#a8babf; font-size:11px; line-height:1.45; margin:8px 0; } .hazard-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .hazard-card { border:1px solid #304047; padding:7px; min-height:76px; } .hazard-card span,.integration-status span { display:block; color:#d7e1e3; font-size:10px; line-height:1.25; } .hazard-card strong { display:block; margin:4px 0; } .hazard-card small,.integration-status small { display:block; color:#71858a; font-size:9px; line-height:1.3; } .hazard-card button { margin-top:6px; padding:4px 6px; } .integration-status { display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:8px; border-top:1px solid #304047; margin-top:8px; padding-top:8px; } .integration-status small { grid-column:1 / -1; margin-top:3px; }
     .field-label { display: block; color: #91a5aa; font-size: 10px; letter-spacing: 1px; margin: 15px 0 6px; } input, select { box-sizing: border-box; width: 100%; background: #172126; border: 1px solid #33464d; color: #e8edf0; padding: 8px; } input[type='range'] { accent-color: #52b6c7; padding: 0; } select { font-size: 11px; } .monitor { border:1px solid #304047; border-left:3px solid #f2ad42; margin-top:14px; padding:8px 10px; } .monitor summary { display:flex; align-items:center; justify-content:space-between; color:#d7e1e3; font-size:11px; letter-spacing:1px; } .monitor summary strong { color:#f2ad42; font-size:10px; } .monitor p,.monitor small { display:block; color:#a8babf; font-size:11px; line-height:1.45; margin:8px 0; } .monitor small { color:#71858a; font-size:10px; } .monitor__actions { display:flex; gap:6px; margin-top:12px; } .compare-toggle { display:block; color:#d7e1e3; font-size:11px; margin-top:12px; } .compare-toggle input { width:auto; vertical-align:middle; } .theme-group { border-top: 1px solid #304047; margin-top: 12px; padding-top: 8px; } summary { color:#a8babf; cursor:pointer; font-size:11px; } .theme-group small { display:block; color:#71858a; font-size:10px; margin-top:8px; line-height:1.4; } .quick-filters { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:8px; } .quick-filters button { padding:5px 6px; } .quick-filters button.active { background:#52b6c7; border-color:#52b6c7; color:#101719; } .catalog-actions { display:flex; align-items:center; justify-content:space-between; margin-top:6px; } .result-count { color: #71858a; font-size: 10px; } button:disabled { cursor: wait; opacity: 0.55; }
     .catalog-status, .tile-status { color: #f2ad42; font-size: 10px; letter-spacing: 1px; } .catalog-status { display: flex; align-items: center; justify-content: space-between; border: 1px solid #33464d; padding: 7px; } .catalog-status.ready, .tile-status.ready { color: #51c7a3; } .catalog-status i, .tile-status i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; margin-right: 5px; } button { background: #172126; border: 1px solid #33464d; color: #d7e1e3; padding: 7px 9px; font-size: 10px; cursor: pointer; }
     .control-row { margin-top: 16px; } .action-row { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #304047; padding-top: 14px; } .map-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px; } .legend-panel { border:1px solid #304047; margin-top:12px; padding:7px; } .legend-panel summary { color:#a8babf; } .legend-panel img { display:block; max-width:100%; margin-top:8px; background:#fff; } .legend-note { display:block; color:#71858a; font-size:10px; margin-top:12px; } .error-message { color:#f2ad42; font-size:11px; border:1px solid #7b5c2c; padding:8px; margin-top:10px; overflow-wrap:anywhere; } .details { display:grid; gap:4px; margin-top:18px; color:#71858a; font-size:10px; } footer { color:#869ba0; font-size:10px; border-top:1px solid #304047; margin-top:18px; padding-top:12px; } a { color:#52b6c7; }
