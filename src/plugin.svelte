@@ -35,6 +35,13 @@
         <input id="cdse-date" type="date" bind:value={cdseDate} max={today} />
         <div class="monitor__actions"><button on:click={toggleCdseLayer}>{cdseVisible ? '隐藏 CDSE 图层' : '显示 CDSE 图层'}</button><button on:click={refreshCdseLayer} disabled={cdseStatus === 'loading'}>刷新</button></div>
         {#if cdseError}<div class="error-message">{cdseError}</div>{/if}
+        <div class="cdse-sar">
+            <span>CDSE Sentinel-1 GRD SAR (VV)</span><strong>{statusLabel(sentinel1Status)}</strong>
+            <label class="field-label" for="sentinel1-date">观测日期</label>
+            <input id="sentinel1-date" type="date" bind:value={sentinel1Date} max={today} />
+            <div class="monitor__actions"><button on:click={toggleSentinel1Layer}>{sentinel1Visible ? '隐藏 SAR 图层' : '显示 SAR 图层'}</button><button on:click={refreshSentinel1Layer} disabled={sentinel1Status === 'loading'}>刷新</button></div>
+            {#if sentinel1Error}<div class="error-message">{sentinel1Error}</div>{/if}
+        </div>
         <details class="connection-settings"><summary>CDSE 后端地址</summary><input bind:value={cdseApiUrl} on:change={saveCdseApiUrl} /></details>
     </details>
     <div class="hazard-grid">
@@ -235,6 +242,11 @@
     const defaultCdseApiUrl = 'http://127.0.0.1:18743/v1/cdse/sentinel2/tiles/{z}/{x}/{y}.png?date={date}';
     const storedCdseApiUrl = (() => { try { return localStorage.getItem('hqmw-cdse-api-url'); } catch { return null; } })();
     let cdseApiUrl = storedCdseApiUrl || defaultCdseApiUrl;
+    let sentinel1Layer: L.TileLayer | null = null;
+    let sentinel1Visible = false;
+    let sentinel1Status: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
+    let sentinel1Error = '';
+    let sentinel1Date = '2026-08-19';
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
     $: activeTerms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];
@@ -289,6 +301,7 @@
     const removeEarthquakes = () => { earthquakeLayer?.remove(); earthquakeLayer = null; earthquakeVisible = false; };
     const removeFires = () => { fireLayer?.remove(); fireLayer = null; fireVisible = false; };
     const removeCdseLayer = () => { cdseLayer?.remove(); cdseLayer = null; cdseVisible = false; };
+    const removeSentinel1Layer = () => { sentinel1Layer?.remove(); sentinel1Layer = null; sentinel1Visible = false; };
     const applyOpacity = () => {
         baselineLayer?.setOpacity(Number(opacity));
         imageryLayer?.setOpacity(Number(opacity) * (compareEnabled ? comparisonBlend : 1));
@@ -502,6 +515,33 @@
     };
     const toggleCdseLayer = () => { if (cdseVisible) { removeCdseLayer(); return; } loadCdseLayer(); };
     const refreshCdseLayer = () => { loadCdseLayer(); };
+    const sentinel1ApiUrl = () => cdseApiUrl.replace('/sentinel2/', '/sentinel1/');
+    const sentinel1TileUrl = (z: number, x: number, y: number) => sentinel1ApiUrl()
+        .replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y)).replace('{date}', sentinel1Date);
+    const loadSentinel1Layer = async () => {
+        removeSentinel1Layer();
+        sentinel1Status = 'loading'; sentinel1Error = '';
+        try {
+            const response = await fetch(sentinel1TileUrl(10, 759, 428));
+            if (!response.ok) throw new Error(`CDSE 后端返回 ${response.status}`);
+            if (!response.headers.get('content-type')?.startsWith('image/')) throw new Error('CDSE 后端没有返回 SAR 图像');
+        } catch (error) {
+            sentinel1Status = 'error';
+            sentinel1Error = error instanceof Error ? error.message : 'SAR 图层预检失败';
+            return;
+        }
+        sentinel1Layer = new L.TileLayer(sentinel1ApiUrl().replace('{date}', sentinel1Date), {
+            minZoom: 0, maxNativeZoom: 12, maxZoom: 19, opacity: 0.7, tileSize: 256,
+            layerBucketId: layerOrder.MAIN, noWrap: true, continuousWorld: true,
+            bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+        });
+        sentinel1Layer.on('tileerror', () => { sentinel1Status = 'error'; sentinel1Error = 'SAR 图层未返回瓦片。请检查观测日期和 CDSE 后端。'; });
+        sentinel1Layer.addTo(map);
+        sentinel1Visible = true;
+        sentinel1Status = 'ready';
+    };
+    const toggleSentinel1Layer = () => { if (sentinel1Visible) { removeSentinel1Layer(); return; } loadSentinel1Layer(); };
+    const refreshSentinel1Layer = () => { loadSentinel1Layer(); };
 
     const loadCatalog = async () => {
         catalogController?.abort();
@@ -568,7 +608,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); });
 </script>
 
 <style lang="less">
@@ -580,6 +620,9 @@
     .cdse-direct summary { display:flex; justify-content:space-between; color:#d7e1e3; font-size:12px; }
     .cdse-direct summary strong { color:#8bc34a; font-size:10px; }
     .cdse-direct p { color:#a8babf; font-size:11px; line-height:1.4; }
+    .cdse-sar { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
+    .cdse-sar > span { color:#d7e1e3; font-size:12px; }
+    .cdse-sar > strong { color:#8bc34a; float:right; font-size:10px; }
     .plugin__content .integration-status { display: flex; flex-wrap: wrap; gap: 8px; }
     .plugin__content .integration-status > span { flex: 1; font-size: 12px; }
     .plugin__content .integration-status > small { flex-basis: 100%; font-size: 11px; }
