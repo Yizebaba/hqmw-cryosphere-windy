@@ -253,6 +253,14 @@
         .replace(/\{TileMatrix\}/g, '{z}')
         .replace(/\{TileRow\}/g, '{y}')
         .replace(/\{TileCol\}/g, '{x}');
+    const probeGibsTile = (layer: GIBSLayer, time: string) => new Promise<boolean>(resolve => {
+        const image = new Image();
+        const timeout = setTimeout(() => { image.src = ''; resolve(false); }, 15000);
+        const finish = (result: boolean) => { clearTimeout(timeout); resolve(result); };
+        image.onload = () => finish(true);
+        image.onerror = () => finish(false);
+        image.src = buildTileUrl(layer, time).replace('{z}', '1').replace('{y}', '0').replace('{x}', '0').replace('{s}', 'a');
+    });
 
     const parseCapabilities = (xml: string): GIBSLayer[] => {
         const document = new DOMParser().parseFromString(xml, 'application/xml');
@@ -306,9 +314,16 @@
             subdomains: 'abc', noWrap: true, continuousWorld: true,
             bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
         });
-        imageryLayer.on('load', () => { tileStatus = 'ready'; });
+        imageryLayer.on('tileload', () => { tileStatus = 'ready'; });
         imageryLayer.on('tileerror', () => { tileStatus = 'error'; tileError = 'NASA GIBS imagery is unavailable for this product or date.'; });
         imageryLayer.addTo(map);
+        const activeLayer = imageryLayer;
+        const layerTime = compareEnabled ? currentDate : selectedDate;
+        void probeGibsTile(selectedLayer, layerTime).then(available => {
+            if (imageryLayer !== activeLayer || !visible) return;
+            tileStatus = available ? 'ready' : 'error';
+            tileError = available ? '' : 'NASA GIBS 当前产品或日期没有可用瓦片。';
+        });
     };
     const updateOpacity = (event: Event) => {
         const value = Number((event.currentTarget as HTMLInputElement).value);
