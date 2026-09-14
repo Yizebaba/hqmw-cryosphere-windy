@@ -42,6 +42,12 @@
             <div class="monitor__actions"><button on:click={toggleSentinel1Layer}>{sentinel1Visible ? '隐藏 SAR 图层' : '显示 SAR 图层'}</button><button on:click={refreshSentinel1Layer} disabled={sentinel1Status === 'loading'}>刷新</button></div>
             {#if sentinel1Error}<div class="error-message">{sentinel1Error}</div>{/if}
         </div>
+        <div class="coherence-layer">
+            <span>S1 相干性 · 2026-08-19 至 2026-08-31 · VV</span><strong>{statusLabel(coherenceStatus)}</strong>
+            <small>0 代表低相干，1 代表高相干；用于变化筛查，不是位移。</small>
+            <div class="monitor__actions"><button on:click={toggleCoherenceLayer}>{coherenceVisible ? '隐藏相干性' : '显示相干性'}</button><button on:click={refreshCoherenceLayer} disabled={coherenceStatus === 'loading'}>刷新</button></div>
+            {#if coherenceError}<div class="error-message">{coherenceError}</div>{/if}
+        </div>
         <details class="connection-settings"><summary>CDSE 后端地址</summary><input bind:value={cdseApiUrl} on:change={saveCdseApiUrl} /></details>
     </details>
     <div class="hazard-grid">
@@ -247,6 +253,11 @@
     let sentinel1Status: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     let sentinel1Error = '';
     let sentinel1Date = '2026-08-19';
+    let coherenceLayer: L.TileLayer | null = null;
+    let coherenceVisible = false;
+    let coherenceStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
+    let coherenceError = '';
+    const coherenceApiUrl = 'http://127.0.0.1:18744/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=%2Fdata%2Fcoherence_IW2_VV_20260819_20260831.cog.tif&rescale=0,1&colormap_name=viridis';
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
     $: activeTerms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];
@@ -302,6 +313,7 @@
     const removeFires = () => { fireLayer?.remove(); fireLayer = null; fireVisible = false; };
     const removeCdseLayer = () => { cdseLayer?.remove(); cdseLayer = null; cdseVisible = false; };
     const removeSentinel1Layer = () => { sentinel1Layer?.remove(); sentinel1Layer = null; sentinel1Visible = false; };
+    const removeCoherenceLayer = () => { coherenceLayer?.remove(); coherenceLayer = null; coherenceVisible = false; };
     const applyOpacity = () => {
         baselineLayer?.setOpacity(Number(opacity));
         imageryLayer?.setOpacity(Number(opacity) * (compareEnabled ? comparisonBlend : 1));
@@ -315,7 +327,7 @@
         if (compareEnabled) {
             baselineLayer = new L.TileLayer(buildTileUrl(selectedLayer, baselineDate), {
                 minZoom: 0, maxNativeZoom: selectedLayer.maxZoom, maxZoom: 19,
-                opacity: Number(opacity), tileSize: 256, layerBucketId: layerOrder.MAIN,
+                opacity: Number(opacity), tileSize: 256, layerBucketId: layerOrder.AIRSPACES,
                 subdomains: 'abc', noWrap: true, continuousWorld: true,
                 bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
             });
@@ -323,7 +335,7 @@
         }
         imageryLayer = new L.TileLayer(buildTileUrl(selectedLayer, compareEnabled ? currentDate : selectedDate), {
             minZoom: 0, maxNativeZoom: selectedLayer.maxZoom, maxZoom: 19,
-            opacity: Number(opacity) * (compareEnabled ? comparisonBlend : 1), tileSize: 256, layerBucketId: layerOrder.MAIN,
+            opacity: Number(opacity) * (compareEnabled ? comparisonBlend : 1), tileSize: 256, layerBucketId: layerOrder.AIRSPACES,
             subdomains: 'abc', noWrap: true, continuousWorld: true,
             bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
         });
@@ -505,7 +517,7 @@
         }
         cdseLayer = new L.TileLayer(cdseApiUrl.replace('{date}', cdseDate), {
             minZoom: 0, maxNativeZoom: 12, maxZoom: 19, opacity: 0.85, tileSize: 256,
-            layerBucketId: layerOrder.MAIN, noWrap: true, continuousWorld: true,
+            layerBucketId: layerOrder.AIRSPACES, noWrap: true, continuousWorld: true,
             bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
         });
         cdseLayer.on('tileerror', () => { cdseStatus = 'error'; cdseError = 'CDSE 图层未返回瓦片。请检查 OAuth client、后端服务和观测日期。'; });
@@ -532,7 +544,7 @@
         }
         sentinel1Layer = new L.TileLayer(sentinel1ApiUrl().replace('{date}', sentinel1Date), {
             minZoom: 0, maxNativeZoom: 12, maxZoom: 19, opacity: 0.7, tileSize: 256,
-            layerBucketId: layerOrder.MAIN, noWrap: true, continuousWorld: true,
+            layerBucketId: layerOrder.AIRSPACES, noWrap: true, continuousWorld: true,
             bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
         });
         sentinel1Layer.on('tileerror', () => { sentinel1Status = 'error'; sentinel1Error = 'SAR 图层未返回瓦片。请检查观测日期和 CDSE 后端。'; });
@@ -542,6 +554,31 @@
     };
     const toggleSentinel1Layer = () => { if (sentinel1Visible) { removeSentinel1Layer(); return; } loadSentinel1Layer(); };
     const refreshSentinel1Layer = () => { loadSentinel1Layer(); };
+    const coherenceTileUrl = (z: number, x: number, y: number) => coherenceApiUrl.replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y));
+    const loadCoherenceLayer = async () => {
+        removeCoherenceLayer();
+        coherenceStatus = 'loading'; coherenceError = '';
+        try {
+            const response = await fetch(coherenceTileUrl(10, 759, 428));
+            if (!response.ok) throw new Error(`相干性服务返回 ${response.status}`);
+            if (!response.headers.get('content-type')?.startsWith('image/')) throw new Error('相干性服务没有返回图像');
+        } catch (error) {
+            coherenceStatus = 'error';
+            coherenceError = error instanceof Error ? error.message : '相干性图层预检失败';
+            return;
+        }
+        coherenceLayer = new L.TileLayer(coherenceApiUrl, {
+            minZoom: 0, maxNativeZoom: 12, maxZoom: 19, opacity: 0.75, tileSize: 256,
+            layerBucketId: layerOrder.AIRSPACES, noWrap: true, continuousWorld: true,
+            bounds: [[27.1462136287, 86.0142622641], [28.8179722136, 87.1975460433]],
+        });
+        coherenceLayer.on('tileerror', () => { coherenceStatus = 'error'; coherenceError = '相干性瓦片未返回。请检查本机 TiTiler 服务。'; });
+        coherenceLayer.addTo(map);
+        coherenceVisible = true;
+        coherenceStatus = 'ready';
+    };
+    const toggleCoherenceLayer = () => { if (coherenceVisible) { removeCoherenceLayer(); return; } loadCoherenceLayer(); };
+    const refreshCoherenceLayer = () => { loadCoherenceLayer(); };
 
     const loadCatalog = async () => {
         catalogController?.abort();
@@ -608,7 +645,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeCoherenceLayer(); });
 </script>
 
 <style lang="less">
@@ -623,6 +660,10 @@
     .cdse-sar { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
     .cdse-sar > span { color:#d7e1e3; font-size:12px; }
     .cdse-sar > strong { color:#8bc34a; float:right; font-size:10px; }
+    .coherence-layer { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
+    .coherence-layer > span { color:#d7e1e3; font-size:12px; }
+    .coherence-layer > strong { color:#8bc34a; float:right; font-size:10px; }
+    .coherence-layer > small { display:block; color:#71858a; font-size:10px; line-height:1.4; margin-top:5px; }
     .plugin__content .integration-status { display: flex; flex-wrap: wrap; gap: 8px; }
     .plugin__content .integration-status > span { flex: 1; font-size: 12px; }
     .plugin__content .integration-status > small { flex-basis: 100%; font-size: 11px; }
