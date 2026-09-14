@@ -7,7 +7,7 @@ const config: ExternalPluginConfig = {
     title: 'HQMW Cryosphere',
     description: 'NASA GIBS satellite imagery layers for the Windy map.',
     author: 'Everest MHEWS',
-    repository: 'https://github.com/Yizebaba/Everest',
+    repository: 'https://github.com/Yizebaba/hqmw-cryosphere-windy',
     desktopUI: 'rhpane',
     mobileUI: 'fullscreen',
     routerPath: '/everest-mhews',
