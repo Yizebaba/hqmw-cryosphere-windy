@@ -3,9 +3,9 @@
     <div class="plugin__title plugin__title--chevron-back" on:click={() => bcast.emit('rqstOpen', 'menu')}>{title}</div>
 
     <details class="hazard-overview" open>
-        <summary><span>AUTO ALERTS</span><strong>EXPERIMENTAL</strong></summary>
+        <summary><span>AUTO ALERTS</span><strong>LIVE MAP</strong></summary>
         <div class="hazard-overview__content">
-            <p>点击类别即可切换到对应的实验性地图上下文。结果用于浏览和人工复核，不会发布正式路线关闭、撤离或 CAP 告警。</p>
+            <p>点击类别即可切换到对应的数据图层或地图上下文。</p>
             <div class="hazard-grid">
                 {#each hazardStatuses as hazard}
                     <div class="hazard-card">
@@ -17,12 +17,12 @@
                 {/each}
             </div>
             <div class="integration-status earthquake-status"><span>USGS 地震事件</span><strong>{earthquakeStatus.toUpperCase()}</strong><small>{earthquakeCount ? `最近一小时 ${earthquakeCount} 个事件` : '全球最近一小时 GeoJSON feed'}</small><button on:click={toggleEarthquakes}>{earthquakeVisible ? '隐藏地震' : '查看地震'}</button><button on:click={loadEarthquakes} disabled={earthquakeStatus === 'loading'}>刷新</button></div>
-            <div class="integration-status fire-status"><span>NASA FIRMS 火点</span><strong>{fireStatus.toUpperCase()}</strong><small>{fireCount ? `珠峰实验 AOI ${fireCount} 个火点` : fireReason || '通过本地后端代理读取'}</small><button on:click={toggleFires}>{fireVisible ? '隐藏火点' : '查看火点'}</button><button on:click={loadFires} disabled={fireStatus === 'loading'}>刷新</button></div>
+            <div class="integration-status fire-status"><span>NASA FIRMS 火点</span><strong>{fireStatus.toUpperCase()}</strong><small>{fireCount ? `珠峰 AOI ${fireCount} 个火点` : fireReason || '通过本地后端代理读取'}</small><button on:click={toggleFires}>{fireVisible ? '隐藏火点' : '查看火点'}</button><button on:click={loadFires} disabled={fireStatus === 'loading'}>刷新</button></div>
             <label class="field-label fire-api-field" for="firms-api-url">FIRMS API URL</label>
             <input id="firms-api-url" bind:value={fireApiUrl} on:change={saveFireApiUrl} />
             {#if sourceFeedback}<div class="source-feedback">{sourceFeedback}</div>{/if}
-            <div class="integration-status"><span>路线治理</span><strong>EXPERIMENTAL</strong><small>接口骨架已就绪，暂无授权路线网络</small></div>
-            <div class="integration-status"><span>CAP 告警</span><strong>EXPERIMENTAL</strong><small>CAP 草案序列化已就绪，未连接分发渠道</small></div>
+            <div class="integration-status"><span>路线治理</span><strong>API READY</strong><small>暂无授权路线网络</small></div>
+            <div class="integration-status"><span>CAP 告警</span><strong>CAP DRAFT</strong><small>未连接分发渠道</small></div>
         </div>
     </details>
 
@@ -117,7 +117,7 @@
 
     type GIBSLayer = { id: string; title: string; template: string; tileMatrixSet: string; maxZoom: number; timeEnabled: boolean; defaultTime: string; legendUrl: string };
     type ThemeFilter = { id: string; label: string; terms: string[] };
-    type HazardStatus = { id: string; name: string; status: 'EXPERIMENTAL'; source: string; filterId: string; query: string };
+    type HazardStatus = { id: string; name: string; status: 'MAP'; source: string; filterId: string; query: string };
     type EarthquakeFeed = { features: Array<{ geometry: { coordinates: [number, number, number] }; properties: { mag: number | null; place: string; time: number; url: string } }> };
     type FireFeed = { status: string; reason?: string; features: Array<{ geometry: { coordinates: [number, number] }; properties: { observedAt: string; confidence?: string; frp?: string; satellite?: string; instrument?: string } }> };
 
@@ -131,15 +131,15 @@
         { id: 'VIIRS_NOAA20_CorrectedReflectance_TrueColor', title: 'VIIRS NOAA-20 True Color', template: 'https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_NOAA20_CorrectedReflectance_TrueColor/default/{Time}/GoogleMapsCompatible_Level9/{TileMatrix}/{TileRow}/{TileCol}.jpg', tileMatrixSet: 'GoogleMapsCompatible_Level9', maxZoom: 9, timeEnabled: true, defaultTime: initialDate, legendUrl: '' },
     ];
     const hazardStatuses: HazardStatus[] = [
-        { id: 'icefall', name: '冰崩 / 冰川变化', status: 'EXPERIMENTAL', source: '冰雪与真彩色影像', filterId: 'frozen-area', query: '' },
-        { id: 'avalanche', name: '雪崩', status: 'EXPERIMENTAL', source: '积雪覆盖与雪指数影像', filterId: 'snow-cover', query: '' },
-        { id: 'rockfall', name: '岩崩', status: 'EXPERIMENTAL', source: '高分辨率真彩色上下文', filterId: '', query: 'true color' },
-        { id: 'landslide', name: '滑坡', status: 'EXPERIMENTAL', source: 'SAR 与真彩色上下文', filterId: 'rtc-sar', query: '' },
-        { id: 'debris-flow', name: '泥石流', status: 'EXPERIMENTAL', source: '土壤湿度与水体影像', filterId: 'soil-moisture', query: '' },
-        { id: 'flood', name: 'GLOF / 山洪', status: 'EXPERIMENTAL', source: '洪水与地表水影像', filterId: 'flood', query: '' },
-        { id: 'earthquake', name: '地震', status: 'EXPERIMENTAL', source: 'USGS 最近一小时事件', filterId: '', query: '' },
-        { id: 'fire', name: '火点', status: 'EXPERIMENTAL', source: 'NASA FIRMS 活动火点', filterId: '', query: '' },
-        { id: 'weather', name: '高山天气', status: 'EXPERIMENTAL', source: '云图与基础地图上下文', filterId: '', query: 'true color' },
+        { id: 'icefall', name: '冰崩 / 冰川变化', status: 'MAP', source: '冰雪与真彩色影像', filterId: 'frozen-area', query: '' },
+        { id: 'avalanche', name: '雪崩', status: 'MAP', source: '积雪覆盖与雪指数影像', filterId: 'snow-cover', query: '' },
+        { id: 'rockfall', name: '岩崩', status: 'MAP', source: '高分辨率真彩色上下文', filterId: '', query: 'true color' },
+        { id: 'landslide', name: '滑坡', status: 'MAP', source: 'SAR 与真彩色上下文', filterId: 'rtc-sar', query: '' },
+        { id: 'debris-flow', name: '泥石流', status: 'MAP', source: '土壤湿度与水体影像', filterId: 'soil-moisture', query: '' },
+        { id: 'flood', name: 'GLOF / 山洪', status: 'MAP', source: '洪水与地表水影像', filterId: 'flood', query: '' },
+        { id: 'earthquake', name: '地震', status: 'MAP', source: 'USGS 最近一小时事件', filterId: '', query: '' },
+        { id: 'fire', name: '火点', status: 'MAP', source: 'NASA FIRMS 活动火点', filterId: '', query: '' },
+        { id: 'weather', name: '高山天气', status: 'MAP', source: '云图与基础地图上下文', filterId: '', query: 'true color' },
     ];
     const cryosphereFilters: ThemeFilter[] = [
         { id: 'freeze-thaw', label: '冷冻/解冻', terms: ['freeze', 'thaw'] },
