@@ -6,7 +6,7 @@
         <summary><span>自动报警 / 事件监测</span><strong>v{config.version}</strong></summary>
         <div class="hazard-overview__content">
             <p>USGS 地震与 NASA FIRMS 热异常观测。自动报警尚未接入决策服务。</p>
-            <div class="integration-status earthquake-status"><span>USGS 地震事件</span><strong>{earthquakeStatus.toUpperCase()}</strong><small>{earthquakeCount ? `最近一小时 ${earthquakeCount} 个事件` : '全球最近一小时 GeoJSON feed'}</small><button on:click={toggleEarthquakes}>{earthquakeVisible ? '隐藏地震' : '查看地震'}</button><button on:click={loadEarthquakes} disabled={earthquakeStatus === 'loading'}>刷新</button></div>
+            <div class="integration-status earthquake-status"><span>USGS 地震事件</span><strong>{statusLabel(earthquakeStatus)}</strong><small>{earthquakeCount ? `最近一小时 ${earthquakeCount} 个事件` : '全球最近一小时 GeoJSON feed'}</small><button on:click={toggleEarthquakes}>{earthquakeVisible ? '隐藏地震' : '查看地震'}</button><button on:click={loadEarthquakes} disabled={earthquakeStatus === 'loading'}>刷新</button></div>
             {#if earthquakeVisible}
                 <div class="event-list">
                     {#each earthquakeEvents as event}
@@ -14,13 +14,14 @@
                     {/each}
                 </div>
             {/if}
-            <div class="integration-status fire-status"><span>NASA FIRMS 火点</span><strong>{fireStatus.toUpperCase()}</strong><small>{fireCount ? `珠峰 AOI ${fireCount} 个火点` : fireReason || '通过本地后端代理读取'}</small><button on:click={toggleFires}>{fireVisible ? '隐藏火点' : '查看火点'}</button><button on:click={loadFires} disabled={fireStatus === 'loading'}>刷新</button></div>
+            <div class="integration-status fire-status"><span>NASA FIRMS 火点</span><strong>{statusLabel(fireStatus)}</strong><small>{fireCount ? `珠峰 AOI ${fireCount} 个火点` : fireReason || '通过本地后端代理读取'}</small><button on:click={toggleFires}>{fireVisible ? '隐藏火点' : '查看火点'}</button><button on:click={loadFires} disabled={fireStatus === 'loading'}>刷新</button></div>
             {#if sourceFeedback}<div class="source-feedback" role="status" aria-live="polite">{sourceFeedback}</div>{/if}
             <details class="connection-settings"><summary>连接设置与服务状态</summary>
                 <label class="field-label fire-api-field" for="firms-api-url">FIRMS 后端地址</label>
                 <input id="firms-api-url" bind:value={fireApiUrl} on:change={saveFireApiUrl} />
                 <p>本地地址仅在运行后端的电脑上可用。</p>
-                <p>路线数据：未连接 · CAP 分发：未连接</p>
+                <p>路线与撤离：尚未导入授权路线、避难点或关闭状态。</p>
+                <p>CAP 通知：尚未配置签名和递送渠道。</p>
             </details>
         </div>
     </details>
@@ -28,7 +29,7 @@
     <h3>卫星影像</h3>
     <p class="intro">NASA GIBS 观测产品。以下类别打开对应影像，灾害事件模型尚未接入。</p>
     <details class="cdse-direct" open>
-        <summary><span>CDSE Sentinel-2 直连</span><strong>{cdseStatus.toUpperCase()}</strong></summary>
+        <summary><span>CDSE Sentinel-2 直连</span><strong>{statusLabel(cdseStatus)}</strong></summary>
         <p>经本机后端直接请求 Copernicus Data Space Sentinel-2 L2A PNG 瓦片。</p>
         <label class="field-label" for="cdse-date">观测日期</label>
         <input id="cdse-date" type="date" bind:value={cdseDate} max={today} />
@@ -138,6 +139,7 @@
     type FireFeed = { status: string; reason?: string; features: Array<{ geometry: { coordinates: [number, number] }; properties: { observedAt: string; confidence?: string; frp?: string; satellite?: string; instrument?: string } }> };
 
     const { title } = config;
+    const statusLabel = (status: string) => ({ idle: '待加载', loading: '加载中', ready: '已加载', fresh: '已更新', unconfigured: '未配置', unavailable: '不可用', error: '错误' }[status] || status);
     const capabilitiesUrl = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml';
     const today = new Date().toISOString().slice(0, 10);
     const initialDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
