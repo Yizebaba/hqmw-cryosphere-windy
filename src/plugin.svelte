@@ -1,10 +1,9 @@
 <div class="plugin__mobile-header">{title}</div>
 <section class="plugin__content">
     <div class="plugin__title plugin__title--chevron-back" on:click={() => bcast.emit('rqstOpen', 'menu')}>{title}</div>
-    <p class="intro">NASA GIBS imagery for map context. Imagery is not a hazard decision layer.</p>
 
     <details class="hazard-overview" open>
-        <summary><span>MULTI-HAZARD EXPERIMENTS</span><strong>EXPERIMENTAL</strong></summary>
+        <summary><span>AUTO ALERTS</span><strong>EXPERIMENTAL</strong></summary>
         <div class="hazard-overview__content">
             <p>点击类别即可切换到对应的实验性地图上下文。结果用于浏览和人工复核，不会发布正式路线关闭、撤离或 CAP 告警。</p>
             <div class="hazard-grid">
@@ -21,6 +20,8 @@
             <div class="integration-status"><span>CAP 告警</span><strong>EXPERIMENTAL</strong><small>CAP 草案序列化已就绪，未连接分发渠道</small></div>
         </div>
     </details>
+
+    <p class="intro">NASA GIBS imagery for map context. Imagery is not a hazard decision layer.</p>
 
     <div class="catalog-status" class:ready={catalogStatus === 'ready'}>
         <i></i>{catalogStatus === 'ready' ? `${catalogLayers.length} NASA GIBS layers ready` : catalogStatus.toUpperCase()}
