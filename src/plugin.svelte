@@ -160,7 +160,7 @@
         { id: 'snow-water', label: '雪水当量', terms: ['snow water equivalent'] },
     ];
     const hydrosphereFilters: ThemeFilter[] = [
-        { id: 'flood', label: '洪水观测', terms: ['combined flood'] },
+        { id: 'flood', label: '洪水观测', terms: ['flood ('] },
         { id: 'flood-hazard', label: '洪水危险度（历史）', terms: ['flood hazard'] },
         { id: 'water-extent', label: '地表水范围', terms: ['water extent', 'surface water'] },
         { id: 'soil-moisture', label: '土壤湿度', terms: ['soil moisture'] },
