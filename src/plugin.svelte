@@ -27,6 +27,15 @@
 
     <h3>卫星影像</h3>
     <p class="intro">NASA GIBS 观测产品。以下类别打开对应影像，灾害事件模型尚未接入。</p>
+    <details class="cdse-direct" open>
+        <summary><span>CDSE Sentinel-2 直连</span><strong>{cdseStatus.toUpperCase()}</strong></summary>
+        <p>经本机后端直接请求 Copernicus Data Space Sentinel-2 L2A PNG 瓦片。</p>
+        <label class="field-label" for="cdse-date">观测日期</label>
+        <input id="cdse-date" type="date" bind:value={cdseDate} max={today} />
+        <div class="monitor__actions"><button on:click={toggleCdseLayer}>{cdseVisible ? '隐藏 CDSE 图层' : '显示 CDSE 图层'}</button><button on:click={refreshCdseLayer} disabled={cdseStatus === 'loading'}>刷新</button></div>
+        {#if cdseError}<div class="error-message">{cdseError}</div>{/if}
+        <details class="connection-settings"><summary>CDSE 后端地址</summary><input bind:value={cdseApiUrl} on:change={saveCdseApiUrl} /></details>
+    </details>
     <div class="hazard-grid">
         {#each hazardStatuses.filter(hazard => !['earthquake', 'fire'].includes(hazard.id)) as hazard}
             <button class="hazard-card" on:click={() => openExperimentalHazard(hazard)} disabled={catalogStatus !== 'ready'}>
@@ -216,6 +225,14 @@
     const storedFireApiUrl = (() => { try { return localStorage.getItem('hqmw-firms-api-url'); } catch { return null; } })();
     let fireApiUrl = !storedFireApiUrl || storedFireApiUrl === 'http://127.0.0.1:8000/v1/external/fire-detections' ? defaultFireApiUrl : storedFireApiUrl;
     let sourceFeedback = '';
+    let cdseLayer: L.TileLayer | null = null;
+    let cdseVisible = false;
+    let cdseStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
+    let cdseError = '';
+    let cdseDate = initialDate;
+    const defaultCdseApiUrl = 'http://127.0.0.1:18743/v1/cdse/sentinel2/tiles/{z}/{x}/{y}.png?date={date}';
+    const storedCdseApiUrl = (() => { try { return localStorage.getItem('hqmw-cdse-api-url'); } catch { return null; } })();
+    let cdseApiUrl = storedCdseApiUrl || defaultCdseApiUrl;
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
     $: activeTerms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];
@@ -261,6 +278,7 @@
     const removeBaselineLayer = () => { baselineLayer?.remove(); baselineLayer = null; };
     const removeEarthquakes = () => { earthquakeLayer?.remove(); earthquakeLayer = null; earthquakeVisible = false; };
     const removeFires = () => { fireLayer?.remove(); fireLayer = null; fireVisible = false; };
+    const removeCdseLayer = () => { cdseLayer?.remove(); cdseLayer = null; cdseVisible = false; };
     const applyOpacity = () => {
         baselineLayer?.setOpacity(Number(opacity));
         imageryLayer?.setOpacity(Number(opacity) * (compareEnabled ? comparisonBlend : 1));
@@ -440,6 +458,33 @@
         if (fireLayer) { fireLayer.addTo(map); fireVisible = true; return; }
         loadFires();
     };
+    const saveCdseApiUrl = () => { cdseApiUrl = cdseApiUrl.trim(); try { localStorage.setItem('hqmw-cdse-api-url', cdseApiUrl); } catch { cdseError = '浏览器不允许保存 CDSE 地址。'; } };
+    const cdseTileUrl = (z: number, x: number, y: number) => cdseApiUrl
+        .replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y)).replace('{date}', cdseDate);
+    const loadCdseLayer = async () => {
+        removeCdseLayer();
+        cdseStatus = 'loading'; cdseError = '';
+        try {
+            const response = await fetch(cdseTileUrl(10, 759, 428));
+            if (!response.ok) throw new Error(`CDSE 后端返回 ${response.status}`);
+            if (!response.headers.get('content-type')?.startsWith('image/')) throw new Error('CDSE 后端没有返回图像');
+        } catch (error) {
+            cdseStatus = 'error';
+            cdseError = error instanceof Error ? error.message : 'CDSE 图层预检失败';
+            return;
+        }
+        cdseLayer = new L.TileLayer(cdseApiUrl.replace('{date}', cdseDate), {
+            minZoom: 0, maxNativeZoom: 14, maxZoom: 19, opacity: 0.85, tileSize: 256,
+            layerBucketId: layerOrder.MAIN, noWrap: true, continuousWorld: true,
+            bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+        });
+        cdseLayer.on('load', () => { cdseStatus = 'ready'; });
+        cdseLayer.on('tileerror', () => { cdseStatus = 'error'; cdseError = 'CDSE 图层未返回瓦片。请检查 OAuth client、后端服务和观测日期。'; });
+        cdseLayer.addTo(map);
+        cdseVisible = true;
+    };
+    const toggleCdseLayer = () => { if (cdseVisible) { removeCdseLayer(); return; } loadCdseLayer(); };
+    const refreshCdseLayer = () => { loadCdseLayer(); };
 
     const loadCatalog = async () => {
         catalogController?.abort();
@@ -506,7 +551,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); });
 </script>
 
 <style lang="less">
@@ -514,6 +559,10 @@
     .event-list { display: grid; gap: 4px; max-height: 150px; overflow-y: auto; margin-top: 8px; }
     .event-list button { text-align: left; }
     .connection-settings { margin-top: 12px; }
+    .cdse-direct { border: 1px solid #304047; border-left: 3px solid #8bc34a; margin: 12px 0; padding: 8px 10px; }
+    .cdse-direct summary { display:flex; justify-content:space-between; color:#d7e1e3; font-size:12px; }
+    .cdse-direct summary strong { color:#8bc34a; font-size:10px; }
+    .cdse-direct p { color:#a8babf; font-size:11px; line-height:1.4; }
     .plugin__content .integration-status { display: flex; flex-wrap: wrap; gap: 8px; }
     .plugin__content .integration-status > span { flex: 1; font-size: 12px; }
     .plugin__content .integration-status > small { flex-basis: 100%; font-size: 11px; }
