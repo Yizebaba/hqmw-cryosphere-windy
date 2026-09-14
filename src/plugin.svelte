@@ -203,7 +203,7 @@
     let fireCount = 0;
     let fireReason = '';
     let fireVisible = false;
-    let fireApiUrl = localStorage.getItem('hqmw-firms-api-url') || 'http://127.0.0.1:8000/v1/external/fire-detections';
+    let fireApiUrl = localStorage.getItem('hqmw-firms-api-url') || 'http://127.0.0.1:18743/v1/external/fire-detections';
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
     $: activeTerms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];
