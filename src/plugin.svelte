@@ -3,30 +3,37 @@
     <div class="plugin__title plugin__title--chevron-back" on:click={() => bcast.emit('rqstOpen', 'menu')}>{title}</div>
 
     <details class="hazard-overview" open>
-        <summary><span>AUTO ALERTS</span><strong>LIVE MAP</strong></summary>
+        <summary><span>自动报警 / 事件监测</span><strong>v{config.version}</strong></summary>
         <div class="hazard-overview__content">
-            <p>点击类别即可切换到对应的数据图层或地图上下文。</p>
-            <div class="hazard-grid">
-                {#each hazardStatuses as hazard}
-                    <div class="hazard-card">
-                        <span>{hazard.name}</span>
-                        <strong>{hazard.status}</strong>
-                        <small>{hazard.source}</small>
-                        <button on:click={() => openExperimentalHazard(hazard)}>查看地图</button>
-                    </div>
-                {/each}
-            </div>
+            <p>USGS 地震与 NASA FIRMS 热异常观测。自动报警尚未接入决策服务。</p>
             <div class="integration-status earthquake-status"><span>USGS 地震事件</span><strong>{earthquakeStatus.toUpperCase()}</strong><small>{earthquakeCount ? `最近一小时 ${earthquakeCount} 个事件` : '全球最近一小时 GeoJSON feed'}</small><button on:click={toggleEarthquakes}>{earthquakeVisible ? '隐藏地震' : '查看地震'}</button><button on:click={loadEarthquakes} disabled={earthquakeStatus === 'loading'}>刷新</button></div>
+            {#if earthquakeVisible}
+                <div class="event-list">
+                    {#each earthquakeEvents as event}
+                        <button on:click={() => { map.setView(event.position, 6); event.layer.openPopup(); }}>M{event.magnitude ?? '?'} · {event.place}</button>
+                    {/each}
+                </div>
+            {/if}
             <div class="integration-status fire-status"><span>NASA FIRMS 火点</span><strong>{fireStatus.toUpperCase()}</strong><small>{fireCount ? `珠峰 AOI ${fireCount} 个火点` : fireReason || '通过本地后端代理读取'}</small><button on:click={toggleFires}>{fireVisible ? '隐藏火点' : '查看火点'}</button><button on:click={loadFires} disabled={fireStatus === 'loading'}>刷新</button></div>
-            <label class="field-label fire-api-field" for="firms-api-url">FIRMS API URL</label>
-            <input id="firms-api-url" bind:value={fireApiUrl} on:change={saveFireApiUrl} />
-            {#if sourceFeedback}<div class="source-feedback">{sourceFeedback}</div>{/if}
-            <div class="integration-status"><span>路线治理</span><strong>API READY</strong><small>暂无授权路线网络</small></div>
-            <div class="integration-status"><span>CAP 告警</span><strong>CAP DRAFT</strong><small>未连接分发渠道</small></div>
+            {#if sourceFeedback}<div class="source-feedback" role="status" aria-live="polite">{sourceFeedback}</div>{/if}
+            <details class="connection-settings"><summary>连接设置与服务状态</summary>
+                <label class="field-label fire-api-field" for="firms-api-url">FIRMS 后端地址</label>
+                <input id="firms-api-url" bind:value={fireApiUrl} on:change={saveFireApiUrl} />
+                <p>本地地址仅在运行后端的电脑上可用。</p>
+                <p>路线数据：未连接 · CAP 分发：未连接</p>
+            </details>
         </div>
     </details>
 
-    <p class="intro">NASA GIBS imagery for map context. Imagery is not a hazard decision layer.</p>
+    <h3>卫星影像</h3>
+    <p class="intro">NASA GIBS 观测产品。以下类别打开对应影像，灾害事件模型尚未接入。</p>
+    <div class="hazard-grid">
+        {#each hazardStatuses.filter(hazard => !['earthquake', 'fire'].includes(hazard.id)) as hazard}
+            <button class="hazard-card" on:click={() => openExperimentalHazard(hazard)} disabled={catalogStatus !== 'ready'}>
+                <span>{hazard.name}</span><small>{hazard.source}</small>
+            </button>
+        {/each}
+    </div>
 
     <div class="catalog-status" class:ready={catalogStatus === 'ready'}>
         <i></i>{catalogStatus === 'ready' ? `${catalogLayers.length} NASA GIBS layers ready` : catalogStatus.toUpperCase()}
@@ -131,15 +138,15 @@
         { id: 'VIIRS_NOAA20_CorrectedReflectance_TrueColor', title: 'VIIRS NOAA-20 True Color', template: 'https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_NOAA20_CorrectedReflectance_TrueColor/default/{Time}/GoogleMapsCompatible_Level9/{TileMatrix}/{TileRow}/{TileCol}.jpg', tileMatrixSet: 'GoogleMapsCompatible_Level9', maxZoom: 9, timeEnabled: true, defaultTime: initialDate, legendUrl: '' },
     ];
     const hazardStatuses: HazardStatus[] = [
-        { id: 'icefall', name: '冰崩 / 冰川变化', status: 'MAP', source: '冰雪与真彩色影像', filterId: 'frozen-area', query: '' },
+        { id: 'icefall', name: '冰川影像', status: 'MAP', source: '真彩色观测', filterId: '', query: 'true color' },
         { id: 'avalanche', name: '雪崩', status: 'MAP', source: '积雪覆盖与雪指数影像', filterId: 'snow-cover', query: '' },
-        { id: 'rockfall', name: '岩崩', status: 'MAP', source: '高分辨率真彩色上下文', filterId: '', query: 'true color' },
+        { id: 'rockfall', name: '岩崩背景', status: 'MAP', source: '真彩色观测，非岩崩检测', filterId: '', query: 'true color' },
         { id: 'landslide', name: '滑坡', status: 'MAP', source: 'SAR 与真彩色上下文', filterId: 'rtc-sar', query: '' },
         { id: 'debris-flow', name: '泥石流', status: 'MAP', source: '土壤湿度与水体影像', filterId: 'soil-moisture', query: '' },
         { id: 'flood', name: 'GLOF / 山洪', status: 'MAP', source: '洪水与地表水影像', filterId: 'flood', query: '' },
         { id: 'earthquake', name: '地震', status: 'MAP', source: 'USGS 最近一小时事件', filterId: '', query: '' },
         { id: 'fire', name: '火点', status: 'MAP', source: 'NASA FIRMS 活动火点', filterId: '', query: '' },
-        { id: 'weather', name: '高山天气', status: 'MAP', source: '云图与基础地图上下文', filterId: '', query: 'true color' },
+        { id: 'weather', name: '云观测', status: 'MAP', source: '卫星云量产品', filterId: '', query: 'cloud fraction' },
     ];
     const cryosphereFilters: ThemeFilter[] = [
         { id: 'freeze-thaw', label: '冷冻/解冻', terms: ['freeze', 'thaw'] },
@@ -198,13 +205,16 @@
     let earthquakeStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     let earthquakeCount = 0;
     let earthquakeVisible = false;
+    let earthquakeEvents: Array<{magnitude: number | null; place: string; position: [number, number]; layer: L.Layer}> = [];
     let fireLayer: L.GeoJSON | null = null;
     let fireController: AbortController | null = null;
     let fireStatus: 'idle' | 'loading' | 'fresh' | 'unconfigured' | 'unavailable' | 'error' = 'idle';
     let fireCount = 0;
     let fireReason = '';
     let fireVisible = false;
-    let fireApiUrl = localStorage.getItem('hqmw-firms-api-url') || 'http://127.0.0.1:18743/v1/external/fire-detections';
+    const defaultFireApiUrl = 'http://127.0.0.1:18743/v1/external/fire-detections';
+    const storedFireApiUrl = (() => { try { return localStorage.getItem('hqmw-firms-api-url'); } catch { return null; } })();
+    let fireApiUrl = !storedFireApiUrl || storedFireApiUrl === 'http://127.0.0.1:8000/v1/external/fire-detections' ? defaultFireApiUrl : storedFireApiUrl;
     let sourceFeedback = '';
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
@@ -212,7 +222,7 @@
     $: matchingLayers = catalogLayers.filter(layer => {
         const haystack = `${layer.title} ${layer.id}`.toLowerCase();
         const textMatches = !query.trim() || haystack.includes(query.trim().toLowerCase());
-        const themeMatches = !activeTerms.length || activeTerms.some(term => haystack.includes(term));
+        const themeMatches = !activeTerms.length || activeTerms.some(term => layer.title.toLowerCase().includes(term));
         return textMatches && themeMatches;
     }).slice(0, 100);
 
@@ -305,23 +315,40 @@
         const layer = catalogLayers.find(item => item.id === selectedLayerId) || initialLayers[0];
         if (layer.timeEnabled && layer.defaultTime) selectedDate = layer.defaultTime.slice(0, 10);
         currentDate = selectedDate;
+        selectedLayer = layer;
+        visible = true;
+        compareEnabled = false;
         replaceLayer();
+    };
+    const activateMatchingLayer = () => {
+        const terms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];
+        const layer = catalogLayers.find(layer => {
+            const text = layer.title.toLowerCase();
+            return (!query || text.includes(query.toLowerCase())) && (!terms.length || terms.some(term => text.includes(term)));
+        });
+        if (!layer) { sourceFeedback = 'NASA GIBS 当前目录没有匹配产品，地图保留原图层。'; return; }
+        selectedLayerId = layer.id;
+        selectLayer();
+        sourceFeedback = `正在加载 ${layer.title} · ${selectedDate}`;
     };
     const selectFilter = (filterId: string) => {
         activeFilter = activeFilter === filterId ? '' : filterId;
         query = '';
+        activateMatchingLayer();
     };
     const openExperimentalHazard = (hazard: HazardStatus) => {
         if (hazard.id === 'earthquake') { toggleEarthquakes(); return; }
         if (hazard.id === 'fire') { toggleFires(); return; }
         activeFilter = hazard.filterId;
         query = hazard.query;
+        activateMatchingLayer();
         focusEverest();
     };
     const loadEarthquakes = async () => {
         earthquakeController?.abort();
         const controller = new AbortController();
         earthquakeController = controller;
+        const timeout = setTimeout(() => controller.abort(), 20000);
         earthquakeStatus = 'loading'; sourceFeedback = '正在加载 USGS 最近一小时地震事件...';
         try {
             const response = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson', { signal: controller.signal });
@@ -329,8 +356,10 @@
             const feed = await response.json() as EarthquakeFeed;
             if (earthquakeController !== controller) return;
             removeEarthquakes();
+            earthquakeEvents = [];
             earthquakeCount = feed.features.length;
             earthquakeLayer = new L.GeoJSON(feed as never, {
+                style: () => ({}),
                 pointToLayer: (feature: { properties: EarthquakeFeed['features'][number]['properties'] }, latlng: L.LatLng) => {
                     const magnitude = feature.properties.mag ?? 0;
                     return L.circleMarker(latlng, { radius: Math.max(4, Math.min(12, magnitude * 2)), color: '#f2ad42', fillColor: '#f2ad42', fillOpacity: 0.75, weight: 1 });
@@ -340,6 +369,7 @@
                     const popup = document.createElement('div');
                     popup.textContent = `EARTHQUAKE EVENT | M${feature.properties.mag ?? 'unknown'} | ${feature.properties.place || 'Unknown location'} | ${new Date(feature.properties.time).toISOString()} | Depth ${depth} km | ${latitude.toFixed(3)}, ${longitude.toFixed(3)}`;
                     layer.bindPopup(popup);
+                    earthquakeEvents = [...earthquakeEvents, {magnitude: feature.properties.mag, place: feature.properties.place, position: [latitude, longitude], layer}];
                 },
             });
             earthquakeLayer.addTo(map);
@@ -349,10 +379,11 @@
             if (bounds.isValid()) map.fitBounds(bounds, { padding: [32, 32], maxZoom: 5 });
             sourceFeedback = `已加载 ${earthquakeCount} 个 USGS 地震事件，并定位到事件范围。`;
         } catch (error) {
-            if (earthquakeController !== controller || controller.signal.aborted) return;
+            if (earthquakeController !== controller) return;
             earthquakeStatus = 'error';
-            sourceFeedback = 'USGS 地震事件加载失败。';
+            sourceFeedback = controller.signal.aborted ? 'USGS 请求超时，请重试。' : `地震加载失败：${error instanceof Error ? error.message : String(error)}`;
         } finally {
+            clearTimeout(timeout);
             if (earthquakeController === controller) earthquakeController = null;
         }
     };
@@ -361,11 +392,12 @@
         if (earthquakeLayer) { earthquakeLayer.addTo(map); earthquakeVisible = true; return; }
         loadEarthquakes();
     };
-    const saveFireApiUrl = () => localStorage.setItem('hqmw-firms-api-url', fireApiUrl.trim());
+    const saveFireApiUrl = () => { fireApiUrl = fireApiUrl.trim(); try { localStorage.setItem('hqmw-firms-api-url', fireApiUrl); } catch { sourceFeedback = '浏览器不允许保存地址，本次会话仍可使用。'; } };
     const loadFires = async () => {
         fireController?.abort();
         const controller = new AbortController();
         fireController = controller;
+        const timeout = setTimeout(() => controller.abort(), 25000);
         fireStatus = 'loading'; fireReason = ''; sourceFeedback = '正在加载 NASA FIRMS 火点...';
         try {
             const response = await fetch(fireApiUrl, { signal: controller.signal });
@@ -377,8 +409,9 @@
             removeFires();
             fireCount = feed.features.length;
             if (feed.status !== 'FRESH') { sourceFeedback = feed.reason || 'FIRMS 当前不可用。'; return; }
-            if (!fireCount) { sourceFeedback = 'FIRMS 已刷新：当前珠峰实验 AOI 没有活动火点。'; return; }
+            if (!fireCount) { fireReason = '本次查询返回 0 个活动火点'; sourceFeedback = 'FIRMS 已刷新：当前查询区域没有活动火点。'; return; }
             fireLayer = new L.GeoJSON(feed as never, {
+                style: () => ({}),
                 pointToLayer: (_feature: object, latlng: L.LatLng) => L.circleMarker(latlng, { radius: 5, color: '#e85d3f', fillColor: '#e85d3f', fillOpacity: 0.8, weight: 1 }),
                 onEachFeature: (feature: { geometry: FireFeed['features'][number]['geometry']; properties: FireFeed['features'][number]['properties'] }, layer: L.Layer) => {
                     const [longitude, latitude] = feature.geometry.coordinates;
@@ -393,11 +426,12 @@
             if (bounds.isValid()) map.fitBounds(bounds, { padding: [32, 32], maxZoom: 10 });
             sourceFeedback = `已加载 ${fireCount} 个 NASA FIRMS 火点。`;
         } catch (error) {
-            if (fireController !== controller || controller.signal.aborted) return;
+            if (fireController !== controller) return;
             fireStatus = 'error';
             fireReason = error instanceof Error ? error.message : 'FIRMS proxy is unavailable';
-            sourceFeedback = 'NASA FIRMS 火点加载失败。';
+            sourceFeedback = controller.signal.aborted ? 'FIRMS 请求超时，请检查后端。' : `火点加载失败：${fireReason}。请检查连接设置及浏览器本地网络权限。`;
         } finally {
+            clearTimeout(timeout);
             if (fireController === controller) fireController = null;
         }
     };
@@ -411,12 +445,14 @@
         catalogController?.abort();
         const controller = new AbortController();
         catalogController = controller;
+        const timeout = setTimeout(() => controller.abort(), 20000);
         catalogStatus = 'loading'; catalogError = '';
         try {
             const response = await fetch(capabilitiesUrl, { signal: controller.signal });
             if (!response.ok) throw new Error(`NASA GIBS: ${response.status}`);
             const parsed = parseCapabilities(await response.text());
-            if (catalogController !== controller || !parsed.length) return;
+            if (catalogController !== controller) return;
+            if (!parsed.length) throw new Error('NASA GIBS 未返回可用图层');
             catalogLayers = parsed;
             layerHealth = {};
             testCompleted = 0;
@@ -428,10 +464,11 @@
             catalogStatus = 'ready';
             replaceLayer();
         } catch (error) {
-            if (catalogController !== controller || controller.signal.aborted) return;
+            if (catalogController !== controller) return;
             catalogStatus = 'error';
-            catalogError = error instanceof Error ? error.message : 'NASA GIBS catalog is unavailable.';
+            catalogError = controller.signal.aborted ? 'NASA GIBS 目录请求超时，请重试。' : error instanceof Error ? error.message : 'NASA GIBS catalog is unavailable.';
         } finally {
+            clearTimeout(timeout);
             if (catalogController === controller) catalogController = null;
         }
     };
@@ -473,6 +510,16 @@
 </script>
 
 <style lang="less">
+    h3 { font-size: 15px; margin: 18px 0 4px; color: #e8edf0; }
+    .event-list { display: grid; gap: 4px; max-height: 150px; overflow-y: auto; margin-top: 8px; }
+    .event-list button { text-align: left; }
+    .connection-settings { margin-top: 12px; }
+    .plugin__content .integration-status { display: flex; flex-wrap: wrap; gap: 8px; }
+    .plugin__content .integration-status > span { flex: 1; font-size: 12px; }
+    .plugin__content .integration-status > small { flex-basis: 100%; font-size: 11px; }
+    .plugin__content .hazard-card { min-height: 54px; text-align: left; padding: 9px; }
+    .plugin__content .hazard-card small { margin-top: 5px; font-size: 10px; }
+    .plugin__content button { min-height: 32px; font-size: 11px; }
     .plugin__content { padding: 12px 14px 24px; color: #e8edf0; background: #11191e; min-height: 100%; } .intro { color: #a8babf; font-size: 12px; line-height: 1.5; margin: 12px 0 18px; } .hazard-overview { border:1px solid #304047; border-left:3px solid #52b6c7; margin:0 0 14px; padding:8px 10px; } .hazard-overview summary { display:flex; align-items:center; justify-content:space-between; color:#d7e1e3; font-size:11px; letter-spacing:1px; } .hazard-overview summary strong,.hazard-card strong,.integration-status strong { color:#52b6c7; font-size:10px; } .hazard-overview__content > p { color:#a8babf; font-size:11px; line-height:1.45; margin:8px 0; } .hazard-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .hazard-card { border:1px solid #304047; padding:7px; min-height:76px; } .hazard-card span,.integration-status span { display:block; color:#d7e1e3; font-size:10px; line-height:1.25; } .hazard-card strong { display:block; margin:4px 0; } .hazard-card small,.integration-status small { display:block; color:#71858a; font-size:9px; line-height:1.3; } .hazard-card button { margin-top:6px; padding:4px 6px; } .integration-status { display:grid; grid-template-columns:minmax(0,1fr) auto auto; column-gap:8px; border-top:1px solid #304047; margin-top:8px; padding-top:8px; } .integration-status small { grid-column:1 / -1; margin-top:3px; } .earthquake-status button,.fire-status button { padding:4px 6px; } .fire-api-field { margin-top:10px; } .source-feedback { color:#d7e1e3; font-size:10px; line-height:1.4; border:1px solid #304047; margin-top:8px; padding:7px; }
     .field-label { display: block; color: #91a5aa; font-size: 10px; letter-spacing: 1px; margin: 15px 0 6px; } input, select { box-sizing: border-box; width: 100%; background: #172126; border: 1px solid #33464d; color: #e8edf0; padding: 8px; } input[type='range'] { accent-color: #52b6c7; padding: 0; } select { font-size: 11px; } .monitor { border:1px solid #304047; border-left:3px solid #f2ad42; margin-top:14px; padding:8px 10px; } .monitor summary { display:flex; align-items:center; justify-content:space-between; color:#d7e1e3; font-size:11px; letter-spacing:1px; } .monitor summary strong { color:#f2ad42; font-size:10px; } .monitor p,.monitor small { display:block; color:#a8babf; font-size:11px; line-height:1.45; margin:8px 0; } .monitor small { color:#71858a; font-size:10px; } .monitor__actions { display:flex; gap:6px; margin-top:12px; } .compare-toggle { display:block; color:#d7e1e3; font-size:11px; margin-top:12px; } .compare-toggle input { width:auto; vertical-align:middle; } .theme-group { border-top: 1px solid #304047; margin-top: 12px; padding-top: 8px; } summary { color:#a8babf; cursor:pointer; font-size:11px; } .theme-group small { display:block; color:#71858a; font-size:10px; margin-top:8px; line-height:1.4; } .quick-filters { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:8px; } .quick-filters button { padding:5px 6px; } .quick-filters button.active { background:#52b6c7; border-color:#52b6c7; color:#101719; } .catalog-actions { display:flex; align-items:center; justify-content:space-between; margin-top:6px; } .result-count { color: #71858a; font-size: 10px; } button:disabled { cursor: wait; opacity: 0.55; }
     .catalog-status, .tile-status { color: #f2ad42; font-size: 10px; letter-spacing: 1px; } .catalog-status { display: flex; align-items: center; justify-content: space-between; border: 1px solid #33464d; padding: 7px; } .catalog-status.ready, .tile-status.ready { color: #51c7a3; } .catalog-status i, .tile-status i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; margin-right: 5px; } button { background: #172126; border: 1px solid #33464d; color: #d7e1e3; padding: 7px 9px; font-size: 10px; cursor: pointer; }
