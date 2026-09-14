@@ -1,27 +1,33 @@
-# Everest MHEWS Windy plugin
+# HQMW Cryosphere
 
-Standalone Windy plugin for the Everest multi-hazard monitoring view.
+Private Windy plugin for browsing NASA EOSDIS GIBS satellite imagery on the Windy LeafletGL map.
 
-## Included
+## Current Capabilities
 
-- Read-only telemetry markers from `/api/telemetry/geojson`.
-- Validated CAP areas from `/api/alerts/geojson` and alert headlines from `/api/alerts`.
-- Public baseline geometry from `/api/osm/public-baseline/geojson`, shown only as map geometry.
-- Persisted weather pressure records from `/api/weather/forecast`.
-- `UNKNOWN` when the API or evidence is unavailable; this UI never derives a decision level.
-- Test telemetry and CAP `Test` or `Exercise` messages are not shown as operational evidence.
-- A map-layer rendering error does not suppress successfully loaded API data in the panel.
+- NASA GIBS EPSG:3857 WMTS catalog search.
+- NASA imagery date, opacity, visibility, official legend, and Everest map focus.
+- Chinese filters for cryosphere, terrestrial hydrosphere, Sentinel-2/HLS, and ocean-reference products.
+- Per-layer tile availability test using NASA imagery tiles.
+- Manual current-versus-baseline image-date switching for review only.
+
+## Safety Boundary
+
+This plugin is an imagery viewer. It does not identify disasters, issue CAP messages, create RED alerts, close routes, or trigger evacuations. NASA GIBS imagery is background context and requires review with verified sources.
 
 ## Development
 
 ```sh
 npm install
 npm run build
+npm start
 ```
 
-For local Windy developer mode, run `npm start` and load `https://localhost:9999/plugin.js`.
+Load the development build from `https://localhost:9999/plugin.js` in [Windy Developer Mode](https://www.windy.com/developer-mode).
 
-The panel intentionally has no default API URL. Enter the HTTPS URL of the deployed
-Everest API. The API must allow `https://www.windy.com` in its explicit CORS allow-list.
-The plugin remembers this URL in browser local storage. The endpoints are read-only and
-the plugin does not send credentials or ingest telemetry.
+## Publishing
+
+Add a repository Actions secret named `WINDY_API_KEY`, then run the `publish-plugin` workflow. Windy publishes versioned plugin URLs; a new code version must be loaded through Windy Developer Mode for immediate use.
+
+## Data Attribution
+
+Imagery is provided by [NASA EOSDIS GIBS](https://earthdata.nasa.gov/gibs). Individual product availability, date ranges, legends, and limitations come from the NASA WMTS capabilities document.
