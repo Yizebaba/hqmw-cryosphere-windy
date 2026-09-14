@@ -474,14 +474,14 @@
             return;
         }
         cdseLayer = new L.TileLayer(cdseApiUrl.replace('{date}', cdseDate), {
-            minZoom: 0, maxNativeZoom: 14, maxZoom: 19, opacity: 0.85, tileSize: 256,
+            minZoom: 0, maxNativeZoom: 12, maxZoom: 19, opacity: 0.85, tileSize: 256,
             layerBucketId: layerOrder.MAIN, noWrap: true, continuousWorld: true,
             bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
         });
-        cdseLayer.on('load', () => { cdseStatus = 'ready'; });
         cdseLayer.on('tileerror', () => { cdseStatus = 'error'; cdseError = 'CDSE 图层未返回瓦片。请检查 OAuth client、后端服务和观测日期。'; });
         cdseLayer.addTo(map);
         cdseVisible = true;
+        cdseStatus = 'ready';
     };
     const toggleCdseLayer = () => { if (cdseVisible) { removeCdseLayer(); return; } loadCdseLayer(); };
     const refreshCdseLayer = () => { loadCdseLayer(); };
