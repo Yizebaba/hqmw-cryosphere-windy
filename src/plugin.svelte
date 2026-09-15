@@ -65,6 +65,16 @@
             <div class="monitor__actions"><button on:click={toggleReviewLayer}>{reviewVisible ? '隐藏候选' : '显示候选'}</button><button on:click={loadReviewLayer} disabled={reviewStatus === 'loading'}>刷新</button></div>
             {#if reviewError}<div class="error-message">{reviewError}</div>{/if}
         </div>
+        <div class="dem-layer">
+            <span>Copernicus DEM 30m 地形分析</span><strong>{statusLabel(demStatus)}</strong>
+            <select aria-label="DEM visualization mode" bind:value={demMode} on:change={refreshDemLayer}>
+                <option value="hillshade">山体阴影 (Hillshade)</option>
+                <option value="slope">坡度分析 (Slope, 0-60°)</option>
+                <option value="contours">等高线 (Contours)</option>
+            </select>
+            <div class="monitor__actions"><button on:click={toggleDemLayer}>{demVisible ? '隐藏地形图层' : '显示地形图层'}</button><button on:click={refreshDemLayer} disabled={demStatus === 'loading'}>刷新</button></div>
+            {#if demError}<div class="error-message">{demError}</div>{/if}
+        </div>
         <details class="connection-settings"><summary>CDSE 后端地址</summary><input bind:value={cdseApiUrl} on:change={saveCdseApiUrl} /><input bind:value={reviewApiUrl} on:change={saveReviewApiUrl} /></details>
     </details>
     <div class="hazard-grid">
@@ -289,6 +299,11 @@
     const defaultReviewApiUrl = 'http://127.0.0.1:18743/v1/candidates.geojson';
     const storedReviewApiUrl = (() => { try { return localStorage.getItem('hqmw-review-api-url'); } catch { return null; } })();
     let reviewApiUrl = storedReviewApiUrl || defaultReviewApiUrl;
+    let demLayer: L.TileLayer | null = null;
+    let demVisible = false;
+    let demStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
+    let demError = '';
+    let demMode: 'hillshade' | 'slope' | 'contours' = 'hillshade';
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
     $: activeTerms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];
@@ -347,6 +362,7 @@
     const removeSentinel2IndexLayer = () => { sentinel2IndexLayer?.remove(); sentinel2IndexLayer = null; sentinel2IndexVisible = false; };
     const removeCoherenceLayer = () => { coherenceLayer?.remove(); coherenceLayer = null; coherenceVisible = false; };
     const removeReviewLayer = () => { reviewLayer?.remove(); reviewLayer = null; reviewVisible = false; };
+    const removeDemLayer = () => { demLayer?.remove(); demLayer = null; demVisible = false; };
     const applyOpacity = () => {
         baselineLayer?.setOpacity(Number(opacity));
         imageryLayer?.setOpacity(Number(opacity) * (compareEnabled ? comparisonBlend : 1));
@@ -668,6 +684,37 @@
         }
     };
     const toggleReviewLayer = () => { if (reviewVisible) { removeReviewLayer(); return; } loadReviewLayer(); };
+    const demApiUrl = (mode: string) => {
+        const base = 'http://127.0.0.1:18744/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=%2Fterrain%2Feverest_copernicus_dem_30m.cog.tif';
+        if (mode === 'slope') return `${base}&algorithm=slope&rescale=0,60&colormap_name=magma`;
+        if (mode === 'contours') return `${base}&algorithm=contours`;
+        return `${base}&algorithm=hillshade`;
+    };
+    const loadDemLayer = async () => {
+        removeDemLayer();
+        demStatus = 'loading'; demError = '';
+        const testUrl = demApiUrl(demMode).replace('{z}', '10').replace('{x}', '759').replace('{y}', '429');
+        try {
+            const response = await fetch(testUrl);
+            if (!response.ok) throw new Error(`地形服务返回 ${response.status}`);
+            if (!response.headers.get('content-type')?.startsWith('image/')) throw new Error('地形服务没有返回图像');
+        } catch (error) {
+            demStatus = 'error';
+            demError = error instanceof Error ? error.message : '地形图层预检失败';
+            return;
+        }
+        demLayer = new L.TileLayer(demApiUrl(demMode), {
+            minZoom: 0, maxNativeZoom: 14, maxZoom: 19, opacity: 0.75, tileSize: 256,
+            layerBucketId: layerOrder.AIRSPACES, noWrap: true, continuousWorld: true,
+            bounds: [[27.0001, 85.9998], [29.0001, 86.9998]],
+        });
+        demLayer.on('tileerror', () => { demStatus = 'error'; demError = '地形瓦片未返回。请检查本机 TiTiler 服务。'; });
+        demLayer.addTo(map);
+        demVisible = true;
+        demStatus = 'ready';
+    };
+    const toggleDemLayer = () => { if (demVisible) { removeDemLayer(); return; } loadDemLayer(); };
+    const refreshDemLayer = () => { if (demVisible) loadDemLayer(); };
 
     const loadCatalog = async () => {
         catalogController?.abort();
@@ -734,7 +781,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); removeReviewLayer(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); removeReviewLayer(); removeDemLayer(); });
 </script>
 
 <style lang="less">
@@ -753,6 +800,10 @@
     .s2-index-layer > span { color:#d7e1e3; font-size:12px; }
     .s2-index-layer > strong { color:#8bc34a; float:right; font-size:10px; }
     .s2-index-layer select { margin-top:8px; }
+    .dem-layer { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
+    .dem-layer > span { color:#d7e1e3; font-size:12px; }
+    .dem-layer > strong { color:#8bc34a; float:right; font-size:10px; }
+    .dem-layer select { margin-top:8px; }
     .coherence-layer { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
     .coherence-layer > span { color:#d7e1e3; font-size:12px; }
     .coherence-layer > strong { color:#8bc34a; float:right; font-size:10px; }
