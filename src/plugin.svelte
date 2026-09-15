@@ -59,7 +59,13 @@
             <div class="monitor__actions"><button on:click={toggleCoherenceLayer}>{coherenceVisible ? '隐藏相干性' : '显示相干性'}</button><button on:click={refreshCoherenceLayer} disabled={coherenceStatus === 'loading'}>刷新</button></div>
             {#if coherenceError}<div class="error-message">{coherenceError}</div>{/if}
         </div>
-        <details class="connection-settings"><summary>CDSE 后端地址</summary><input bind:value={cdseApiUrl} on:change={saveCdseApiUrl} /></details>
+        <div class="review-layer">
+            <span>变化候选复核</span><strong>{statusLabel(reviewStatus)}</strong>
+            <small>{reviewCount ? `${reviewCount} 个候选待人工复核` : '低相干聚类候选，仅供人工复核，不是灾害结论。'}</small>
+            <div class="monitor__actions"><button on:click={toggleReviewLayer}>{reviewVisible ? '隐藏候选' : '显示候选'}</button><button on:click={loadReviewLayer} disabled={reviewStatus === 'loading'}>刷新</button></div>
+            {#if reviewError}<div class="error-message">{reviewError}</div>{/if}
+        </div>
+        <details class="connection-settings"><summary>CDSE 后端地址</summary><input bind:value={cdseApiUrl} on:change={saveCdseApiUrl} /><input bind:value={reviewApiUrl} on:change={saveReviewApiUrl} /></details>
     </details>
     <div class="hazard-grid">
         {#each hazardStatuses.filter(hazard => !['earthquake', 'fire'].includes(hazard.id)) as hazard}
@@ -275,6 +281,14 @@
     let coherenceStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     let coherenceError = '';
     const coherenceApiUrl = 'http://127.0.0.1:18744/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=%2Fdata%2Forbit-121-20260831-20260912-coherence%2Fcoherence_IW2_VV_20260831_20260912.cog.tif&rescale=0,1&colormap_name=viridis';
+    let reviewLayer: L.GeoJSON | null = null;
+    let reviewVisible = false;
+    let reviewStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
+    let reviewError = '';
+    let reviewCount = 0;
+    const defaultReviewApiUrl = 'http://127.0.0.1:18743/v1/candidates.geojson';
+    const storedReviewApiUrl = (() => { try { return localStorage.getItem('hqmw-review-api-url'); } catch { return null; } })();
+    let reviewApiUrl = storedReviewApiUrl || defaultReviewApiUrl;
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
     $: activeTerms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];
@@ -332,6 +346,7 @@
     const removeSentinel1Layer = () => { sentinel1Layer?.remove(); sentinel1Layer = null; sentinel1Visible = false; };
     const removeSentinel2IndexLayer = () => { sentinel2IndexLayer?.remove(); sentinel2IndexLayer = null; sentinel2IndexVisible = false; };
     const removeCoherenceLayer = () => { coherenceLayer?.remove(); coherenceLayer = null; coherenceVisible = false; };
+    const removeReviewLayer = () => { reviewLayer?.remove(); reviewLayer = null; reviewVisible = false; };
     const applyOpacity = () => {
         baselineLayer?.setOpacity(Number(opacity));
         imageryLayer?.setOpacity(Number(opacity) * (compareEnabled ? comparisonBlend : 1));
@@ -624,6 +639,35 @@
     };
     const toggleCoherenceLayer = () => { if (coherenceVisible) { removeCoherenceLayer(); return; } loadCoherenceLayer(); };
     const refreshCoherenceLayer = () => { loadCoherenceLayer(); };
+    const saveReviewApiUrl = () => { reviewApiUrl = reviewApiUrl.trim(); try { localStorage.setItem('hqmw-review-api-url', reviewApiUrl); } catch { reviewError = '浏览器不允许保存候选地址。'; } };
+    const loadReviewLayer = async () => {
+        removeReviewLayer();
+        reviewStatus = 'loading'; reviewError = '';
+        try {
+            const response = await fetch(reviewApiUrl);
+            if (!response.ok) throw new Error(`候选服务返回 ${response.status}`);
+            const feed = await response.json() as { features?: Array<{ id?: string; properties?: Record<string, string> }> };
+            const features = Array.isArray(feed.features) ? feed.features : [];
+            reviewCount = features.length;
+            if (!features.length) { reviewStatus = 'ready'; return; }
+            reviewLayer = new L.GeoJSON(feed as never, {
+                style: () => ({ color: '#f2ad42', weight: 1, fillColor: '#f2ad42', fillOpacity: 0.25 }),
+                onEachFeature: (feature: { properties?: Record<string, string> }, layer: L.Layer) => {
+                    const properties = feature.properties || {};
+                    const popup = document.createElement('div');
+                    popup.textContent = `CHANGE CANDIDATE | ${properties.candidate_id || 'unknown'} | ${properties.state || 'UNKNOWN'} | quality ${properties.quality_state || 'UNKNOWN'} | ${properties.evidence_summary || ''}`;
+                    layer.bindPopup(popup);
+                },
+            });
+            reviewLayer.addTo(map);
+            reviewVisible = true;
+            reviewStatus = 'ready';
+        } catch (error) {
+            reviewStatus = 'error';
+            reviewError = error instanceof Error ? error.message : '候选图层加载失败';
+        }
+    };
+    const toggleReviewLayer = () => { if (reviewVisible) { removeReviewLayer(); return; } loadReviewLayer(); };
 
     const loadCatalog = async () => {
         catalogController?.abort();
@@ -690,7 +734,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); removeReviewLayer(); });
 </script>
 
 <style lang="less">
@@ -713,6 +757,10 @@
     .coherence-layer > span { color:#d7e1e3; font-size:12px; }
     .coherence-layer > strong { color:#8bc34a; float:right; font-size:10px; }
     .coherence-layer > small { display:block; color:#71858a; font-size:10px; line-height:1.4; margin-top:5px; }
+    .review-layer { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
+    .review-layer > span { color:#d7e1e3; font-size:12px; }
+    .review-layer > strong { color:#8bc34a; float:right; font-size:10px; }
+    .review-layer > small { display:block; color:#71858a; font-size:10px; line-height:1.4; margin-top:5px; }
     .plugin__content .integration-status { display: flex; flex-wrap: wrap; gap: 8px; }
     .plugin__content .integration-status > span { flex: 1; font-size: 12px; }
     .plugin__content .integration-status > small { flex-basis: 100%; font-size: 11px; }
