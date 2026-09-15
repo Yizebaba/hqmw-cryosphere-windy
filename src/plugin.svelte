@@ -42,6 +42,17 @@
             <div class="monitor__actions"><button on:click={toggleSentinel1Layer}>{sentinel1Visible ? '隐藏 SAR 图层' : '显示 SAR 图层'}</button><button on:click={refreshSentinel1Layer} disabled={sentinel1Status === 'loading'}>刷新</button></div>
             {#if sentinel1Error}<div class="error-message">{sentinel1Error}</div>{/if}
         </div>
+        <div class="s2-index-layer">
+            <span>CDSE Sentinel-2 指数</span><strong>{statusLabel(sentinel2IndexStatus)}</strong>
+            <select aria-label="Sentinel-2 index" bind:value={sentinel2IndexType} on:change={refreshSentinel2IndexLayer}>
+                <option value="ndsi">NDSI 积雪指数</option>
+                <option value="ndwi">NDWI 水体指数</option>
+            </select>
+            <label class="field-label" for="sentinel2-index-date">观测日期</label>
+            <input id="sentinel2-index-date" type="date" bind:value={sentinel2IndexDate} max={today} />
+            <div class="monitor__actions"><button on:click={toggleSentinel2IndexLayer}>{sentinel2IndexVisible ? '隐藏指数图层' : '显示指数图层'}</button><button on:click={refreshSentinel2IndexLayer} disabled={sentinel2IndexStatus === 'loading'}>刷新</button></div>
+            {#if sentinel2IndexError}<div class="error-message">{sentinel2IndexError}</div>{/if}
+        </div>
         <div class="coherence-layer">
             <span>S1 相干性 · 2026-08-31 至 2026-09-12 · VV</span><strong>{statusLabel(coherenceStatus)}</strong>
             <small>0 代表低相干，1 代表高相干；用于变化筛查，不是位移。</small>
@@ -253,6 +264,12 @@
     let sentinel1Status: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     let sentinel1Error = '';
     let sentinel1Date = '2026-08-19';
+    let sentinel2IndexLayer: L.TileLayer | null = null;
+    let sentinel2IndexVisible = false;
+    let sentinel2IndexStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
+    let sentinel2IndexError = '';
+    let sentinel2IndexType: 'ndsi' | 'ndwi' = 'ndsi';
+    let sentinel2IndexDate = '2026-08-24';
     let coherenceLayer: L.TileLayer | null = null;
     let coherenceVisible = false;
     let coherenceStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
@@ -313,6 +330,7 @@
     const removeFires = () => { fireLayer?.remove(); fireLayer = null; fireVisible = false; };
     const removeCdseLayer = () => { cdseLayer?.remove(); cdseLayer = null; cdseVisible = false; };
     const removeSentinel1Layer = () => { sentinel1Layer?.remove(); sentinel1Layer = null; sentinel1Visible = false; };
+    const removeSentinel2IndexLayer = () => { sentinel2IndexLayer?.remove(); sentinel2IndexLayer = null; sentinel2IndexVisible = false; };
     const removeCoherenceLayer = () => { coherenceLayer?.remove(); coherenceLayer = null; coherenceVisible = false; };
     const applyOpacity = () => {
         baselineLayer?.setOpacity(Number(opacity));
@@ -554,6 +572,33 @@
     };
     const toggleSentinel1Layer = () => { if (sentinel1Visible) { removeSentinel1Layer(); return; } loadSentinel1Layer(); };
     const refreshSentinel1Layer = () => { loadSentinel1Layer(); };
+    const sentinel2IndexApiUrl = () => cdseApiUrl.replace('/sentinel2/', `/sentinel2/${sentinel2IndexType}/`);
+    const sentinel2IndexTileUrl = (z: number, x: number, y: number) => sentinel2IndexApiUrl()
+        .replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y)).replace('{date}', sentinel2IndexDate);
+    const loadSentinel2IndexLayer = async () => {
+        removeSentinel2IndexLayer();
+        sentinel2IndexStatus = 'loading'; sentinel2IndexError = '';
+        try {
+            const response = await fetch(sentinel2IndexTileUrl(10, 759, 428));
+            if (!response.ok) throw new Error(`CDSE 后端返回 ${response.status}`);
+            if (!response.headers.get('content-type')?.startsWith('image/')) throw new Error('CDSE 后端没有返回指数图像');
+        } catch (error) {
+            sentinel2IndexStatus = 'error';
+            sentinel2IndexError = error instanceof Error ? error.message : '指数图层预检失败';
+            return;
+        }
+        sentinel2IndexLayer = new L.TileLayer(sentinel2IndexApiUrl().replace('{date}', sentinel2IndexDate), {
+            minZoom: 0, maxNativeZoom: 12, maxZoom: 19, opacity: 0.75, tileSize: 256,
+            layerBucketId: layerOrder.AIRSPACES, noWrap: true, continuousWorld: true,
+            bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+        });
+        sentinel2IndexLayer.on('tileerror', () => { sentinel2IndexStatus = 'error'; sentinel2IndexError = '指数瓦片未返回。请检查观测日期和 CDSE 后端。'; });
+        sentinel2IndexLayer.addTo(map);
+        sentinel2IndexVisible = true;
+        sentinel2IndexStatus = 'ready';
+    };
+    const toggleSentinel2IndexLayer = () => { if (sentinel2IndexVisible) { removeSentinel2IndexLayer(); return; } loadSentinel2IndexLayer(); };
+    const refreshSentinel2IndexLayer = () => { loadSentinel2IndexLayer(); };
     const coherenceTileUrl = (z: number, x: number, y: number) => coherenceApiUrl.replace('{z}', String(z)).replace('{x}', String(x)).replace('{y}', String(y));
     const loadCoherenceLayer = async () => {
         removeCoherenceLayer();
@@ -645,7 +690,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeCoherenceLayer(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); });
 </script>
 
 <style lang="less">
@@ -660,6 +705,10 @@
     .cdse-sar { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
     .cdse-sar > span { color:#d7e1e3; font-size:12px; }
     .cdse-sar > strong { color:#8bc34a; float:right; font-size:10px; }
+    .s2-index-layer { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
+    .s2-index-layer > span { color:#d7e1e3; font-size:12px; }
+    .s2-index-layer > strong { color:#8bc34a; float:right; font-size:10px; }
+    .s2-index-layer select { margin-top:8px; }
     .coherence-layer { border-top: 1px solid #304047; margin-top: 12px; padding-top: 10px; }
     .coherence-layer > span { color:#d7e1e3; font-size:12px; }
     .coherence-layer > strong { color:#8bc34a; float:right; font-size:10px; }
