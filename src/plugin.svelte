@@ -43,7 +43,7 @@
             {#if sentinel1Error}<div class="error-message">{sentinel1Error}</div>{/if}
         </div>
         <div class="coherence-layer">
-            <span>S1 相干性 · 2026-08-19 至 2026-08-31 · VV</span><strong>{statusLabel(coherenceStatus)}</strong>
+            <span>S1 相干性 · 2026-08-31 至 2026-09-12 · VV</span><strong>{statusLabel(coherenceStatus)}</strong>
             <small>0 代表低相干，1 代表高相干；用于变化筛查，不是位移。</small>
             <div class="monitor__actions"><button on:click={toggleCoherenceLayer}>{coherenceVisible ? '隐藏相干性' : '显示相干性'}</button><button on:click={refreshCoherenceLayer} disabled={coherenceStatus === 'loading'}>刷新</button></div>
             {#if coherenceError}<div class="error-message">{coherenceError}</div>{/if}
@@ -257,7 +257,7 @@
     let coherenceVisible = false;
     let coherenceStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     let coherenceError = '';
-    const coherenceApiUrl = 'http://127.0.0.1:18744/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=%2Fdata%2Fcoherence_IW2_VV_20260819_20260831.cog.tif&rescale=0,1&colormap_name=viridis';
+    const coherenceApiUrl = 'http://127.0.0.1:18744/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=%2Fdata%2Forbit-121-20260831-20260912-coherence%2Fcoherence_IW2_VV_20260831_20260912.cog.tif&rescale=0,1&colormap_name=viridis';
 
     $: selectedLayer = catalogLayers.find(layer => layer.id === selectedLayerId) || initialLayers[0];
     $: activeTerms = [...cryosphereFilters, ...hydrosphereFilters, ...oceanFilters, ...hlsFilters].find(filter => filter.id === activeFilter)?.terms || [];

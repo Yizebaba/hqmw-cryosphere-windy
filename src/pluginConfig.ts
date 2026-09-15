@@ -2,7 +2,7 @@ import type { ExternalPluginConfig } from '@windy/interfaces.d';
 
 const config: ExternalPluginConfig = {
     name: 'windy-plugin-everest-mhews',
-    version: '2.5.2',
+    version: '2.5.3',
     icon: '⛰',
     title: 'HQMW Cryosphere',
     description: 'Multi-hazard status and NASA GIBS imagery context for the Windy map.',
