@@ -1,9 +1,9 @@
 {
     "name": "windy-plugin-everest-mhews",
-    "version": "2.6.0",
+    "version": "2.6.1",
     "private": true,
     "type": "module",
-    "description": "Multi-hazard status and NASA GIBS imagery context for the Windy map.",
+    "description": "Satellite, environmental observation, and event monitoring for the Everest region.",
     "scripts": {
         "build": "rollup -c",
         "build:win": "rollup -c",
