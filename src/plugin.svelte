@@ -60,6 +60,13 @@
             {#if coherenceError}<div class="error-message">{coherenceError}</div>{/if}
         </div>
         <div class="review-layer">
+            <span>CDSE Sentinel-2 Recent Clear Composite</span><strong>{opticalCompositeVisible ? 'READY' : 'HIDDEN'}</strong>
+            <small>2026-08-01 to 2026-09-20 cloud-masked visual reference. It is contextual imagery, not a hazard decision layer.</small>
+            <label class="field-label" for="optical-composite-opacity">OPTICAL COMPOSITE OPACITY {Math.round(opticalCompositeOpacity * 100)}%</label>
+            <input id="optical-composite-opacity" type="range" min="0" max="1" step="0.05" bind:value={opticalCompositeOpacity} on:input={updateOpticalCompositeOpacity} />
+            <div class="monitor__actions"><button on:click={toggleOpticalCompositeLayer}>{opticalCompositeVisible ? 'HIDE COMPOSITE' : 'SHOW COMPOSITE'}</button></div>
+            {#if opticalCompositeError}<div class="error-message">{opticalCompositeError}</div>{/if}
+        </div>        <div class="review-layer">
             <span>变化候选复核</span><strong>{statusLabel(reviewStatus)}</strong>
             <small>{reviewCount ? `${reviewCount} 个候选待人工复核` : '低相干聚类候选，仅供人工复核，不是灾害结论。'}</small>
             <div class="monitor__actions"><button on:click={toggleReviewLayer}>{reviewVisible ? '隐藏候选' : '显示候选'}</button><button on:click={loadReviewLayer} disabled={reviewStatus === 'loading'}>刷新</button></div>
@@ -297,9 +304,15 @@
     let reviewStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     let reviewError = '';
     let reviewCount = 0;
-    const defaultReviewApiUrl = 'http://127.0.0.1:18743/v1/candidates.geojson';
+    const staticReviewApiUrl = new URL('./project-artifacts/05_candidate_status/everest_project_candidate_status_20260904_20260916.geojson', import.meta.url).href;
+    const staticOpticalCompositeUrl = new URL('./project-artifacts/03_products/optical_composite/everest_s2_clear_composite_20260801_20260920.png', import.meta.url).href;
+    const defaultReviewApiUrl = staticReviewApiUrl;
     const storedReviewApiUrl = (() => { try { return localStorage.getItem('hqmw-review-api-url'); } catch { return null; } })();
     let reviewApiUrl = storedReviewApiUrl || defaultReviewApiUrl;
+    let opticalCompositeLayer: L.ImageOverlay | null = null;
+    let opticalCompositeVisible = false;
+    let opticalCompositeOpacity = 0.65;
+    let opticalCompositeError = '';
     let demLayer: L.TileLayer | null = null;
     let demVisible = false;
     let demStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
@@ -363,6 +376,29 @@
     const removeSentinel2IndexLayer = () => { sentinel2IndexLayer?.remove(); sentinel2IndexLayer = null; sentinel2IndexVisible = false; };
     const removeCoherenceLayer = () => { coherenceLayer?.remove(); coherenceLayer = null; coherenceVisible = false; };
     const removeReviewLayer = () => { reviewLayer?.remove(); reviewLayer = null; reviewVisible = false; };
+    const removeOpticalCompositeLayer = () => { opticalCompositeLayer?.remove(); opticalCompositeLayer = null; opticalCompositeVisible = false; };
+    const loadOpticalCompositeLayer = () => {
+        removeOpticalCompositeLayer();
+        opticalCompositeError = '';
+        opticalCompositeLayer = new L.ImageOverlay(
+            staticOpticalCompositeUrl,
+            [[27.72, 86.55], [28.10, 87.05]],
+            { opacity: Number(opticalCompositeOpacity), layerBucketId: layerOrder.AIRSPACES }
+        );
+        opticalCompositeLayer.on('error', () => {
+            opticalCompositeError = 'Static Sentinel-2 composite could not be loaded.';
+        });
+        opticalCompositeLayer.addTo(map);
+        opticalCompositeVisible = true;
+    };
+    const toggleOpticalCompositeLayer = () => {
+        if (opticalCompositeVisible) { removeOpticalCompositeLayer(); return; }
+        loadOpticalCompositeLayer();
+    };
+    const updateOpticalCompositeOpacity = (event: Event) => {
+        opticalCompositeOpacity = Number((event.currentTarget as HTMLInputElement).value);
+        opticalCompositeLayer?.setOpacity(opticalCompositeOpacity);
+    };
     const removeDemLayer = () => { demLayer?.remove(); demLayer = null; demVisible = false; };
     const applyOpacity = () => {
         baselineLayer?.setOpacity(Number(opacity));
@@ -805,7 +841,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); removeReviewLayer(); removeDemLayer(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); removeReviewLayer(); removeOpticalCompositeLayer(); removeDemLayer(); });
 </script>
 
 <style lang="less">
