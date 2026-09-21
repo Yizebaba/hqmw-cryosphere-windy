@@ -60,6 +60,18 @@
             {#if coherenceError}<div class="error-message">{coherenceError}</div>{/if}
         </div>
         <div class="review-layer">
+            <span>CDSE Project Visual Layer</span><strong>{staticVisualVisible ? 'READY' : 'HIDDEN'}</strong>
+            <small>GitHub-hosted provisional visual products. They are contextual screening evidence, not a hazard decision layer.</small>
+            <select aria-label="CDSE project visual layer" bind:value={staticVisualType} on:change={refreshStaticVisualLayer}>
+                <option value="opticalComposite">Sentinel-2 clear composite</option>
+                <option value="grdChange">Sentinel-1 GRD change candidate</option>
+                <option value="jointCandidate">GRD + InSAR joint candidates</option>
+            </select>
+            <label class="field-label" for="static-visual-opacity">VISUAL LAYER OPACITY {Math.round(staticVisualOpacity * 100)}%</label>
+            <input id="static-visual-opacity" type="range" min="0" max="1" step="0.05" bind:value={staticVisualOpacity} on:input={updateStaticVisualOpacity} />
+            <div class="monitor__actions"><button on:click={toggleStaticVisualLayer}>{staticVisualVisible ? 'HIDE VISUAL LAYER' : 'SHOW VISUAL LAYER'}</button><button on:click={refreshStaticVisualLayer} disabled={!staticVisualVisible}>REFRESH</button></div>
+            {#if staticVisualError}<div class="error-message">{staticVisualError}</div>{/if}
+        </div>        <div class="review-layer">
             <span>变化候选复核</span><strong>{statusLabel(reviewStatus)}</strong>
             <small>{reviewCount ? `${reviewCount} 个候选待人工复核` : '低相干聚类候选，仅供人工复核，不是灾害结论。'}</small>
             <div class="monitor__actions"><button on:click={toggleReviewLayer}>{reviewVisible ? '隐藏候选' : '显示候选'}</button><button on:click={loadReviewLayer} disabled={reviewStatus === 'loading'}>刷新</button></div>
@@ -297,9 +309,29 @@
     let reviewStatus: 'idle' | 'loading' | 'ready' | 'error' = 'idle';
     let reviewError = '';
     let reviewCount = 0;
-    const defaultReviewApiUrl = 'http://127.0.0.1:18743/v1/candidates.geojson';
+    const githubArtifactBaseUrl = 'https://raw.githubusercontent.com/Yizebaba/hqmw-cryosphere-windy/main/static/project-artifacts';
+    const defaultReviewApiUrl = `${githubArtifactBaseUrl}/05_candidate_status/everest_project_candidate_status_20260904_20260916.geojson`;
+    const staticVisualLayers = {
+        opticalComposite: {
+            title: 'Sentinel-2 Clear Composite (2026-08-01 to 2026-09-20)',
+            url: `${githubArtifactBaseUrl}/03_products/optical_composite/everest_s2_clear_composite_20260801_20260920.png`,
+        },
+        grdChange: {
+            title: 'Sentinel-1 GRD Change Candidate (2026-09-04 to 2026-09-16)',
+            url: `${githubArtifactBaseUrl}/03_products/sar_orbit12/everest_s1d_orbit12_change_candidates_20260904_20260916.png`,
+        },
+        jointCandidate: {
+            title: 'Sentinel-1 GRD + InSAR Joint Candidate Overlay',
+            url: `${githubArtifactBaseUrl}/03_products/grd_insar_overlay/everest_grd_insar_joint_candidate_overlay_20260904_20260916.png`,
+        },
+    } as const;
     const storedReviewApiUrl = (() => { try { return localStorage.getItem('hqmw-review-api-url'); } catch { return null; } })();
     let reviewApiUrl = storedReviewApiUrl || defaultReviewApiUrl;
+    let staticVisualLayer: L.ImageOverlay | null = null;
+    let staticVisualVisible = false;
+    let staticVisualOpacity = 0.65;
+    let staticVisualError = '';
+    let staticVisualType: keyof typeof staticVisualLayers = 'opticalComposite';
     
     let demLayer: L.TileLayer | null = null;
     let demVisible = false;
@@ -364,6 +396,33 @@
     const removeSentinel2IndexLayer = () => { sentinel2IndexLayer?.remove(); sentinel2IndexLayer = null; sentinel2IndexVisible = false; };
     const removeCoherenceLayer = () => { coherenceLayer?.remove(); coherenceLayer = null; coherenceVisible = false; };
     const removeReviewLayer = () => { reviewLayer?.remove(); reviewLayer = null; reviewVisible = false; };
+    const removeStaticVisualLayer = () => { staticVisualLayer?.remove(); staticVisualLayer = null; staticVisualVisible = false; };
+    const loadStaticVisualLayer = () => {
+        removeStaticVisualLayer();
+        staticVisualError = '';
+        const selected = staticVisualLayers[staticVisualType];
+        staticVisualLayer = new L.ImageOverlay(
+            selected.url,
+            [[27.72, 86.55], [28.10, 87.05]],
+            { opacity: Number(staticVisualOpacity), layerBucketId: layerOrder.AIRSPACES }
+        );
+        staticVisualLayer.on('error', () => {
+            staticVisualError = 'GitHub-hosted visual layer could not be loaded.';
+        });
+        staticVisualLayer.addTo(map);
+        staticVisualVisible = true;
+    };
+    const toggleStaticVisualLayer = () => {
+        if (staticVisualVisible) { removeStaticVisualLayer(); return; }
+        loadStaticVisualLayer();
+    };
+    const refreshStaticVisualLayer = () => {
+        if (staticVisualVisible) loadStaticVisualLayer();
+    };
+    const updateStaticVisualOpacity = (event: Event) => {
+        staticVisualOpacity = Number((event.currentTarget as HTMLInputElement).value);
+        staticVisualLayer?.setOpacity(staticVisualOpacity);
+    };
 
     const removeDemLayer = () => { demLayer?.remove(); demLayer = null; demVisible = false; };
     const applyOpacity = () => {
@@ -807,7 +866,7 @@
 
     export const onopen = () => { if (!imageryLayer && visible) replaceLayer(); };
     onMount(() => { replaceLayer(); loadCatalog(); });
-    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); removeReviewLayer(); removeDemLayer(); });
+    onDestroy(() => { catalogController?.abort(); testController?.abort(); earthquakeController?.abort(); fireController?.abort(); removeLayer(); removeBaselineLayer(); removeEarthquakes(); removeFires(); removeCdseLayer(); removeSentinel1Layer(); removeSentinel2IndexLayer(); removeCoherenceLayer(); removeReviewLayer(); removeStaticVisualLayer(); removeDemLayer(); });
 </script>
 
 <style lang="less">
