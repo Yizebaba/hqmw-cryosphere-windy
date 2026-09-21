@@ -139,7 +139,9 @@
                     const debris = p.unknown_possible_debris_ice_percent !== undefined ? `${Number(p.unknown_possible_debris_ice_percent).toFixed(1)}%` : 'N/A';
                     const grdPeriod = '2026-09-04 to 2026-09-16';
                     const insarPeriod = '2026-08-23 to 2026-09-16';
-                    popup.innerHTML = `<strong>${p.candidate_id || 'CANDIDATE'}</strong><br/>Status: ${p.project_candidate_status || 'UNKNOWN'}<br/>Area: ${area}<br/>Slope: ${slope}<br/>Ice/snow screening: ${iceSnow}<br/>Possible debris/unknown: ${debris}<br/>GRD comparison: ${grdPeriod}<br/>InSAR screening: ${insarPeriod}<br/><small>${p.interpretation_limit || ''}</small>`;
+                    const candidateId = p.candidate_id || 'CANDIDATE';
+                    const imageUrl = `https://raw.githubusercontent.com/Yizebaba/hqmw-cryosphere-windy/main/static/project-artifacts/candidate-cutouts/${candidateId}_optical_review.png`;
+                    popup.innerHTML = `<strong>${candidateId}</strong><br/>Status: ${p.project_candidate_status || 'UNKNOWN'}<br/>Area: ${area}<br/>Slope: ${slope}<br/>Ice/snow screening: ${iceSnow}<br/>Possible debris/unknown: ${debris}<br/>GRD comparison: ${grdPeriod}<br/>InSAR screening: ${insarPeriod}<br/><img class="candidate-analysis-image" src="${imageUrl}" alt="${candidateId} Sentinel-2 optical review"/><a class="candidate-analysis-link" href="${imageUrl}" target="_blank" rel="noopener">Open analysis image</a><br/><small>${p.interpretation_limit || ''}</small>`;
                     layer.bindPopup(popup);
                 },
             });
@@ -188,4 +190,7 @@
     .error { color: #f2ad42; font-size: 11px; border: 1px solid #7b5c2c; padding: 8px; margin-top: 10px; }
     .limits { border-top: 1px solid #304047; margin-top: 16px; padding-top: 10px; }
     summary { color: #d7e1e3; cursor: pointer; font-size: 11px; letter-spacing: 1px; }
+
+    .candidate-analysis-image { display: block; width: 240px; max-width: 100%; margin: 8px 0 4px; border: 1px solid #33464d; }
+    .candidate-analysis-link { color: #52b6c7; font-size: 11px; }
 </style>
