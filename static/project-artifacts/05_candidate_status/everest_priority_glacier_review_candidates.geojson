@@ -1,0 +1,27 @@
+{
+  "type": "FeatureCollection",
+  "name": "everest_priority_glacier_review_candidates",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-049",
+        "project_label": "provisional_glacier_change_candidate",
+        "project_candidate_status": "priority_glacier_review",
+        "approximate_area_km2": 0.0597897359813188,
+        "clean_ice_snow_percent": 63.63636363636363,
+        "median_slope_degrees": 32.591102600097656,
+        "very_steep_slope_percent_ge_45": 16.666666666666664,
+        "windy_display_status": "show_priority_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.85856818181819,
+          27.9868617988228
+        ]
+      }
+    }
+  ]
+}
