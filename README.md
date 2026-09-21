@@ -28,3 +28,6 @@ Increase the version in both `package.json` and `src/pluginConfig.ts`, push to `
 ## Candidate Point Interaction
 
 Version 3.0.1 adds mouse-hover tooltips for every provisional candidate marker. Click a marker to open its expanded screening popup with status, approximate area, DEM slope, optical ice/snow and possible-debris proportions, the GRD comparison period, the InSAR screening period, and the interpretation limit.
+## Candidate Analysis Images
+
+Version 3.0.2 adds an optical analysis image to each candidate marker popup. The 18 priority candidate images are stored as public GitHub Raw artifacts, not in the Windy release archive. Hover shows a concise candidate label; click opens the detailed screening popup with the linked optical review image.
