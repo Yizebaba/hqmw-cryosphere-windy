@@ -111,3 +111,6 @@ This plugin is an imagery viewer and experimental screening interface. It does *
 
 ### 安全与业务边界
 本插件仅作为遥感影像观测与实验性初筛的可视化工具。任何检测到的候选点并不等同于已发生的冰崩、雪崩或灾害事件，不得直接用于触发 CAP 应急报文发布、路线关闭或人员疏散。
+## CDSE Project Artifacts
+
+The build copies reviewed public artifacts from `static/project-artifacts/` to `dist/project-artifacts/`. The plugin uses the packaged 2026-09-04 to 2026-09-16 candidate GeoJSON as its default review layer and provides an optional overlay for the 2026-08-01 to 2026-09-20 cloud-masked Sentinel-2 composite. These products are provisional screening outputs, not confirmed glacier hazards, motions, collapses, or official glacier boundaries. Do not commit credentials, notebooks, NPY arrays, GeoTIFF/COG masters, or raw satellite data.
