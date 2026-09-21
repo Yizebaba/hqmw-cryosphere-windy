@@ -663,7 +663,7 @@
         try {
             let feed: any = null;
             try {
-                const response = await fetch(reviewApiUrl, { signal: AbortSignal.timeout(3000) });
+                const response = await fetch(reviewApiUrl);
                 if (response.ok) {
                     feed = await response.json();
                 }
@@ -676,7 +676,7 @@
             if (!features.length) { reviewStatus = 'ready'; return; }
             reviewLayer = new L.GeoJSON(feed as never, {
                 pointToLayer: (feature: any, latlng: L.LatLng) => {
-                    const props = feature.properties || {};
+                    const props = (feature && feature.properties) || {};
                     const isPriority = props.project_candidate_status === 'priority_glacier_review';
                     return new L.CircleMarker(latlng, {
                         radius: isPriority ? 8 : 5,
@@ -688,13 +688,14 @@
                 },
                 style: () => ({ color: '#f2ad42', weight: 1, fillColor: '#f2ad42', fillOpacity: 0.25 }),
                 onEachFeature: (feature: any, layer: L.Layer) => {
-                    const properties = feature.properties || {};
+                    const properties = (feature && feature.properties) || {};
                     const popup = document.createElement('div');
-                    popup.innerHTML = <strong> + (properties.candidate_id || 'CANDIDATE') + </strong><br/> +
-                        状态:  + (properties.project_candidate_status || properties.state || 'UNKNOWN') + <br/> +
-                        面积: ~ + (properties.approximate_area_km2 ? (properties.approximate_area_km2 * 1000).toFixed(1) + '千m²' : 'N/A') + <br/> +
-                        坡度:  + (properties.median_slope_degrees ? properties.median_slope_degrees.toFixed(1) + '°' : 'N/A') + <br/> +
-                        <small> + (properties.interpretation_limit || '') + </small>;
+                    const cId = properties.candidate_id || 'CANDIDATE';
+                    const cStatus = properties.project_candidate_status || properties.state || 'UNKNOWN';
+                    const cArea = properties.approximate_area_km2 ? (properties.approximate_area_km2 * 1000).toFixed(1) + ' k-m2' : 'N/A';
+                    const cSlope = properties.median_slope_degrees ? properties.median_slope_degrees.toFixed(1) + ' deg' : 'N/A';
+                    const cLimit = properties.interpretation_limit || '';
+                    popup.innerHTML = '<strong>' + cId + '</strong><br/>Status: ' + cStatus + '<br/>Area: ~' + cArea + '<br/>Slope: ' + cSlope + '<br/><small>' + cLimit + '</small>';
                     layer.bindPopup(popup);
                 },
             });
@@ -703,7 +704,7 @@
             reviewStatus = 'ready';
         } catch (error) {
             reviewStatus = 'error';
-            reviewError = error instanceof Error ? error.message : '候选图层加载失败';
+            reviewError = error instanceof Error ? error.message : 'failed to load review layer';
         }
     };
     const toggleReviewLayer = () => { if (reviewVisible) { removeReviewLayer(); return; } loadReviewLayer(); };
