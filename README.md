@@ -25,3 +25,6 @@ Load `https://localhost:9999/plugin.js` in Windy Developer Mode.
 ## Publishing
 
 Increase the version in both `package.json` and `src/pluginConfig.ts`, push to `main`, then run the `publish-plugin` GitHub Actions workflow. The workflow uses the repository secret `WINDY_API_KEY` and uploads the generated `dist` plugin archive to Windy.
+## Candidate Point Interaction
+
+Version 3.0.1 adds mouse-hover tooltips for every provisional candidate marker. Click a marker to open its expanded screening popup with status, approximate area, DEM slope, optical ice/snow and possible-debris proportions, the GRD comparison period, the InSAR screening period, and the interpretation limit.
