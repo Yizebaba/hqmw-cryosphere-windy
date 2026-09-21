@@ -1,6 +1,6 @@
-# HQMW Cryosphere - Windy Plugin
+# Mount Everest Glacier Movement Analysis - Windy Plugin
 
-Windy.com plugin for Everest cryosphere context and provisional CDSE review candidates.
+Windy.com plugin for provisional multi-sensor screening and analysis of glacier movement candidates in the Mount Everest region.
 
 ## Public Runtime Layers
 
