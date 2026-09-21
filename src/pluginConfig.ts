@@ -2,7 +2,7 @@ import type { ExternalPluginConfig } from '@windy/interfaces.d';
 
 const config: ExternalPluginConfig = {
     name: 'windy-plugin-everest-mhews',
-    version: '2.9.0',
+    version: '2.9.1',
     icon: '?',
     title: 'Everest Natural Environment Monitoring System',
     description: 'Satellite, environmental observation, and event monitoring for the Everest region.',
