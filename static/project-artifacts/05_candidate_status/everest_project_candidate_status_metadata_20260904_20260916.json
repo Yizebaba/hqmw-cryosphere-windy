@@ -1,0 +1,25 @@
+{
+  "product_name": "Everest project candidate status",
+  "source_periods": {
+    "grd_change": "2026-09-04 to 2026-09-16",
+    "insar_coherence_change": "2026-08-23 to 2026-09-04 versus 2026-09-04 to 2026-09-16",
+    "sentinel2_composite": "2026-08-01 to 2026-09-20"
+  },
+  "candidate_status_counts": {
+    "terrain_review_required": 12,
+    "high_terrain_artifact_risk": 5,
+    "priority_glacier_review": 1
+  },
+  "windy_policy": {
+    "priority_glacier_review": "show in primary provisional layer",
+    "terrain_review_required": "show in secondary review layer",
+    "high_terrain_artifact_risk": "do not show in primary candidate layer"
+  },
+  "interpretation_limit": "This product is a provisional project screening layer. It is not a confirmed glacier anomaly, motion, hazard, collapse or event.",
+  "outputs": {
+    "final_csv": "/home/jovyan/mystorage/everest_glacier_monitor/05_candidate_status/everest_project_candidate_status_20260904_20260916.csv",
+    "all_points_geojson": "/home/jovyan/mystorage/everest_glacier_monitor/05_candidate_status/everest_project_candidate_status_20260904_20260916.geojson",
+    "priority_points_geojson": "/home/jovyan/mystorage/everest_glacier_monitor/05_candidate_status/everest_priority_glacier_review_candidates.geojson",
+    "status_map_png": "/home/jovyan/mystorage/everest_glacier_monitor/05_candidate_status/everest_project_candidate_status_map_20260904_20260916.png"
+  }
+}
