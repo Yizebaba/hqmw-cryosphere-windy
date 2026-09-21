@@ -42,7 +42,7 @@
 
 <script lang="ts">
     import bcast from '@windy/broadcast';
-    import { layerOrder, map } from '@windy/map';
+    import { layerOrder, map, markers } from '@windy/map';
     import { onDestroy, onMount } from 'svelte';
     import config from './pluginConfig';
     import { allCandidates } from './candidateData';
@@ -116,17 +116,15 @@
                 pointToLayer: (feature: any, latlng: L.LatLng) => {
                     const props = feature?.properties || {};
                     const priority = props.project_candidate_status === 'priority_glacier_review';
-                    const marker = new L.CircleMarker(latlng, {
-                        radius: priority ? 8 : 5,
-                        color: priority ? '#e74c3c' : '#f39c12',
-                        fillColor: priority ? '#e74c3c' : '#f1c40f',
-                        fillOpacity: 0.85,
-                        weight: 2,
+                    const marker = new L.Marker(latlng, {
+                        icon: priority ? markers.pulsatingIcon : markers.myLocationIcon,
+                        keyboard: false,
+                        riseOnHover: true,
                     });
                     const label = priority ? 'PRIMARY REVIEW' : 'TERRAIN / DEBRIS REVIEW';
                     marker.bindTooltip(
                         `${props.candidate_id || 'CANDIDATE'} - ${label}`,
-                        { direction: 'top', offset: [0, -6], opacity: 0.95 }
+                        { direction: 'top', offset: [0, -10], opacity: 0.95 }
                     );
                     return marker;
                 },
