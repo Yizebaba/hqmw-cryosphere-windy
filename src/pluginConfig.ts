@@ -2,10 +2,10 @@ import type { ExternalPluginConfig } from '@windy/interfaces.d';
 
 const config: ExternalPluginConfig = {
     name: 'windy-plugin-everest-mhews',
-    version: '3.0.6',
+    version: '3.0.7',
     icon: '?',
-    title: 'Mount Everest Glacier Movement Experimental Analysis',
-    description: 'Experimental multi-sensor screening of provisional glacier movement candidates in the Mount Everest region.',
+    title: 'Everest Glacier Experimental Analysis',
+    description: 'Experimental multi-sensor screening of provisional Mount Everest glacier movement candidates.',
     author: 'Everest MHEWS',
     repository: 'https://github.com/Yizebaba/hqmw-cryosphere-windy',
     desktopUI: 'rhpane',
