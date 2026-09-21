@@ -1,0 +1,1819 @@
+{
+  "type": "FeatureCollection",
+  "name": "everest_auto_needs_debris_or_expert_review",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-001",
+        "raw_region_id": 6402,
+        "pixel_count": 71,
+        "approximate_area_km2": 0.1929577843033472,
+        "centroid_longitude": 86.67054577464789,
+        "centroid_latitude": 27.88109405271197,
+        "optical_reviewable_pixels": 32,
+        "optical_reviewable_percent": 45.070422535211264,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 54.929577464788736,
+        "clean_ice_snow_percent": 5.633802816901408,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 12.67605633802817,
+        "unknown_possible_debris_ice_percent": 26.760563380281692,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.667,
+              27.876586157370426
+            ],
+            [
+              86.6745,
+              27.876586157370426
+            ],
+            [
+              86.6745,
+              27.8850811295441
+            ],
+            [
+              86.667,
+              27.8850811295441
+            ],
+            [
+              86.667,
+              27.876586157370426
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-003",
+        "raw_region_id": 4151,
+        "pixel_count": 51,
+        "approximate_area_km2": 0.1386034788657846,
+        "centroid_longitude": 86.87145588235293,
+        "centroid_latitude": 27.93810366924172,
+        "optical_reviewable_pixels": 0,
+        "optical_reviewable_percent": 0.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 100.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.866,
+              27.93605096258614
+            ],
+            [
+              86.8755,
+              27.93605096258614
+            ],
+            [
+              86.8755,
+              27.94104800504124
+            ],
+            [
+              86.866,
+              27.94104800504124
+            ],
+            [
+              86.866,
+              27.93605096258614
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-005",
+        "raw_region_id": 7997,
+        "pixel_count": 48,
+        "approximate_area_km2": 0.1304503330501502,
+        "centroid_longitude": 86.61255208333333,
+        "centroid_latitude": 27.838962591885554,
+        "optical_reviewable_pixels": 0,
+        "optical_reviewable_percent": 0.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 100.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.609,
+              27.83660981772961
+            ],
+            [
+              86.6155,
+              27.83660981772961
+            ],
+            [
+              86.6155,
+              27.84060745169369
+            ],
+            [
+              86.609,
+              27.84060745169369
+            ],
+            [
+              86.609,
+              27.83660981772961
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-006",
+        "raw_region_id": 6502,
+        "pixel_count": 47,
+        "approximate_area_km2": 0.1277326177782721,
+        "centroid_longitude": 86.99979255319148,
+        "centroid_latitude": 27.87957906684088,
+        "optical_reviewable_pixels": 17,
+        "optical_reviewable_percent": 36.17021276595744,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 63.829787234042556,
+        "clean_ice_snow_percent": 19.148936170212767,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 17.02127659574468,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.996,
+              27.87608645312492
+            ],
+            [
+              87.0035,
+              27.87608645312492
+            ],
+            [
+              87.0035,
+              27.88258260831655
+            ],
+            [
+              86.996,
+              27.88258260831655
+            ],
+            [
+              86.996,
+              27.87608645312492
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-007",
+        "raw_region_id": 7633,
+        "pixel_count": 47,
+        "approximate_area_km2": 0.1277326177782721,
+        "centroid_longitude": 86.70427127659575,
+        "centroid_latitude": 27.850745068674414,
+        "optical_reviewable_pixels": 37,
+        "optical_reviewable_percent": 78.72340425531915,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 21.27659574468085,
+        "clean_ice_snow_percent": 2.127659574468085,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 42.5531914893617,
+        "unknown_possible_debris_ice_percent": 34.04255319148936,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.6985,
+              27.849102423867365
+            ],
+            [
+              86.709,
+              27.849102423867365
+            ],
+            [
+              86.709,
+              27.852100649340425
+            ],
+            [
+              86.6985,
+              27.852100649340425
+            ],
+            [
+              86.6985,
+              27.849102423867365
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-010",
+        "raw_region_id": 5067,
+        "pixel_count": 44,
+        "approximate_area_km2": 0.1195794719626377,
+        "centroid_longitude": 86.66297727272728,
+        "centroid_latitude": 27.91825467729717,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 52.27272727272727,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 47.72727272727273,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 2.272727272727273,
+        "bare_rock_moraine_percent": 25.0,
+        "unknown_possible_debris_ice_percent": 25.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.6595,
+              27.91606279276573
+            ],
+            [
+              86.667,
+              27.91606279276573
+            ],
+            [
+              86.667,
+              27.920060426729812
+            ],
+            [
+              86.6595,
+              27.920060426729812
+            ],
+            [
+              86.6595,
+              27.91606279276573
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-011",
+        "raw_region_id": 6993,
+        "pixel_count": 43,
+        "approximate_area_km2": 0.1168617566907595,
+        "centroid_longitude": 86.76077325581394,
+        "centroid_latitude": 27.86721379750987,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 53.48837209302326,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 46.51162790697674,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 53.48837209302326,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.75699999999999,
+              27.86509295972369
+            ],
+            [
+              86.7645,
+              27.86509295972369
+            ],
+            [
+              86.7645,
+              27.87009000217879
+            ],
+            [
+              86.75699999999999,
+              27.87009000217879
+            ],
+            [
+              86.75699999999999,
+              27.86509295972369
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-016",
+        "raw_region_id": 4439,
+        "pixel_count": 37,
+        "approximate_area_km2": 0.1005554650594908,
+        "centroid_longitude": 86.59750675675676,
+        "centroid_latitude": 27.9324922580269,
+        "optical_reviewable_pixels": 16,
+        "optical_reviewable_percent": 43.24324324324324,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 56.75675675675676,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 40.54054054054054,
+        "unknown_possible_debris_ice_percent": 2.7027027027027026,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.5955,
+              27.93005451164002
+            ],
+            [
+              86.6,
+              27.93005451164002
+            ],
+            [
+              86.6,
+              27.93455184984961
+            ],
+            [
+              86.5955,
+              27.93455184984961
+            ],
+            [
+              86.5955,
+              27.93005451164002
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-017",
+        "raw_region_id": 7567,
+        "pixel_count": 37,
+        "approximate_area_km2": 0.1005554650594908,
+        "centroid_longitude": 86.85088513513513,
+        "centroid_latitude": 27.84908216558714,
+        "optical_reviewable_pixels": 37,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 16.216216216216218,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 27.027027027027028,
+        "unknown_possible_debris_ice_percent": 56.75675675675676,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.84649999999999,
+              27.84560449414879
+            ],
+            [
+              86.8535,
+              27.84560449414879
+            ],
+            [
+              86.8535,
+              27.854099466322467
+            ],
+            [
+              86.84649999999999,
+              27.854099466322467
+            ],
+            [
+              86.84649999999999,
+              27.84560449414879
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-018",
+        "raw_region_id": 5582,
+        "pixel_count": 33,
+        "approximate_area_km2": 0.0896846039719782,
+        "centroid_longitude": 86.60417424242424,
+        "centroid_latitude": 27.905788570626985,
+        "optical_reviewable_pixels": 9,
+        "optical_reviewable_percent": 27.272727272727277,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 72.72727272727273,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 9.090909090909092,
+        "unknown_possible_debris_ice_percent": 18.181818181818183,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.6005,
+              27.904569595119
+            ],
+            [
+              86.608,
+              27.904569595119
+            ],
+            [
+              86.608,
+              27.90806752483757
+            ],
+            [
+              86.6005,
+              27.90806752483757
+            ],
+            [
+              86.6005,
+              27.904569595119
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-019",
+        "raw_region_id": 2459,
+        "pixel_count": 32,
+        "approximate_area_km2": 0.0869668887001001,
+        "centroid_longitude": 86.726765625,
+        "centroid_latitude": 27.977057942233323,
+        "optical_reviewable_pixels": 13,
+        "optical_reviewable_percent": 40.625,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 59.375,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 34.375,
+        "unknown_possible_debris_ice_percent": 6.25,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.72449999999999,
+              27.975027893735938
+            ],
+            [
+              86.7295,
+              27.975027893735938
+            ],
+            [
+              86.7295,
+              27.97952523194553
+            ],
+            [
+              86.72449999999999,
+              27.97952523194553
+            ],
+            [
+              86.72449999999999,
+              27.975027893735938
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-020",
+        "raw_region_id": 4895,
+        "pixel_count": 32,
+        "approximate_area_km2": 0.0869668887001001,
+        "centroid_longitude": 86.5791875,
+        "centroid_latitude": 27.9223715588653,
+        "optical_reviewable_pixels": 14,
+        "optical_reviewable_percent": 43.75,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 56.25,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 18.75,
+        "unknown_possible_debris_ice_percent": 25.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.577,
+              27.920060426729812
+            ],
+            [
+              86.582,
+              27.920060426729812
+            ],
+            [
+              86.582,
+              27.9240580606939
+            ],
+            [
+              86.577,
+              27.9240580606939
+            ],
+            [
+              86.577,
+              27.920060426729812
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-021",
+        "raw_region_id": 8594,
+        "pixel_count": 32,
+        "approximate_area_km2": 0.0869668887001001,
+        "centroid_longitude": 86.588140625,
+        "centroid_latitude": 27.80664317875667,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 71.875,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 28.125,
+        "clean_ice_snow_percent": 3.125,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 28.125,
+        "unknown_possible_debris_ice_percent": 40.625,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.586,
+              27.80462874601696
+            ],
+            [
+              86.59049999999999,
+              27.80462874601696
+            ],
+            [
+              86.59049999999999,
+              27.808626379981035
+            ],
+            [
+              86.586,
+              27.808626379981035
+            ],
+            [
+              86.586,
+              27.80462874601696
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-024",
+        "raw_region_id": 6737,
+        "pixel_count": 30,
+        "approximate_area_km2": 0.0815314581563439,
+        "centroid_longitude": 86.84006666666666,
+        "centroid_latitude": 27.874770565278407,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 76.66666666666667,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 23.333333333333332,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 66.66666666666667,
+        "unknown_possible_debris_ice_percent": 10.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.837,
+              27.873088227651856
+            ],
+            [
+              86.843,
+              27.873088227651856
+            ],
+            [
+              86.843,
+              27.87608645312492
+            ],
+            [
+              86.837,
+              27.87608645312492
+            ],
+            [
+              86.837,
+              27.873088227651856
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-026",
+        "raw_region_id": 5781,
+        "pixel_count": 29,
+        "approximate_area_km2": 0.0788137428844657,
+        "centroid_longitude": 86.60268103448276,
+        "centroid_latitude": 27.90032210903216,
+        "optical_reviewable_pixels": 0,
+        "optical_reviewable_percent": 0.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 100.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.59949999999999,
+              27.898573144172875
+            ],
+            [
+              86.6065,
+              27.898573144172875
+            ],
+            [
+              86.6065,
+              27.90207107389145
+            ],
+            [
+              86.59949999999999,
+              27.90207107389145
+            ],
+            [
+              86.59949999999999,
+              27.898573144172875
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-029",
+        "raw_region_id": 4946,
+        "pixel_count": 28,
+        "approximate_area_km2": 0.0760960276125876,
+        "centroid_longitude": 86.92583928571429,
+        "centroid_latitude": 27.92177369842871,
+        "optical_reviewable_pixels": 25,
+        "optical_reviewable_percent": 89.28571428571429,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 10.714285714285714,
+        "clean_ice_snow_percent": 32.142857142857146,
+        "water_ice_lake_percent": 3.5714285714285716,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 53.57142857142857,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.92099999999999,
+              27.920060426729812
+            ],
+            [
+              86.92999999999999,
+              27.920060426729812
+            ],
+            [
+              86.92999999999999,
+              27.92305865220288
+            ],
+            [
+              86.92099999999999,
+              27.92305865220288
+            ],
+            [
+              86.92099999999999,
+              27.920060426729812
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-031",
+        "raw_region_id": 5865,
+        "pixel_count": 27,
+        "approximate_area_km2": 0.0733783123407095,
+        "centroid_longitude": 87.03437962962963,
+        "centroid_latitude": 27.89895254924817,
+        "optical_reviewable_pixels": 0,
+        "optical_reviewable_percent": 0.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 100.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.0315,
+              27.897573735681856
+            ],
+            [
+              87.03699999999999,
+              27.897573735681856
+            ],
+            [
+              87.03699999999999,
+              27.900072256909407
+            ],
+            [
+              87.0315,
+              27.900072256909407
+            ],
+            [
+              87.0315,
+              27.897573735681856
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-033",
+        "raw_region_id": 7087,
+        "pixel_count": 26,
+        "approximate_area_km2": 0.0706605970688313,
+        "centroid_longitude": 86.83426923076922,
+        "centroid_latitude": 27.86611158760877,
+        "optical_reviewable_pixels": 19,
+        "optical_reviewable_percent": 73.07692307692308,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 26.923076923076923,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 65.38461538461539,
+        "unknown_possible_debris_ice_percent": 7.6923076923076925,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.832,
+              27.86509295972369
+            ],
+            [
+              86.837,
+              27.86509295972369
+            ],
+            [
+              86.837,
+              27.86759148095124
+            ],
+            [
+              86.832,
+              27.86759148095124
+            ],
+            [
+              86.832,
+              27.86509295972369
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-034",
+        "raw_region_id": 7208,
+        "pixel_count": 26,
+        "approximate_area_km2": 0.0706605970688313,
+        "centroid_longitude": 86.83455769230768,
+        "centroid_latitude": 27.86347853062281,
+        "optical_reviewable_pixels": 16,
+        "optical_reviewable_percent": 61.53846153846154,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 38.46153846153846,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 57.69230769230769,
+        "unknown_possible_debris_ice_percent": 3.8461538461538463,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.831,
+              27.86259443849614
+            ],
+            [
+              86.8385,
+              27.86259443849614
+            ],
+            [
+              86.8385,
+              27.86459325547818
+            ],
+            [
+              86.831,
+              27.86459325547818
+            ],
+            [
+              86.831,
+              27.86259443849614
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-035",
+        "raw_region_id": 2081,
+        "pixel_count": 25,
+        "approximate_area_km2": 0.0679428817969532,
+        "centroid_longitude": 86.71446999999999,
+        "centroid_latitude": 27.98627123925992,
+        "optical_reviewable_pixels": 3,
+        "optical_reviewable_percent": 12.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 88.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 8.0,
+        "unknown_possible_debris_ice_percent": 4.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.7115,
+              27.98502197864614
+            ],
+            [
+              86.7175,
+              27.98502197864614
+            ],
+            [
+              86.7175,
+              27.98802020411921
+            ],
+            [
+              86.7115,
+              27.98802020411921
+            ],
+            [
+              86.7115,
+              27.98502197864614
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-039",
+        "raw_region_id": 6024,
+        "pixel_count": 25,
+        "approximate_area_km2": 0.0679428817969532,
+        "centroid_longitude": 87.03275,
+        "centroid_latitude": 27.89432565808604,
+        "optical_reviewable_pixels": 0,
+        "optical_reviewable_percent": 0.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 100.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.0295,
+              27.893576101717773
+            ],
+            [
+              87.0355,
+              27.893576101717773
+            ],
+            [
+              87.0355,
+              27.89557491869981
+            ],
+            [
+              87.0295,
+              27.89557491869981
+            ],
+            [
+              87.0295,
+              27.893576101717773
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-040",
+        "raw_region_id": 7191,
+        "pixel_count": 25,
+        "approximate_area_km2": 0.0679428817969532,
+        "centroid_longitude": 86.89726999999999,
+        "centroid_latitude": 27.863383971204048,
+        "optical_reviewable_pixels": 1,
+        "optical_reviewable_percent": 4.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 96.0,
+        "clean_ice_snow_percent": 4.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.895,
+              27.86159503000512
+            ],
+            [
+              86.8995,
+              27.86159503000512
+            ],
+            [
+              86.8995,
+              27.86509295972369
+            ],
+            [
+              86.895,
+              27.86509295972369
+            ],
+            [
+              86.895,
+              27.86159503000512
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-041",
+        "raw_region_id": 7944,
+        "pixel_count": 25,
+        "approximate_area_km2": 0.0679428817969532,
+        "centroid_longitude": 86.58301,
+        "centroid_latitude": 27.840677410288063,
+        "optical_reviewable_pixels": 0,
+        "optical_reviewable_percent": 0.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 100.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.5795,
+              27.83860863471165
+            ],
+            [
+              86.586,
+              27.83860863471165
+            ],
+            [
+              86.586,
+              27.84210656443022
+            ],
+            [
+              86.5795,
+              27.84210656443022
+            ],
+            [
+              86.5795,
+              27.83860863471165
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-042",
+        "raw_region_id": 2179,
+        "pixel_count": 24,
+        "approximate_area_km2": 0.0652251665250751,
+        "centroid_longitude": 86.85314583333333,
+        "centroid_latitude": 27.9850636206666,
+        "optical_reviewable_pixels": 16,
+        "optical_reviewable_percent": 66.66666666666667,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 33.333333333333336,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 33.333333333333336,
+        "unknown_possible_debris_ice_percent": 33.333333333333336,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.85,
+              27.984022570155123
+            ],
+            [
+              86.857,
+              27.984022570155123
+            ],
+            [
+              86.857,
+              27.986021387137164
+            ],
+            [
+              86.85,
+              27.986021387137164
+            ],
+            [
+              86.85,
+              27.984022570155123
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-045",
+        "raw_region_id": 8117,
+        "pixel_count": 24,
+        "approximate_area_km2": 0.0652251665250751,
+        "centroid_longitude": 86.66247916666666,
+        "centroid_latitude": 27.834173759532742,
+        "optical_reviewable_pixels": 15,
+        "optical_reviewable_percent": 62.5,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 37.5,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 62.5,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.661,
+              27.831612775274507
+            ],
+            [
+              86.664,
+              27.831612775274507
+            ],
+            [
+              86.664,
+              27.83660981772961
+            ],
+            [
+              86.661,
+              27.83660981772961
+            ],
+            [
+              86.661,
+              27.831612775274507
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-047",
+        "raw_region_id": 2745,
+        "pixel_count": 23,
+        "approximate_area_km2": 0.0625074512531969,
+        "centroid_longitude": 87.0228152173913,
+        "centroid_latitude": 27.972192615299456,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 30.434782608695652,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 8.695652173913043,
+        "unknown_possible_debris_ice_percent": 60.869565217391305,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.0205,
+              27.971030259771855
+            ],
+            [
+              87.02499999999999,
+              27.971030259771855
+            ],
+            [
+              87.02499999999999,
+              27.97352878099941
+            ],
+            [
+              87.0205,
+              27.97352878099941
+            ],
+            [
+              87.0205,
+              27.971030259771855
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-050",
+        "raw_region_id": 2871,
+        "pixel_count": 22,
+        "approximate_area_km2": 0.0597897359813188,
+        "centroid_longitude": 86.98002272727273,
+        "centroid_latitude": 27.969008728960475,
+        "optical_reviewable_pixels": 22,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 40.90909090909091,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 31.818181818181817,
+        "unknown_possible_debris_ice_percent": 27.272727272727273,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.977,
+              27.96703262580777
+            ],
+            [
+              86.982,
+              27.96703262580777
+            ],
+            [
+              86.982,
+              27.971030259771855
+            ],
+            [
+              86.977,
+              27.971030259771855
+            ],
+            [
+              86.977,
+              27.96703262580777
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-052",
+        "raw_region_id": 8213,
+        "pixel_count": 22,
+        "approximate_area_km2": 0.0597897359813188,
+        "centroid_longitude": 86.69809090909091,
+        "centroid_latitude": 27.830613366783485,
+        "optical_reviewable_pixels": 2,
+        "optical_reviewable_percent": 9.090909090909092,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 90.9090909090909,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 9.090909090909092,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.696,
+              27.828614549801447
+            ],
+            [
+              86.7,
+              27.828614549801447
+            ],
+            [
+              86.7,
+              27.83311188801104
+            ],
+            [
+              86.696,
+              27.83311188801104
+            ],
+            [
+              86.696,
+              27.828614549801447
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-053",
+        "raw_region_id": 7220,
+        "pixel_count": 21,
+        "approximate_area_km2": 0.0570720207094407,
+        "centroid_longitude": 86.67541666666666,
+        "centroid_latitude": 27.862534949895483,
+        "optical_reviewable_pixels": 4,
+        "optical_reviewable_percent": 19.047619047619047,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 80.95238095238095,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 9.523809523809524,
+        "unknown_possible_debris_ice_percent": 9.523809523809524,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.673,
+              27.86109532575961
+            ],
+            [
+              86.6775,
+              27.86109532575961
+            ],
+            [
+              86.6775,
+              27.86409355123267
+            ],
+            [
+              86.673,
+              27.86409355123267
+            ],
+            [
+              86.673,
+              27.86109532575961
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-056",
+        "raw_region_id": 1662,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "centroid_longitude": 86.864025,
+        "centroid_latitude": 27.99521594525455,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 20.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 15.0,
+        "unknown_possible_debris_ice_percent": 65.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.8625,
+              27.993516950819817
+            ],
+            [
+              86.866,
+              27.993516950819817
+            ],
+            [
+              86.866,
+              27.997014880538387
+            ],
+            [
+              86.8625,
+              27.997014880538387
+            ],
+            [
+              86.8625,
+              27.993516950819817
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-057",
+        "raw_region_id": 1866,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "centroid_longitude": 86.69995,
+        "centroid_latitude": 27.990418784497653,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 60.0,
+        "unknown_possible_debris_ice_percent": 40.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.6985,
+              27.988519908364715
+            ],
+            [
+              86.701,
+              27.988519908364715
+            ],
+            [
+              86.701,
+              27.992517542328795
+            ],
+            [
+              86.6985,
+              27.992517542328795
+            ],
+            [
+              86.6985,
+              27.988519908364715
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-059",
+        "raw_region_id": 3102,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "centroid_longitude": 87.016825,
+        "centroid_latitude": 27.964634045429325,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 25.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 75.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.014,
+              27.96303499184369
+            ],
+            [
+              87.0195,
+              27.96303499184369
+            ],
+            [
+              87.0195,
+              27.96603321731676
+            ],
+            [
+              87.014,
+              27.96603321731676
+            ],
+            [
+              87.014,
+              27.96303499184369
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-061",
+        "raw_region_id": 6936,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "centroid_longitude": 86.6892,
+        "centroid_latitude": 27.870139972603344,
+        "optical_reviewable_pixels": 3,
+        "optical_reviewable_percent": 15.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 85.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 15.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.687,
+              27.868590889442263
+            ],
+            [
+              86.69149999999999,
+              27.868590889442263
+            ],
+            [
+              86.69149999999999,
+              27.87108941066981
+            ],
+            [
+              86.687,
+              27.87108941066981
+            ],
+            [
+              86.687,
+              27.868590889442263
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-062",
+        "raw_region_id": 6945,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "centroid_longitude": 86.852025,
+        "centroid_latitude": 27.86959029793328,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 30.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 70.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.8505,
+              27.86759148095124
+            ],
+            [
+              86.854,
+              27.86759148095124
+            ],
+            [
+              86.854,
+              27.87108941066981
+            ],
+            [
+              86.8505,
+              27.87108941066981
+            ],
+            [
+              86.8505,
+              27.86759148095124
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-065",
+        "raw_region_id": 3798,
+        "pixel_count": 19,
+        "approximate_area_km2": 0.0516365901656844,
+        "centroid_longitude": 86.8443552631579,
+        "centroid_latitude": 27.947478409674257,
+        "optical_reviewable_pixels": 0,
+        "optical_reviewable_percent": 0.0,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 100.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 0.0,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.8425,
+              27.946045047496344
+            ],
+            [
+              86.84649999999999,
+              27.946045047496344
+            ],
+            [
+              86.84649999999999,
+              27.9485435687239
+            ],
+            [
+              86.8425,
+              27.9485435687239
+            ],
+            [
+              86.8425,
+              27.946045047496344
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-066",
+        "raw_region_id": 6732,
+        "pixel_count": 19,
+        "approximate_area_km2": 0.0516365901656844,
+        "centroid_longitude": 86.69411842105262,
+        "centroid_latitude": 27.87457419027666,
+        "optical_reviewable_pixels": 16,
+        "optical_reviewable_percent": 84.21052631578948,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 15.789473684210526,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 31.57894736842105,
+        "unknown_possible_debris_ice_percent": 52.63157894736842,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.691,
+              27.873587931897365
+            ],
+            [
+              86.697,
+              27.873587931897365
+            ],
+            [
+              86.697,
+              27.87608645312492
+            ],
+            [
+              86.691,
+              27.87608645312492
+            ],
+            [
+              86.691,
+              27.873587931897365
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-068",
+        "raw_region_id": 8581,
+        "pixel_count": 19,
+        "approximate_area_km2": 0.0516365901656844,
+        "centroid_longitude": 86.59522368421052,
+        "centroid_latitude": 27.80863953009276,
+        "optical_reviewable_pixels": 7,
+        "optical_reviewable_percent": 36.8421052631579,
+        "review_status": "optical_review_limited",
+        "cloud_gap_percent": 63.1578947368421,
+        "clean_ice_snow_percent": 5.2631578947368425,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 31.57894736842105,
+        "auto_decision": "defer_optical_gap_or_cloud",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.59349999999999,
+              27.806627562999
+            ],
+            [
+              86.597,
+              27.806627562999
+            ],
+            [
+              86.597,
+              27.810125492717567
+            ],
+            [
+              86.59349999999999,
+              27.810125492717567
+            ],
+            [
+              86.59349999999999,
+              27.806627562999
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
