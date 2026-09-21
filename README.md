@@ -31,3 +31,6 @@ Version 3.0.1 adds mouse-hover tooltips for every provisional candidate marker. 
 ## Candidate Analysis Images
 
 Version 3.0.2 adds an optical analysis image to each candidate marker popup. The 18 priority candidate images are stored as public GitHub Raw artifacts, not in the Windy release archive. Hover shows a concise candidate label; click opens the detailed screening popup with the linked optical review image.
+## Candidate Marker Compatibility
+
+Version 3.0.3 uses Windy's documented reusable `markers` (`pulsatingIcon` and `myLocationIcon`) instead of Leaflet `CircleMarker`. This avoids the Leaflet GL runtime `radius` error while retaining hover tooltips, click popups, and candidate analysis images.
