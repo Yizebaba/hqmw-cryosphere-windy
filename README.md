@@ -114,3 +114,6 @@ This plugin is an imagery viewer and experimental screening interface. It does *
 ## CDSE Project Artifacts
 
 The build copies reviewed public artifacts from `static/project-artifacts/` to `dist/project-artifacts/`. The plugin uses the packaged 2026-09-04 to 2026-09-16 candidate GeoJSON as its default review layer and provides an optional overlay for the 2026-08-01 to 2026-09-20 cloud-masked Sentinel-2 composite. These products are provisional screening outputs, not confirmed glacier hazards, motions, collapses, or official glacier boundaries. Do not commit credentials, notebooks, NPY arrays, GeoTIFF/COG masters, or raw satellite data.
+## Windy Release Size Boundary
+
+Windy plugin release archives must remain small. Candidate metadata remains embedded in `src/candidateData.ts` as an offline fallback. PNG imagery, GeoTIFF/COG masters, NPY arrays, notebooks, raw Sentinel inputs, caches and credentials are not bundled into `dist`. Raster imagery must be served from a separate HTTPS image or tile service before it can be shown as a live Windy overlay.
