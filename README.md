@@ -117,3 +117,6 @@ The build copies reviewed public artifacts from `static/project-artifacts/` to `
 ## Windy Release Size Boundary
 
 Windy plugin release archives must remain small. Candidate metadata remains embedded in `src/candidateData.ts` as an offline fallback. PNG imagery, GeoTIFF/COG masters, NPY arrays, notebooks, raw Sentinel inputs, caches and credentials are not bundled into `dist`. Raster imagery must be served from a separate HTTPS image or tile service before it can be shown as a live Windy overlay.
+## GitHub-Hosted CDSE Visual Layers
+
+Version 2.9.4 reads the reviewed candidate GeoJSON and optional PNG visual references from the repository's public GitHub Raw URLs. This keeps the Windy release archive small while allowing the plugin to toggle the Sentinel-2 clear composite, Sentinel-1 GRD change candidate image, and GRD plus InSAR joint candidate image. These are provisional contextual screening products and do not confirm glacier motion, hazards, collapse events, or official glacier boundaries.
