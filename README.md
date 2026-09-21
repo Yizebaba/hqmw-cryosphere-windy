@@ -34,3 +34,6 @@ Version 3.0.2 adds an optical analysis image to each candidate marker popup. The
 ## Candidate Marker Compatibility
 
 Version 3.0.3 uses Windy's documented reusable `markers` (`pulsatingIcon` and `myLocationIcon`) instead of Leaflet `CircleMarker`. This avoids the Leaflet GL runtime `radius` error while retaining hover tooltips, click popups, and candidate analysis images.
+## Windy Title Length
+
+Windy's plugin build tool enforces a short title length. Version 3.0.7 uses **Everest Glacier Experimental Analysis** while the description retains the full experimental Mount Everest glacier-movement scope.
