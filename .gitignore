@@ -1,3 +1,19 @@
 node_modules/
 dist/
 .rollup.cache/
+# CDSE/JupyterHub runtime artifacts and credentials
+.env
+.env.*
+*.token
+*.secret
+*.pem
+*.key
+*.p12
+*.npy
+*.tif
+*.tiff
+*.ipynb
+.ipynb_checkpoints/
+__pycache__/
+.venv/
+venv/
