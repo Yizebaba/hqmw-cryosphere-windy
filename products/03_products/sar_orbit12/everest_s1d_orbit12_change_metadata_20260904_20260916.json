@@ -1,0 +1,36 @@
+{
+  "product_type": "Sentinel-1 GRD backscatter change candidate",
+  "aoi_bbox_wgs84": [
+    86.55,
+    27.72,
+    87.05,
+    28.1
+  ],
+  "previous_time_range": [
+    "2026-09-04T12:12:00Z",
+    "2026-09-04T12:15:00Z"
+  ],
+  "latest_time_range": [
+    "2026-09-16T12:12:00Z",
+    "2026-09-16T12:15:00Z"
+  ],
+  "platform": "Sentinel-1D",
+  "orbit_direction": "ascending",
+  "relative_orbit": 12,
+  "instrument_mode": "IW",
+  "polarizations": [
+    "VV",
+    "VH"
+  ],
+  "processing": {
+    "backscatter_coefficient": "GAMMA0_TERRAIN",
+    "orthorectify": true,
+    "dem_instance": "COPERNICUS"
+  },
+  "outputs": {
+    "side_by_side_png": "/home/jovyan/mystorage/everest_glacier_monitor/03_products/sar_orbit12/everest_s1d_orbit12_side_by_side_20260904_20260916.png",
+    "change_candidates_png": "/home/jovyan/mystorage/everest_glacier_monitor/03_products/sar_orbit12/everest_s1d_orbit12_change_candidates_20260904_20260916.png",
+    "summary_csv": "/home/jovyan/mystorage/everest_glacier_monitor/03_products/sar_orbit12/everest_s1d_orbit12_change_summary_20260904_20260916.csv"
+  },
+  "interpretation_limit": "This is a radar backscatter change candidate product. It is not a direct glacier motion, displacement, hazard, or collapse conclusion."
+}

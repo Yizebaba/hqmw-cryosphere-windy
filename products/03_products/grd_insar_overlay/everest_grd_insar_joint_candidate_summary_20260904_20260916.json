@@ -1,0 +1,42 @@
+{
+  "grd_previous_scene": "2026-09-04T12:13 UTC",
+  "grd_latest_scene": "2026-09-16T12:13 UTC",
+  "grd_geometry": {
+    "platform": "Sentinel-1D",
+    "orbit_direction": "ascending",
+    "relative_orbit": 12,
+    "instrument_mode": "IW",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "processing": "GAMMA0_TERRAIN + orthorectify + COPERNICUS DEM"
+  },
+  "insar_earlier_pair": "2026-08-23 to 2026-09-04",
+  "insar_latest_pair": "2026-09-04 to 2026-09-16",
+  "insar_geometry": {
+    "burst_id": 23790,
+    "sub_swath": "IW1",
+    "polarization": "VV"
+  },
+  "common_bounds_wgs84": {
+    "left": 86.55,
+    "bottom": 27.739167489855117,
+    "right": 87.05,
+    "top": 28.081964602275125
+  },
+  "common_grid": {
+    "width": 1000,
+    "height": 686
+  },
+  "common_valid_pixels": 368398,
+  "common_valid_coverage_percent": 53.702332361516035,
+  "thresholds": {
+    "grd_change_threshold_db": 1.5,
+    "latest_coherence_threshold": 0.3,
+    "coherence_drop_threshold": -0.1
+  },
+  "combined_candidate_pixels": 20278,
+  "combined_candidate_coverage_percent": 2.9559766763848394,
+  "interpretation_limit": "Joint candidate pixels require further assessment with current optical imagery, glacier boundaries, terrain quality masks and expert review. They are not confirmed hazards, displacements or glacier-collapse events."
+}
