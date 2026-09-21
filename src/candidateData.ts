@@ -1,0 +1,681 @@
+export const priorityCandidates = {
+  "type": "FeatureCollection",
+  "name": "everest_priority_glacier_review_candidates",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-049",
+        "project_label": "provisional_glacier_change_candidate",
+        "project_candidate_status": "priority_glacier_review",
+        "approximate_area_km2": 0.0597897359813188,
+        "clean_ice_snow_percent": 63.63636363636363,
+        "median_slope_degrees": 32.591102600097656,
+        "very_steep_slope_percent_ge_45": 16.666666666666664,
+        "windy_display_status": "show_priority_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.85856818181819,
+          27.9868617988228
+        ]
+      }
+    }
+  ]
+};
+export const allCandidates = {
+  "type": "FeatureCollection",
+  "name": "everest_project_candidate_status_20260904_20260916",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-027",
+        "raw_region_id": 1140,
+        "pixel_count": 28,
+        "approximate_area_km2": 0.0760960276125876,
+        "optical_reviewable_pixels": 28,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 96.42857142857144,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 3.571428571428572,
+        "auto_decision": "retain_clean_ice_snow_candidate",
+        "auto_review_priority": "high",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 6120.34375,
+        "median_slope_degrees": 43.09128189086914,
+        "steep_slope_percent_ge_35": 78.57142857142857,
+        "very_steep_slope_percent_ge_45": 39.285714285714285,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.88428571428571,
+          28.00907916875142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-043",
+        "raw_region_id": 4058,
+        "pixel_count": 24,
+        "approximate_area_km2": 0.0652251665250751,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 83.33333333333333,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 16.666666666666668,
+        "clean_ice_snow_percent": 79.16666666666667,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 4.166666666666667,
+        "auto_decision": "retain_clean_ice_snow_candidate",
+        "auto_review_priority": "high",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5532.685546875,
+        "median_slope_degrees": 35.675010681152344,
+        "steep_slope_percent_ge_35": 52.0,
+        "very_steep_slope_percent_ge_45": 30.0,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.9013125,
+          27.94227644464479
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-046",
+        "raw_region_id": 535,
+        "pixel_count": 23,
+        "approximate_area_km2": 0.0625074512531969,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 86.95652173913044,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 13.043478260869565,
+        "auto_decision": "retain_clean_ice_snow_candidate",
+        "auto_review_priority": "high",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5756.24169921875,
+        "median_slope_degrees": 38.73098373413086,
+        "steep_slope_percent_ge_35": 72.0,
+        "very_steep_slope_percent_ge_45": 20.0,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.00198913043478,
+          28.02683418823242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-049",
+        "raw_region_id": 2069,
+        "pixel_count": 22,
+        "approximate_area_km2": 0.0597897359813188,
+        "optical_reviewable_pixels": 22,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 63.63636363636363,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 36.36363636363637,
+        "auto_decision": "retain_clean_ice_snow_candidate",
+        "auto_review_priority": "high",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5764.05908203125,
+        "median_slope_degrees": 32.591102600097656,
+        "steep_slope_percent_ge_35": 44.44444444444444,
+        "very_steep_slope_percent_ge_45": 16.666666666666664,
+        "terrain_review_status": "terrain_not_dominantly_steep",
+        "project_candidate_status": "priority_glacier_review",
+        "windy_display_status": "show_priority_candidate",
+        "project_label": "provisional_glacier_change_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.85856818181819,
+          27.9868617988228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-063",
+        "raw_region_id": 1325,
+        "pixel_count": 19,
+        "approximate_area_km2": 0.0516365901656844,
+        "optical_reviewable_pixels": 18,
+        "optical_reviewable_percent": 94.73684210526316,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 5.2631578947368425,
+        "clean_ice_snow_percent": 73.6842105263158,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 21.05263157894737,
+        "auto_decision": "retain_clean_ice_snow_candidate",
+        "auto_review_priority": "high",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5785.0205078125,
+        "median_slope_degrees": 42.35334014892578,
+        "steep_slope_percent_ge_35": 72.91666666666666,
+        "very_steep_slope_percent_ge_45": 43.75,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.78275,
+          28.0047076958969
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-007",
+        "raw_region_id": 7633,
+        "pixel_count": 47,
+        "approximate_area_km2": 0.1277326177782721,
+        "optical_reviewable_pixels": 37,
+        "optical_reviewable_percent": 78.72340425531915,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 21.27659574468085,
+        "clean_ice_snow_percent": 2.127659574468085,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 42.5531914893617,
+        "unknown_possible_debris_ice_percent": 34.04255319148936,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5136.939453125,
+        "median_slope_degrees": 39.203125,
+        "steep_slope_percent_ge_35": 65.21739130434783,
+        "very_steep_slope_percent_ge_45": 23.91304347826087,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.70427127659575,
+          27.850745068674414
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-017",
+        "raw_region_id": 7567,
+        "pixel_count": 37,
+        "approximate_area_km2": 0.1005554650594908,
+        "optical_reviewable_pixels": 37,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 16.216216216216218,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 27.027027027027028,
+        "unknown_possible_debris_ice_percent": 56.75675675675676,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5486.89208984375,
+        "median_slope_degrees": 37.37895965576172,
+        "steep_slope_percent_ge_35": 55.43859649122807,
+        "very_steep_slope_percent_ge_45": 28.07017543859649,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.85088513513513,
+          27.84908216558714
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-021",
+        "raw_region_id": 8594,
+        "pixel_count": 32,
+        "approximate_area_km2": 0.0869668887001001,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 71.875,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 28.125,
+        "clean_ice_snow_percent": 3.125,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 28.125,
+        "unknown_possible_debris_ice_percent": 40.625,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5539.42138671875,
+        "median_slope_degrees": 56.81774139404297,
+        "steep_slope_percent_ge_35": 100.0,
+        "very_steep_slope_percent_ge_45": 97.2222222222222,
+        "terrain_review_status": "very_steep_terrain_high_artifact_risk",
+        "project_candidate_status": "high_terrain_artifact_risk",
+        "windy_display_status": "hide_from_primary_candidate_layer",
+        "project_label": "terrain_artifact_risk_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.588140625,
+          27.80664317875667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-024",
+        "raw_region_id": 6737,
+        "pixel_count": 30,
+        "approximate_area_km2": 0.0815314581563439,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 76.66666666666667,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 23.33333333333333,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 66.66666666666667,
+        "unknown_possible_debris_ice_percent": 10.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 4974.16845703125,
+        "median_slope_degrees": 32.033573150634766,
+        "steep_slope_percent_ge_35": 40.65934065934066,
+        "very_steep_slope_percent_ge_45": 17.582417582417584,
+        "terrain_review_status": "terrain_not_dominantly_steep",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.84006666666666,
+          27.874770565278407
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-029",
+        "raw_region_id": 4946,
+        "pixel_count": 28,
+        "approximate_area_km2": 0.0760960276125876,
+        "optical_reviewable_pixels": 25,
+        "optical_reviewable_percent": 89.28571428571429,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 10.714285714285714,
+        "clean_ice_snow_percent": 32.142857142857146,
+        "water_ice_lake_percent": 3.571428571428572,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 53.57142857142857,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5427.1201171875,
+        "median_slope_degrees": 40.257354736328125,
+        "steep_slope_percent_ge_35": 84.21052631578947,
+        "very_steep_slope_percent_ge_45": 28.947368421052637,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.92583928571429,
+          27.92177369842871
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-033",
+        "raw_region_id": 7087,
+        "pixel_count": 26,
+        "approximate_area_km2": 0.0706605970688313,
+        "optical_reviewable_pixels": 19,
+        "optical_reviewable_percent": 73.07692307692308,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 26.923076923076923,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 65.38461538461539,
+        "unknown_possible_debris_ice_percent": 7.6923076923076925,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5078.53515625,
+        "median_slope_degrees": 38.63225555419922,
+        "steep_slope_percent_ge_35": 62.5,
+        "very_steep_slope_percent_ge_45": 26.38888888888889,
+        "terrain_review_status": "steep_terrain_review_required",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.83426923076922,
+          27.86611158760877
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-047",
+        "raw_region_id": 2745,
+        "pixel_count": 23,
+        "approximate_area_km2": 0.0625074512531969,
+        "optical_reviewable_pixels": 23,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 30.43478260869565,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 8.695652173913043,
+        "unknown_possible_debris_ice_percent": 60.869565217391305,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5525.73388671875,
+        "median_slope_degrees": 34.64808654785156,
+        "steep_slope_percent_ge_35": 47.61904761904761,
+        "very_steep_slope_percent_ge_45": 15.873015873015872,
+        "terrain_review_status": "terrain_not_dominantly_steep",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.0228152173913,
+          27.972192615299456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-050",
+        "raw_region_id": 2871,
+        "pixel_count": 22,
+        "approximate_area_km2": 0.0597897359813188,
+        "optical_reviewable_pixels": 22,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 40.90909090909091,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 31.818181818181817,
+        "unknown_possible_debris_ice_percent": 27.27272727272728,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5716.8720703125,
+        "median_slope_degrees": 47.310001373291016,
+        "steep_slope_percent_ge_35": 85.85858585858585,
+        "very_steep_slope_percent_ge_45": 57.57575757575758,
+        "terrain_review_status": "very_steep_terrain_high_artifact_risk",
+        "project_candidate_status": "high_terrain_artifact_risk",
+        "windy_display_status": "hide_from_primary_candidate_layer",
+        "project_label": "terrain_artifact_risk_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.98002272727273,
+          27.969008728960475
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-056",
+        "raw_region_id": 1662,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 20.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 15.0,
+        "unknown_possible_debris_ice_percent": 65.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5653.2255859375,
+        "median_slope_degrees": 50.51336669921875,
+        "steep_slope_percent_ge_35": 83.92857142857143,
+        "very_steep_slope_percent_ge_45": 76.78571428571429,
+        "terrain_review_status": "very_steep_terrain_high_artifact_risk",
+        "project_candidate_status": "high_terrain_artifact_risk",
+        "windy_display_status": "hide_from_primary_candidate_layer",
+        "project_label": "terrain_artifact_risk_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.864025,
+          27.99521594525455
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-057",
+        "raw_region_id": 1866,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 60.0,
+        "unknown_possible_debris_ice_percent": 40.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 4877.06396484375,
+        "median_slope_degrees": 26.23211669921875,
+        "steep_slope_percent_ge_35": 31.25,
+        "very_steep_slope_percent_ge_45": 22.916666666666664,
+        "terrain_review_status": "terrain_not_dominantly_steep",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.69995,
+          27.990418784497653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-059",
+        "raw_region_id": 3102,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 25.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 75.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5689.80810546875,
+        "median_slope_degrees": 48.873046875,
+        "steep_slope_percent_ge_35": 80.20833333333334,
+        "very_steep_slope_percent_ge_45": 61.458333333333336,
+        "terrain_review_status": "very_steep_terrain_high_artifact_risk",
+        "project_candidate_status": "high_terrain_artifact_risk",
+        "windy_display_status": "hide_from_primary_candidate_layer",
+        "project_label": "terrain_artifact_risk_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.016825,
+          27.964634045429325
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-062",
+        "raw_region_id": 6945,
+        "pixel_count": 20,
+        "approximate_area_km2": 0.0543543054375625,
+        "optical_reviewable_pixels": 20,
+        "optical_reviewable_percent": 100.0,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 0.0,
+        "clean_ice_snow_percent": 30.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 0.0,
+        "unknown_possible_debris_ice_percent": 70.0,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5645.2451171875,
+        "median_slope_degrees": 47.66907501220703,
+        "steep_slope_percent_ge_35": 88.88888888888889,
+        "very_steep_slope_percent_ge_45": 55.55555555555556,
+        "terrain_review_status": "very_steep_terrain_high_artifact_risk",
+        "project_candidate_status": "high_terrain_artifact_risk",
+        "windy_display_status": "hide_from_primary_candidate_layer",
+        "project_label": "terrain_artifact_risk_candidate",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.852025,
+          27.86959029793328
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "candidate_id": "EVEREST-S1-CAND-066",
+        "raw_region_id": 6732,
+        "pixel_count": 19,
+        "approximate_area_km2": 0.0516365901656844,
+        "optical_reviewable_pixels": 16,
+        "optical_reviewable_percent": 84.21052631578948,
+        "review_status": "optical_review_ready",
+        "cloud_gap_percent": 15.789473684210526,
+        "clean_ice_snow_percent": 0.0,
+        "water_ice_lake_percent": 0.0,
+        "bare_rock_moraine_percent": 31.57894736842105,
+        "unknown_possible_debris_ice_percent": 52.63157894736842,
+        "auto_decision": "needs_debris_or_expert_review",
+        "auto_review_priority": "medium",
+        "auto_triage_limit": "Spectral and SCL screening only. Debris-covered ice cannot be auto-confirmed.",
+        "median_elevation_m": 5308.70556640625,
+        "median_slope_degrees": 27.743846893310547,
+        "steep_slope_percent_ge_35": 26.923076923076923,
+        "very_steep_slope_percent_ge_45": 16.666666666666664,
+        "terrain_review_status": "terrain_not_dominantly_steep",
+        "project_candidate_status": "terrain_review_required",
+        "windy_display_status": "show_review_required",
+        "project_label": "provisional_glacier_change_candidate_terrain_review",
+        "interpretation_limit": "Automated Sentinel-1 GRD plus InSAR screening output. This is not a confirmed glacier anomaly, motion, hazard, collapse or event."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.69411842105262,
+          27.87457419027666
+        ]
+      }
+    }
+  ]
+};
