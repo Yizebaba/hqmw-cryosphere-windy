@@ -7,11 +7,25 @@
 <a name="english"></a>
 ## English Overview
 
-**HQMW Cryosphere** is a specialized, private/community Windy.com map plugin designed for high-mountain natural environment observation and glacier anomaly screening in the Mount Everest region. It integrates **NASA EOSDIS GIBS** satellite layers with automated multi-temporal SAR (Sentinel-1 GRD / InSAR coherence) and optical (Sentinel-2) screening pipelines from **Copernicus Data Space Ecosystem (CDSE)**.
+**HQMW Cryosphere** is a specialized Windy.com map plugin designed for high-mountain natural environment observation and glacier anomaly screening in the Mount Everest region. It integrates **NASA EOSDIS GIBS** satellite layers with automated multi-temporal SAR (Sentinel-1 GRD / InSAR coherence) and optical (Sentinel-2) screening pipelines from **Copernicus Data Space Ecosystem (CDSE)**.
 
-### Generated Pipeline Visualizations (Latest CDSE Analysis)
+### Pipeline Architecture & Methodology
 
-Below are the latest verified pipeline figures generated from the Everest glacier screening workflow (Period: 2026-09-04 to 2026-09-16):
+The backend screening workflow in Copernicus Data Space follows a multi-stage triage pipeline:
+1. **01_catalog**: AOI specification and multi-temporal Sentinel-1 / Sentinel-2 STAC metadata query and acquisition batch grouping.
+2. **03_products**: 
+   - Multi-temporal Sentinel-1 SAR backscatter difference calculation (Orbit 12 ascending track).
+   - InSAR pair processing and interferometric coherence map generation (Burst 23790 IW1/VV).
+   - High-resolution cloud-free Sentinel-2 composite generation (2026-08-01 to 2026-09-20).
+   - Joint candidate extraction coupling backscatter drop and loss of coherence.
+3. **04_validation**:
+   - **Automated Optical Triage**: Multispectral Scene Classification (SCL) validation distinguishing clean ice/snow from bare rock/moraine and cloud gaps.
+   - **Copernicus 30m DEM Triage**: Slope, elevation, and terrain artifact screening (filtering false anomalies from steep rock faces >= 45°).
+4. **05_candidate_status**:
+   - Classification into `priority_glacier_review`, `terrain_review_required`, and `high_terrain_artifact_risk`.
+   - Direct export to standard GeoJSON and CSV for Windy plugin rendering.
+
+### Generated Pipeline Visualizations (Period: 2026-09-04 to 2026-09-16)
 
 #### 1. Everest Project Candidate Status Map
 > Comprehensive screening of candidate anomalies across the Everest AOI, categorizing priority glacier review points and steep terrain review regions.
@@ -33,11 +47,14 @@ Below are the latest verified pipeline figures generated from the Everest glacie
 
 ![Sentinel-2 Clear Composite](docs/images/everest_s2_clear_composite_20260801_20260920.png)
 
-### Key Features
-- **NASA EOSDIS GIBS WMTS Integration**: Real-time tile rendering for cryosphere, snow cover (MODIS/VIIRS), soil moisture, and atmospheric layers.
-- **Embedded Glacier Candidate Layer**: Displays high-confidence glacier anomaly candidates (`EVEREST-S1-CAND-049`, etc.) directly on the Windy map with slope, area, and triage metadata.
-- **Local Fallback**: Automatically loads built-in verified candidate features if local backend proxy is offline.
-- **Everest Focus**: One-click camera viewport targeting the Everest massif.
+### Complete Pipeline Products Synced
+The repository contains the complete verified pipeline deliverables under [`products/`](./products):
+- `products/03_products/sar_orbit12/`: SAR difference rasters, summary tables, and candidate maps.
+- `products/03_products/grd_insar_overlay/`: Combined radar + InSAR coherence overlay maps and metadata.
+- `products/03_products/optical_composite/`: Sentinel-2 reference composite.
+- `products/04_validation/automated_optical_triage/`: Automated optical triage results (`clean_ice_snow`, `needs_debris_review`).
+- `products/04_validation/priority_candidate_dem_triage/`: Candidates enriched with DEM elevation & slope metrics.
+- `products/05_candidate_status/`: Final GeoJSON and CSV status datasets.
 
 ### Safety & Interpretation Boundary
 This plugin is an imagery viewer and experimental screening interface. It does **not** confirm disasters, issue CAP messages, trigger evacuations, or declare route closures. All candidates require verified multi-source confirmation.
@@ -49,10 +66,25 @@ This plugin is an imagery viewer and experimental screening interface. It does *
 
 **HQMW Cryosphere（珠峰冰冻圈环境监测系统）** 是为 [Windy.com](https://www.windy.com) 定制开发的高山冰冻圈卫星遥感与冰川异常检测插件。本插件将 **NASA EOSDIS GIBS** 遥感底图与来自 **欧空局 Copernicus Data Space (CDSE)** 的 Sentinel-1 合成孔径雷达（GRD/InSAR 相干性）及 Sentinel-2 多光谱自动化初筛管线成果完整融合。
 
-### 最新处理流程与生成图像（2026-09-04 至 2026-09-16）
+### CDSE 完整处理流程与架构体系
+
+云端处理管线严密涵盖以下各个核心处理阶段：
+1. **01 数据编目 (01_catalog)**：制定珠峰监测核心区域（AOI），通过 STAC 接口检索近 90~365 天内升轨 12 轨的 Sentinel-1 SAR 数据集与 Sentinel-2 低云光学数据集。
+2. **03 遥感产品计算 (03_products)**：
+   - Sentinel-1 升轨（Orbit 12）多时相后向散射差值计算（VV/VH极化强度变动）。
+   - InSAR 干涉相干性计算（针对珠峰核心 Burst 23790 进行干涉配准与失相干提取）。
+   - Sentinel-2 无云高清合成图生成（2026-08-01 至 2026-09-20 多景像素级去云合成）。
+   - 雷达强度变化与 InSAR 失相干双指标联合提取初筛网格。
+3. **04 多源数据分流验证 (04_validation)**：
+   - **多光谱光学分流 (Automated Optical Triage)**：根据 SCL 场景分类与波段反射率，自动核算每个候选区域内的积雪/纯冰占比、裸岩碎石占比及云间隙率，将假阳性剔除。
+   - **Copernicus 30m 高精 DEM 地形分流**：计算每个候选区域的高程、中位数坡度以及陡坡占比（>=45°），标记陡峭岩壁造成的人工假象风险。
+4. **05 最终状态研判 (05_candidate_status)**：
+   - 输出标准评级结果（`priority_glacier_review` 重点冰川审查、`terrain_review_required` 地形复核），并生成适用于 Windy 的标准化 GeoJSON 成果。
+
+### 核心成果图件展示（周期：2026-09-04 至 2026-09-16）
 
 #### 1. 珠峰候选异常状态分布图 (Candidate Status Map)
-> 全面展示珠峰区域通过雷达后向散射与相干性变动筛选出的 18 个评估候选点，并依据地形坡度与光谱特征进行分级管控（优先级冰川审查 vs 高坡度人工假象风险）。
+> 全面展示珠峰区域通过雷达后向散射与相干性变动筛选出的 18 个评估候选点，并依据地形坡度与光谱特征进行分级管控。
 
 ![珠峰候选异常状态分布图](docs/images/everest_project_candidate_status_map_20260904_20260916.png)
 
@@ -71,11 +103,11 @@ This plugin is an imagery viewer and experimental screening interface. It does *
 
 ![Sentinel-2 无云合成图](docs/images/everest_s2_clear_composite_20260801_20260920.png)
 
-### 核心功能
-1. **NASA GIBS 全球遥感底图**：在 Windy LeafletGL 底图上直接检索并渲染冰冻圈（积雪覆盖率、冻融、冰面温度）、水圈、Sentinel-2 高清影像。
-2. **最新冰川变化候选图层**：内置 2026-09-04 ~ 2026-09-16 最新的雷达初筛候选点（如重点冰川变动候选点 `EVEREST-S1-CAND-049`），支持红/黄警戒分级显示并弹出面积、坡度与审查状态。
-3. **无缝离线降级**：即便本地 CDSE/Python 代理未运行，插件也能直接展示内嵌的经过验证的最新候选成果。
-4. **一键珠峰视角**：快速定位并对焦珠穆朗玛峰大本营及主峰区域。
+### 已完整同步的流程产出包 (`products/`)
+所有在 CDSE 生成的完整中间层与验证成果现已全量存放在仓库 [`products/`](./products) 目录：
+- `products/03_products/`：包含 Orbit 12 SAR 变化图、InSAR 叠加图、光学合成底图及元数据。
+- `products/04_validation/`：包含光学自动化初筛表格、纯冰雪分类 GeoJSON、DEM 高程与坡度分析结果。
+- `products/05_candidate_status/`：包含 Windy 插件消费的完整 GeoJSON 与 CSV 数据。
 
 ### 安全与业务边界
 本插件仅作为遥感影像观测与实验性初筛的可视化工具。任何检测到的候选点并不等同于已发生的冰崩、雪崩或灾害事件，不得直接用于触发 CAP 应急报文发布、路线关闭或人员疏散。
