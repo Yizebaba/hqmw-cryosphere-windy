@@ -116,20 +116,30 @@
                 pointToLayer: (feature: any, latlng: L.LatLng) => {
                     const props = feature?.properties || {};
                     const priority = props.project_candidate_status === 'priority_glacier_review';
-                    return new L.CircleMarker(latlng, {
+                    const marker = new L.CircleMarker(latlng, {
                         radius: priority ? 8 : 5,
                         color: priority ? '#e74c3c' : '#f39c12',
                         fillColor: priority ? '#e74c3c' : '#f1c40f',
                         fillOpacity: 0.85,
                         weight: 2,
                     });
+                    const label = priority ? 'PRIMARY REVIEW' : 'TERRAIN / DEBRIS REVIEW';
+                    marker.bindTooltip(
+                        `${props.candidate_id || 'CANDIDATE'} - ${label}`,
+                        { direction: 'top', offset: [0, -6], opacity: 0.95 }
+                    );
+                    return marker;
                 },
                 onEachFeature: (feature: any, layer: L.Layer) => {
                     const p = feature?.properties || {};
                     const popup = document.createElement('div');
                     const area = p.approximate_area_km2 ? `${(p.approximate_area_km2 * 1000).toFixed(1)} km2` : 'N/A';
                     const slope = p.median_slope_degrees ? `${p.median_slope_degrees.toFixed(1)} deg` : 'N/A';
-                    popup.innerHTML = `<strong>${p.candidate_id || 'CANDIDATE'}</strong><br/>Status: ${p.project_candidate_status || 'UNKNOWN'}<br/>Area: ${area}<br/>Slope: ${slope}<br/><small>${p.interpretation_limit || ''}</small>`;
+                    const iceSnow = p.clean_ice_snow_percent !== undefined ? `${Number(p.clean_ice_snow_percent).toFixed(1)}%` : 'N/A';
+                    const debris = p.unknown_possible_debris_ice_percent !== undefined ? `${Number(p.unknown_possible_debris_ice_percent).toFixed(1)}%` : 'N/A';
+                    const grdPeriod = '2026-09-04 to 2026-09-16';
+                    const insarPeriod = '2026-08-23 to 2026-09-16';
+                    popup.innerHTML = `<strong>${p.candidate_id || 'CANDIDATE'}</strong><br/>Status: ${p.project_candidate_status || 'UNKNOWN'}<br/>Area: ${area}<br/>Slope: ${slope}<br/>Ice/snow screening: ${iceSnow}<br/>Possible debris/unknown: ${debris}<br/>GRD comparison: ${grdPeriod}<br/>InSAR screening: ${insarPeriod}<br/><small>${p.interpretation_limit || ''}</small>`;
                     layer.bindPopup(popup);
                 },
             });
