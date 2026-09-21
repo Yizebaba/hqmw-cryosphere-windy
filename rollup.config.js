@@ -8,7 +8,6 @@ import rollupCleanup from 'rollup-plugin-cleanup';
 import { less } from 'svelte-preprocess-less';
 import sveltePreprocess from 'svelte-preprocess';
 import { transformCodeToESMPlugin, keyPEM, certificatePEM } from '@windycom/plugin-devtools';
-import fs from 'node:fs';
 
 const servePlugin = process.env.SERVE === 'true' ? serve({
     contentBase: 'dist',
@@ -42,16 +41,7 @@ export default {
         resolve({ browser: true, mainFields: ['module', 'jsnext:main', 'main'], dedupe: ['svelte'] }),
         commonjs(),
         transformCodeToESMPlugin(),
-        {
-            writeBundle() {
-                const source = 'static/project-artifacts';
-                const destination = 'dist/project-artifacts';
-                fs.rmSync(destination, { recursive: true, force: true });
-                if (fs.existsSync(source)) {
-                    fs.cpSync(source, destination, { recursive: true });
-                }
-            },
-        },
+        
         servePlugin,
     ].filter(Boolean),
 };
