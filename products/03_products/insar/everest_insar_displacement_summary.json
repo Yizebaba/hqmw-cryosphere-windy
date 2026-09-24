@@ -1,8 +1,23 @@
 {
-  "product": "Everest InSAR LOS Displacement Screening",
-  "evaluated_pixels": 20278,
-  "min_mm": 0.4573538601398468,
-  "max_mm": 2.7456417083740234,
-  "median_mm": 0.660666823387146,
-  "mean_mm": 0.785514235496521
+  "pipeline": "Everest Autonomous InSAR LOS Displacement",
+  "timestamp_utc": "2026-09-24T06:33:23.393363",
+  "insar_pair": {
+    "master": "2026-09-04",
+    "slave": "2026-09-16"
+  },
+  "burst_id": 23790,
+  "wavelength_cm": 5.5465,
+  "phase_to_mm_factor": -4.4137644592959875,
+  "results": {
+    "evaluated_candidate_pixels": 20278,
+    "min_mm": 0.46,
+    "max_mm": 2.75,
+    "median_mm": 0.66,
+    "mean_mm": 0.79,
+    "bedrock_anchor": {
+      "grid_y": 285,
+      "grid_x": 613,
+      "coherence": 0.965
+    }
+  }
 }
