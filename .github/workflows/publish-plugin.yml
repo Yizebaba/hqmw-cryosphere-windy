@@ -7,17 +7,23 @@ jobs:
   publish-plugin:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     env:
       WINDY_API_KEY: ${{ secrets.WINDY_API_KEY }}
     steps:
-      - uses: actions/checkout@v7
-      - name: Auto-bump patch version if triggered by pipeline dispatch
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+      - name: Auto-bump patch version and persist
         run: |
-          npm version patch --no-git-tag-version || true
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          npm version patch --no-git-tag-version
           NEW_VER=$(node -p "require('./package.json').version")
-          sed -i "s/version: '.*'/version: '$NEW_VER'/" src/pluginConfig.ts || true
+          sed -i "s/version: '.*'/version: '$NEW_VER'/" src/pluginConfig.ts
           echo "Automated build version set to: $NEW_VER"
+          git add package.json package-lock.json src/pluginConfig.ts
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(release): bump version to $NEW_VER" && git push)
 
       - name: Build
         run: |
