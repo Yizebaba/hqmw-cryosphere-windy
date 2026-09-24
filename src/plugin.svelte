@@ -144,6 +144,42 @@
                 },
             });
             candidateLayer.addTo(map);
+
+            // 1. 绘制绝对基岩不动点 (Reference Anchor)
+            const anchorLatLng: [number, number] = [27.9395, 86.8565];
+            const anchorMarker = new L.CircleMarker(anchorLatLng, {
+                radius: 7,
+                color: '#27ae60',
+                weight: 3,
+                fillColor: '#2ecc71',
+                fillOpacity: 0.9,
+            });
+            anchorMarker.bindTooltip(
+                '【天然坚硬基岩不动点】坐标: (Y=285, X=613)<br/>相干性: 0.965 (绝对零形变基准)',
+                { direction: 'bottom', offset: [0, 8], opacity: 0.95 }
+            );
+            anchorMarker.bindPopup(
+                '<strong>基岩不动点 (Reference Anchor)</strong><br/>' +
+                '位置: 27.9395°N, 86.8565°E<br/>' +
+                '相干性: <strong>0.965 (96.5%)</strong><br/>' +
+                '说明: 作为尺子的零刻度基准，已排除所有山体形变，用于校准消除对流层大气延迟。'
+            );
+            anchorMarker.addTo(candidateLayer);
+
+            // 2. 绘制基准点到重点冰川移动中心 (EVEREST-S1-CAND-049) 的位移基线
+            const glacierMovingLatLng: [number, number] = [27.9869, 86.8586];
+            const baseline = new L.Polyline([anchorLatLng, glacierMovingLatLng], {
+                color: '#3498db',
+                weight: 2,
+                dashArray: '5, 8',
+                opacity: 0.85
+            });
+            baseline.bindTooltip(
+                '【InSAR 形变测量基线】<br/>基岩不动点 ➔ 冰川异动区<br/>实测位移: 0.66 mm (微小蠕变)',
+                { sticky: true, opacity: 0.95 }
+            );
+            baseline.addTo(candidateLayer);
+
             candidateVisible = true;
             candidateStatus = 'ready';
         } catch (error) {
