@@ -12,6 +12,13 @@ jobs:
       WINDY_API_KEY: ${{ secrets.WINDY_API_KEY }}
     steps:
       - uses: actions/checkout@v7
+      - name: Auto-bump patch version if triggered by pipeline dispatch
+        run: |
+          npm version patch --no-git-tag-version || true
+          NEW_VER=$(node -p "require('./package.json').version")
+          sed -i "s/version: '.*'/version: '$NEW_VER'/" src/pluginConfig.ts || true
+          echo "Automated build version set to: $NEW_VER"
+
       - name: Build
         run: |
           npm ci
