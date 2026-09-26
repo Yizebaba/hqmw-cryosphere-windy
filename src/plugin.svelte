@@ -33,6 +33,20 @@
         {#if candidateError}<div class="error">{candidateError}</div>{/if}
     </div>
 
+    <!-- NASA MEaSUREs ITS_LIVE 冰川流速热力图层卡片 -->
+    <div class="status-card" class:ready={itsliveStatus === 'ready'} style="border-left: 4px solid #3498db; margin-top: 10px;">
+        <span>NASA ITS_LIVE 冰川流速底图</span>
+        <strong style="color: #2980b9;">{itsliveStatus.toUpperCase()}</strong>
+        <small>NASA MEaSUREs 120m 全球冰川流速马赛克 (Landsat+S1/S2)<br/>孔布冰川基准流速: 35.0 m/yr</small>
+        <label class="field-label" for="itslive-opacity">流速图层透明度 {Math.round(itsliveOpacity * 100)}%</label>
+        <input id="itslive-opacity" type="range" min="0" max="1" step="0.05" bind:value={itsliveOpacity} on:input={updateItsliveOpacity} />
+        <div class="actions">
+            <button on:click={toggleItsliveLayer}>{itsliveVisible ? '隐藏流速图' : '显示流速图'}</button>
+            <button on:click={focusCandidates}>聚焦冰川流速</button>
+        </div>
+        {#if itsliveError}<div class="error">{itsliveError}</div>{/if}
+    </div>
+
     <!-- 明确展示 InSAR 与 SAM 的量化测量卡片 -->
     <div class="status-card ready" style="border-left: 4px solid #e74c3c; margin-top: 10px;">
         <span>INSAR & SAM 冰川形变反演</span>
@@ -64,6 +78,12 @@
 
     let gibsLayer: L.TileLayer | null = null;
     let candidateLayer: L.GeoJSON | null = null;
+    let itsliveLayer: L.TileLayer | null = null;
+    let itsliveVisible = true;
+    let itsliveOpacity = 0.65;
+    let itsliveStatus: 'loading' | 'ready' | 'hidden' | 'error' = 'loading';
+    let itsliveError = '';
+    const itsliveTileUrl = 'https://its-live-data.s3-us-west-2.amazonaws.com/velocity_mosaic/v2/static/v_tiles_global/{z}/{x}/{y}.png';
     let gibsVisible = true;
     let candidateVisible = true;
     let gibsStatus: 'loading' | 'ready' | 'hidden' | 'error' = 'loading';
@@ -77,6 +97,35 @@
     const gibsUrl = () => gibsTemplate.replace('{Time}', gibsDate);
     const removeGibsLayer = () => { gibsLayer?.remove(); gibsLayer = null; gibsVisible = false; };
     const removeCandidateLayer = () => { candidateLayer?.remove(); candidateLayer = null; candidateVisible = false; };
+    const removeItsliveLayer = () => { itsliveLayer?.remove(); itsliveLayer = null; itsliveVisible = false; };
+
+    const loadItsliveLayer = () => {
+        removeItsliveLayer();
+        itsliveStatus = 'loading';
+        itsliveError = '';
+        itsliveLayer = new L.TileLayer(itsliveTileUrl, {
+            minZoom: 0,
+            maxNativeZoom: 13,
+            maxZoom: 19,
+            opacity: Number(itsliveOpacity),
+            tileSize: 256,
+            layerBucketId: layerOrder.MAIN,
+            noWrap: true,
+            continuousWorld: true
+        });
+        itsliveLayer.on('load', () => { itsliveStatus = 'ready'; });
+        itsliveLayer.on('tileerror', () => { itsliveStatus = 'error'; itsliveError = 'NASA ITS_LIVE tile unavailable'; });
+        itsliveLayer.addTo(map);
+        itsliveVisible = true;
+    };
+    const toggleItsliveLayer = () => {
+        if (itsliveVisible) { removeItsliveLayer(); itsliveStatus = 'hidden'; return; }
+        loadItsliveLayer();
+    };
+    const updateItsliveOpacity = (e: Event) => {
+        itsliveOpacity = Number((e.target as HTMLInputElement).value);
+        if (itsliveLayer) itsliveLayer.setOpacity(itsliveOpacity);
+    };
 
     const focusEverest = () => { map.setView([27.9881, 86.925], 10); };
     const focusCandidates = () => { map.fitBounds([[27.78, 86.55], [28.04, 87.05]]); };
@@ -234,6 +283,7 @@
 
     export const onopen = () => {
         if (!gibsLayer && gibsVisible) loadGibsLayer();
+        if (!itsliveLayer && itsliveVisible) loadItsliveLayer();
         if (!candidateLayer && candidateVisible) loadCandidateLayer();
     };
 
@@ -245,6 +295,7 @@
 
     onDestroy(() => {
         removeGibsLayer();
+        removeItsliveLayer();
         removeCandidateLayer();
     });
 </script>
