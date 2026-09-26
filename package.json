@@ -1,6 +1,6 @@
 {
     "name": "windy-plugin-everest-mhews",
-    "version": "3.1.14",
+    "version": "3.1.15",
     "private": true,
     "type": "module",
     "description": "Satellite, environmental observation, and event monitoring for the Everest region.",
