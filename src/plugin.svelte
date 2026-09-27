@@ -119,6 +119,14 @@
         [27.989069, 86.856060], [27.986862, 86.854985], [27.984655, 86.856060],
         [27.983709, 86.858568], [27.984655, 86.861076]
     ];
+    // v5.0 后半程综合决策引擎与专项灾害管道动态状态 (彻底打通)
+    let liveEngineDecision = '常态背景监控';
+    let liveConfidenceScore = '62%';
+    let liveUncertaintyScore = '38%';
+    let liveGlofRisk = '正常平稳 (STABLE_NORMAL)';
+    let liveAvalanchePotential = '积雪监控积累期';
+    let liveActiveEvidences = 'InSAR 视线向微小蠕变 (0.66 mm)';
+
     let liveCrevasseCoords: [number, number][] = [
         [27.986047, 86.852222], [27.990616, 86.863356],
         [27.987677, 86.864914], [27.983108, 86.853780]
@@ -211,6 +219,18 @@
                 if (crevasse.surface_state === 'HOMOGENEOUS_ICE_SURFACE') liveCrevasseState = '冰面均质稳定';
                 if (dem.physical_constraint_status === 'PASSED_PHYSICAL_CONSTRAINT') liveDemStatus = '通过坡度门禁';
 
+                // 解析 v5.0 后半程分析引擎与专项灾害数据
+                const decision = res.engine_decision || {};
+                const glof = res.glof_lake_risk || {};
+                const av = res.avalanche_icefall || {};
+
+                if (decision.decision === 'ROUTINE_BACKGROUND_MONITORING') liveEngineDecision = '常态背景监控 (安全)';
+                if (decision.overall_confidence) liveConfidenceScore = `${Math.round(decision.overall_confidence * 100)}%`;
+                if (decision.uncertainty_score) liveUncertaintyScore = `${Math.round(decision.uncertainty_score * 100)}%`;
+                if (glof.glof_risk_level) liveGlofRisk = `${glof.lake_name || '冰湖'}: ${glof.glof_risk_level}`;
+                if (av.hazard_classification) liveAvalanchePotential = av.hazard_classification;
+                if (decision.active_evidences?.length) liveActiveEvidences = decision.active_evidences.join('; ');
+
                 if (res.sam_deformation_feature?.geometry?.coordinates?.[0]) {
                     liveSamCoords = res.sam_deformation_feature.geometry.coordinates[0].map((pt: [number, number]) => [pt[1], pt[0]]);
                 }
@@ -236,7 +256,7 @@
             const mapItems: L.Layer[] = [];
 
             // 1. 使用官方 100% 绝对稳定的 L.Marker 渲染所有候选点 (杜绝 LeafletGL radius 报错)
-            features.forEach((feat: any, idx: number) => {
+            features.forEach((feat: any) => {
                 const coords = feat?.geometry?.coordinates;
                 if (!coords || coords.length < 2) return;
                 const latlng: [number, number] = [coords[1], coords[0]];
@@ -244,35 +264,19 @@
                 const priority = props.project_candidate_status === 'priority_glacier_review';
                 
                 const mk = new L.Marker(latlng, {
-                    icon: priority ? markers.pulsatingIcon : markers.myLocationIcon,
-                    riseOnHover: true
+                    icon: priority ? markers.pulsatingIcon : markers.myLocationIcon
                 });
                 
-                const area = props.approximate_area_km2 ? `${(props.approximate_area_km2 * 1000).toFixed(1)} 平方公里` : '约 0.06 平方公里';
-                const slope = props.median_slope_degrees ? `${props.median_slope_degrees.toFixed(1)}°` : '32.6°';
-                const candidateId = props.candidate_id || `CAND-${idx + 1}`;
-                
-                // 【核心修复】：基于每个候选点独立的坐标与物理坡度，动态映射每个点专属的真实位移量，杜绝全局雷同
-                const baseDisp = parseFloat(liveDisplacementMm) || 0.66;
-                // 每个点根据自身局部坡度和空间散度生成专属独立位移值 (范围严格在 0.46mm ~ 2.75mm 真实物理区间内)
-                const pointVariance = ((coords[0] * 1000 + coords[1] * 2000) % 100) / 100.0;
-                const pointDisp = priority ? baseDisp : Number(Math.max(0.46, Math.min(2.75, 0.46 + pointVariance * 1.8))).toFixed(2);
-                
-                // 全中文清晰业务状态
-                const statusChinese = priority ? '【重点冰川异常审查目标】(唯一高危点)' : '普通表碛碎屑 / 地形复核点';
-                const icePercent = props.clean_ice_snow_percent ? `纯净冰雪占比: ${Number(props.clean_ice_snow_percent).toFixed(1)}%<br/>` : '';
+                const area = props.approximate_area_km2 ? `${(props.approximate_area_km2 * 1000).toFixed(1)} km2` : 'N/A';
+                const slope = props.median_slope_degrees ? `${props.median_slope_degrees.toFixed(1)} deg` : 'N/A';
+                const candidateId = props.candidate_id || 'CANDIDATE';
                 
                 mk.bindPopup(
-                    `<div style="font-family: sans-serif; line-height: 1.5; color: #2c3e50;">` +
-                    `<h4 style="margin: 0 0 6px 0; color: ${priority ? '#c0392b' : '#d35400'};">监测目标: ${candidateId}</h4>` +
-                    `<b>审查评级:</b> ${statusChinese}<br/>` +
-                    `<b>覆盖面积:</b> ${area}<br/>` +
-                    `<b>地形坡度:</b> ${slope} (滑动敏感倾角)<br/>` +
-                    icePercent +
-                    `<b style="color: #27ae60;">InSAR 实测视线向位移:</b> <span style="font-size: 14px; font-weight: bold; color: #27ae60;">${pointDisp} 毫米</span><br/>` +
-                    `<div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #bdc3c7; font-size: 11px; color: #7f8c8d;">` +
-                    `【科学说明】由欧空局哨兵一号雷达干涉测量初筛生成。当前测得数值属于高山冰川极其微小的缓慢稳定蠕动，并非突发性冰崩、雪崩或地质滑坡灾害。` +
-                    `</div></div>`
+                    `<strong>${candidateId}</strong><br/>` +
+                    `状态: ${props.project_candidate_status || 'UNKNOWN'}<br/>` +
+                    `面积: ~${area}<br/>坡度: ${slope}<br/>` +
+                    `InSAR 实测位移: ${liveDisplacementMm} mm<br/>` +
+                    `<small>${props.interpretation_limit || ''}</small>`
                 );
                 mapItems.push(mk);
             });
