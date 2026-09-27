@@ -73,7 +73,7 @@
 
 <script lang="ts">
     import bcast from '@windy/broadcast';
-    import { layerOrder, map, markers } from '@windy/map';
+    import { layerOrder, map, centerMap, markers } from '@windy/map';
     import { onDestroy, onMount } from 'svelte';
     import config from './pluginConfig';
     import { allCandidates } from './candidateData';
@@ -157,8 +157,8 @@
         if (itsliveLayer) itsliveLayer.setOpacity(itsliveOpacity);
     };
 
-    const focusEverest = () => { map.setView([27.9881, 86.925], 10); };
-    const focusCandidates = () => { map.setView([27.9869, 86.8586], 13); };
+    const focusEverest = () => { centerMap({ lat: 27.9881, lon: 86.925, zoom: 10 }); };
+    const focusCandidates = () => { centerMap({ lat: 27.9869, lon: 86.8586, zoom: 12 }); };
 
     const loadGibsLayer = () => {
         removeGibsLayer();
@@ -317,11 +317,16 @@
             candidateStatus = 'error';
             candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
         }
+    } catch (error) {
+            candidateStatus = 'error';
+            candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
+        }
     };
 
     const toggleCandidateLayer = () => { if (candidateVisible) { removeCandidateLayer(); candidateStatus = 'hidden'; return; } loadCandidateLayer(); };
 
     export const onopen = () => {
+        focusEverest();
         if (!gibsLayer && gibsVisible) loadGibsLayer();
         if (!itsliveLayer && itsliveVisible) loadItsliveLayer();
         if (!candidateLayer && candidateVisible) loadCandidateLayer();
