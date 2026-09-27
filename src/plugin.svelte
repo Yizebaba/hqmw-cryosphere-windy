@@ -239,12 +239,13 @@
         }
     };
 
-        const loadCandidateLayer = () => {
+        const loadCandidateLayer = async () => {
         removeCandidateLayer();
         candidateStatus = 'loading';
         candidateError = '';
         try {
-            refreshLiveData();
+            // 确保先从后端远端拿到最新的 0.66mm、NASA流速和SAM多边形，再画地图点！
+            await refreshLiveData();
             const feed = allCandidates as any;
             const features = Array.isArray(feed.features) ? feed.features : [];
             candidateCount = features.length;
