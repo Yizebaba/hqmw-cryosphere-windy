@@ -83,7 +83,7 @@
     let candidateLayer: L.FeatureGroup | null = null;
     let itsliveLayer: L.TileLayer | null = null;
     let itsliveVisible = true;
-    let itsliveOpacity = 0.65;
+    let itsliveOpacity = 0.95;
     let itsliveStatus: 'loading' | 'ready' | 'hidden' | 'error' = 'ready';
     let itsliveError = '';
     const itsliveTileUrl = 'https://its-live-data.s3-us-west-2.amazonaws.com/velocity_mosaic/v2/static/v_tiles_global/{z}/{x}/{y}.png';
@@ -94,7 +94,7 @@
     let gibsError = '';
     let candidateError = '';
     let gibsDate = initialDate;
-    let gibsOpacity = 0.7;
+    let gibsOpacity = 0.95;
     let candidateCount = 0;
 
     // 固定远程数据源地址 (完全解耦，云端算完立刻生效，Windy 插件零重编译发版！)
@@ -162,7 +162,7 @@
     };
 
     const focusEverest = () => { centerMap({ lat: 27.9881, lon: 86.925, zoom: 10 }); };
-    const focusCandidates = () => { centerMap({ lat: 27.9869, lon: 86.8586, zoom: 12 }); };
+    const focusCandidates = () => { centerMap({ lat: 27.9869, lon: 86.8586, zoom: 13 }); };
 
         // 保证 12 色动态跑马灯动画 100% 全局生效，彻底消灭 Svelte 作用域摇树问题
     const injectGlobalNeonStyles = () => {
