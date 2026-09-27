@@ -335,29 +335,31 @@
                 
                 // 100% 复制自桌面预览文件的【样式 1 骨架模板】 (只保留骨架，所有文字由真实数据源动态填充)
                 const popupHTML = `
-                <div class="popup-b-tube">
-                    <div class="swiss-header">
-                        <span class="swiss-title">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>
-                        <span class="swiss-badge">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>
-                    </div>
-                    <div class="swiss-hero">
-                        <div>
-                            <div class="swiss-label">InSAR 视线向位移</div>
-                            <div class="swiss-val">${pointDisp} <span style="font-size: 16px;">mm</span></div>
+                <div class="everest-running-conic-frame">
+                    <div class="everest-conic-inner">
+                        <div class="swiss-header">
+                            <span class="swiss-title">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>
+                            <span class="swiss-badge">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>
                         </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 12px; font-weight: 800; color: #059669;">● ${liveStatusText}</div>
-                            <div class="swiss-label">坡度 ${slope} | ${area}</div>
+                        <div class="swiss-hero">
+                            <div>
+                                <div class="swiss-label">InSAR 视线向位移</div>
+                                <div class="swiss-val">${pointDisp} <span style="font-size: 16px;">mm</span></div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 12px; font-weight: 800; color: #059669;">● ${liveStatusText}</div>
+                                <div class="swiss-label">坡度 ${slope} | ${area}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="swiss-timeline">
-                        <div class="timeline-node"><b>雷达干涉对</b>: ${liveDatePair} (12天时间基线)</div>
-                        <div class="timeline-node"><b>NASA 39年基准</b>: ${liveBaselineSpeed} m/yr (当前13.1 m/yr, 无加速)</div>
-                        <div class="timeline-node"><b>DEM 物理门禁</b>: ${liveDemStatus}</div>
-                        <div class="timeline-node"><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>
-                    </div>
-                    <div class="swiss-footer">
-                        <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。
+                        <div class="swiss-timeline">
+                            <div class="timeline-node"><b>雷达干涉对</b>: ${liveDatePair} (12天时间基线)</div>
+                            <div class="timeline-node"><b>NASA 39年基准</b>: ${liveBaselineSpeed} m/yr (当前13.1 m/yr, 无加速)</div>
+                            <div class="timeline-node"><b>DEM 物理门禁</b>: ${liveDemStatus}</div>
+                            <div class="timeline-node"><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>
+                        </div>
+                        <div class="swiss-footer">
+                            <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。
+                        </div>
                     </div>
                 </div>
                 `;
@@ -467,7 +469,8 @@
 
     
     
-    /* ================= 100% 复制自桌面预览文件【样式 1】的真实原始 CSS 样式 ================= */
+    
+    /* ================= 真正的 360 度飞速跑马灯边框 (Conic Gradient Rotate) ================= */
     :global(.everest-neon-leaflet-popup .leaflet-popup-content-wrapper) {
         background: transparent !important;
         box-shadow: none !important;
@@ -482,43 +485,58 @@
         display: none !important;
     }
 
-    :global(.popup-b-tube) {
+    /* 跑马灯外框：3像素彩色光管以 3 秒/圈的速度顺时针飞速旋转！ */
+    :global(.everest-running-conic-frame) {
         position: relative !important;
-        background: rgba(240, 248, 255, 0.75) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border-radius: 16px !important;
-        padding: 22px !important;
-        color: #1e293b !important;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        border-radius: 17px !important;
+        padding: 3px !important; /* 3像素清晰边框轨道 */
+        overflow: hidden !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
     }
 
-    /* 纯边框外线霓虹变色流动光管 (100% 原始样式 1 动画与渐变) */
-    :global(.popup-b-tube::before) {
+    :global(.everest-running-conic-frame::before) {
         content: '' !important;
         position: absolute !important;
-        inset: -3px !important;
-        border-radius: 19px !important;
-        padding: 3px !important;
-        background: linear-gradient(90deg, #ff007f, #00f2fe, #2ed573, #ffa502, #ff007f) !important;
-        background-size: 300% 300% !important;
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
-        -webkit-mask-composite: xor !important;
-        mask-composite: exclude !important;
-        animation: borderTubeFlow 4s linear infinite !important;
-        box-shadow: 0 0 15px rgba(0, 242, 254, 0.6) !important;
+        top: -60% !important;
+        left: -60% !important;
+        width: 220% !important;
+        height: 220% !important;
+        background: conic-gradient(
+            #ff007f 0deg,
+            #00f2fe 72deg,
+            #2ed573 144deg,
+            #ffa502 216deg,
+            #9b59b6 288deg,
+            #ff007f 360deg
+        ) !important;
+        animation: rotateConicBorder 3s linear infinite !important;
+        z-index: 0 !important;
     }
-    @keyframes borderTubeFlow {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 100% 50%; }
+
+    @keyframes rotateConicBorder {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* 内部卡片：严格设定为 60% 冰川霜白半透明 */
+    :global(.everest-conic-inner) {
+        position: relative !important;
+        z-index: 1 !important;
+        background: rgba(240, 248, 255, 0.60) !important; /* 严格 60% 冰川霜白半透明 */
+        backdrop-filter: blur(16px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+        border-radius: 14px !important;
+        padding: 20px 22px !important;
+        color: #0f172a !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     }
 
     :global(.swiss-header) {
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.35) !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.4) !important;
         padding-bottom: 12px !important;
         margin-bottom: 14px !important;
     }
@@ -532,12 +550,12 @@
         font-weight: 700 !important;
         color: #0284c7 !important;
         background: rgba(224, 242, 254, 0.85) !important;
-        border: 1px solid rgba(2, 132, 199, 0.3) !important;
+        border: 1px solid rgba(2, 132, 199, 0.4) !important;
         padding: 3px 10px !important;
         border-radius: 12px !important;
     }
     :global(.swiss-hero) {
-        background: rgba(255, 255, 255, 0.65) !important;
+        background: rgba(255, 255, 255, 0.60) !important;
         border: 1px solid rgba(255, 255, 255, 0.8) !important;
         border-radius: 10px !important;
         padding: 12px 14px !important;
@@ -554,7 +572,7 @@
     }
     :global(.swiss-label) {
         font-size: 11px !important;
-        color: #64748b !important;
+        color: #475569 !important;
         font-weight: 600 !important;
     }
     :global(.swiss-timeline) {
@@ -562,7 +580,7 @@
         padding-left: 14px !important;
         margin: 14px 0 14px 4px !important;
         font-size: 11px !important;
-        color: #334155 !important;
+        color: #1e293b !important;
         line-height: 1.6 !important;
     }
     :global(.timeline-node) {
@@ -580,14 +598,14 @@
         background: #0284c7 !important;
     }
     :global(.swiss-footer) {
-        background: rgba(255, 255, 255, 0.6) !important;
-        border: 1px solid rgba(255, 255, 255, 0.7) !important;
+        background: rgba(255, 255, 255, 0.60) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
         border-radius: 8px !important;
         padding: 10px 12px !important;
         font-size: 11px !important;
-        color: #475569 !important;
+        color: #334155 !important;
         line-height: 1.5 !important;
     }
-
 </style>
+
 
