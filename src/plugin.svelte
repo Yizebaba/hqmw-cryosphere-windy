@@ -158,7 +158,7 @@
     };
 
     const focusEverest = () => { map.setView([27.9881, 86.925], 10); };
-    const focusCandidates = () => { map.fitBounds([[27.78, 86.55], [28.04, 87.05]]); };
+    const focusCandidates = () => { map.setView([27.9869, 86.8586], 13); };
 
     const loadGibsLayer = () => {
         removeGibsLayer();
@@ -224,120 +224,100 @@
         }
     };
 
-    const loadCandidateLayer = async () => {
+    const loadCandidateLayer = () => {
         removeCandidateLayer();
         candidateStatus = 'loading';
         candidateError = '';
         try {
-            await refreshLiveData();
+            refreshLiveData();
             const feed = allCandidates as any;
             const features = Array.isArray(feed.features) ? feed.features : [];
             candidateCount = features.length;
+
             candidateLayer = new L.GeoJSON(feed as never, {
                 pointToLayer: (feature: any, latlng: L.LatLng) => {
                     const props = feature?.properties || {};
                     const priority = props.project_candidate_status === 'priority_glacier_review';
-                    const marker = new L.Marker(latlng, {
-                        icon: priority ? markers.pulsatingIcon : markers.myLocationIcon,
-                        keyboard: false,
-                        riseOnHover: true,
+                    // 使用 Windy 绝对兼容的 CircleMarker 避免 tooltip/icon 崩溃
+                    return new L.CircleMarker(latlng, {
+                        radius: priority ? 10 : 6,
+                        color: priority ? '#e74c3c' : '#f39c12',
+                        weight: priority ? 3 : 2,
+                        fillColor: priority ? '#ff4757' : '#ffa502',
+                        fillOpacity: 0.85
                     });
-                    const label = priority ? 'PRIMARY REVIEW' : 'TERRAIN / DEBRIS REVIEW';
-                    marker.bindTooltip(
-                        `${props.candidate_id || 'CANDIDATE'} - ${label}`,
-                        { direction: 'top', offset: [0, -10], opacity: 0.95 }
-                    );
-                    return marker;
                 },
                 onEachFeature: (feature: any, layer: L.Layer) => {
                     const p = feature?.properties || {};
                     const popup = document.createElement('div');
                     const area = p.approximate_area_km2 ? `${(p.approximate_area_km2 * 1000).toFixed(1)} km2` : 'N/A';
                     const slope = p.median_slope_degrees ? `${p.median_slope_degrees.toFixed(1)} deg` : 'N/A';
-                    const iceSnow = p.clean_ice_snow_percent !== undefined ? `${Number(p.clean_ice_snow_percent).toFixed(1)}%` : 'N/A';
-                    const debris = p.unknown_possible_debris_ice_percent !== undefined ? `${Number(p.unknown_possible_debris_ice_percent).toFixed(1)}%` : 'N/A';
-                    const grdPeriod = '2026-09-04 to 2026-09-16';
-                    const insarPeriod = '2026-08-23 to 2026-09-16';
                     const candidateId = p.candidate_id || 'CANDIDATE';
-                    const imageUrl = `https://raw.githubusercontent.com/Yizebaba/hqmw-cryosphere-windy/main/static/project-artifacts/candidate-cutouts/${candidateId}_optical_review.png`;
-                    popup.innerHTML = `<strong>${candidateId}</strong><br/>Status: ${p.project_candidate_status || 'UNKNOWN'}<br/>Area: ${area}<br/>Slope: ${slope}<br/>Ice/snow screening: ${iceSnow}<br/>Possible debris/unknown: ${debris}<br/>GRD comparison: ${grdPeriod}<br/>InSAR screening: ${insarPeriod}<br/><img class="candidate-analysis-image" src="${imageUrl}" alt="${candidateId} Sentinel-2 optical review"/><a class="candidate-analysis-link" href="${imageUrl}" target="_blank" rel="noopener">Open analysis image</a><br/><small>${p.interpretation_limit || ''}</small>`;
+                    popup.innerHTML = `<strong>${candidateId}</strong><br/>` +
+                        `状态: ${p.project_candidate_status || 'UNKNOWN'}<br/>` +
+                        `面积: ~${area}<br/>坡度: ${slope}<br/>` +
+                        `InSAR 实测位移: ${liveDisplacementMm} mm<br/>` +
+                        `<small>${p.interpretation_limit || ''}</small>`;
                     layer.bindPopup(popup);
                 },
             });
-            candidateLayer.addTo(map);
 
-            // 1. 绘制绝对基岩不动点 (Reference Anchor)
+            // 1. 天然坚硬基岩不动点 (Reference Anchor) - 绿色醒目大圆圈
             const anchorMarker = new L.CircleMarker(liveAnchorCoords, {
-                radius: 7,
+                radius: 12,
                 color: '#27ae60',
-                weight: 3,
+                weight: 4,
                 fillColor: '#2ecc71',
-                fillOpacity: 0.9,
+                fillOpacity: 0.95,
             });
-            anchorMarker.bindTooltip(
-                `【天然坚硬基岩不动点】坐标: (27.9395°N, 86.8565°E)<br/>相干性: ${liveAnchorCoherence} (绝对零形变基准)`,
-                { direction: 'bottom', offset: [0, 8], opacity: 0.95 }
-            );
             anchorMarker.bindPopup(
-                '<strong>基岩不动点 (Reference Anchor)</strong><br/>' +
+                '<strong>天然坚硬基岩不动点 (Reference Anchor)</strong><br/>' +
                 '位置: 27.9395°N, 86.8565°E<br/>' +
-                `相干性: <strong>${liveAnchorCoherence}</strong><br/>` +
+                `雷达相干性: <strong>${liveAnchorCoherence}</strong> (绝对零形变基准)<br/>` +
                 '说明: 作为尺子的零刻度基准，已排除所有山体形变，用于校准消除对流层大气延迟。'
             );
             anchorMarker.addTo(candidateLayer);
 
-            // 2. 绘制基准点到重点冰川移动中心 (EVEREST-S1-CAND-049) 的位移基线
+            // 2. 基准点到形变区的形变测量基线 (折线) - 蓝色高亮实线
             const baseline = new L.Polyline([liveAnchorCoords, liveGlacierCenter], {
-                color: '#3498db',
-                weight: 2,
-                dashArray: '5, 8',
-                opacity: 0.85
+                color: '#2980b9',
+                weight: 4,
+                dashArray: '6, 6',
+                opacity: 0.95
             });
-            baseline.bindTooltip(
-                `【InSAR 形变测量基线】<br/>基岩不动点 ➔ 冰川异动区<br/>实时位移: ${liveDisplacementMm} mm (${liveStatusText})`,
-                { sticky: true, opacity: 0.95 }
+            baseline.bindPopup(
+                `<strong>InSAR 冰川形变测量基线</strong><br/>` +
+                `起点: 天然基岩不动点 ➔ 终点: 孔布冰川异动区<br/>` +
+                `时相: ${liveDatePair}<br/>` +
+                `实测微小蠕变位移: <strong>${liveDisplacementMm} mm</strong> (${liveStatusText})`
             );
             baseline.addTo(candidateLayer);
 
-            // 3. 绘制 InSAR + SAM 闭合形变多边形区域 (Deformation Region Polygon)
+            // 3. InSAR + SAM 闭合形变多边形区域 (半透明红色醒目区域)
             const samPolygon = new L.Polygon(liveSamCoords, {
-                color: '#e74c3c',
-                weight: 2,
+                color: '#c0392b',
+                weight: 3,
                 fillColor: '#e74c3c',
-                fillOpacity: 0.25,
-                dashArray: '3, 4'
+                fillOpacity: 0.45
             });
-            samPolygon.bindTooltip(
-                `【InSAR + SAM 冰川形变区】<br/>实测面积: ~0.385 km²<br/>实时位移: ${liveDisplacementMm} mm`,
-                { direction: 'top', opacity: 0.95 }
-            );
             samPolygon.bindPopup(
                 '<strong>InSAR + SAM 闭合形变区域</strong><br/>' +
                 '中心坐标: 27.9869°N, 86.8586°E<br/>' +
-                '影响面积: ~0.385 km²<br/>' +
-                `实时位移测量值: <strong>${liveDisplacementMm} mm</strong> (${liveStatusText})<br/>` +
-                `基线比对: NASA ITS_LIVE 39年参考流速 ${liveBaselineSpeed} m/yr<br/>` +
+                '实测面积: ~0.385 km²<br/>' +
+                `实测位移: <strong>${liveDisplacementMm} mm</strong> (${liveStatusText})<br/>` +
+                `基线对比: NASA ITS_LIVE 39年参考流速 ${liveBaselineSpeed} m/yr<br/>` +
                 '<small>通过 InSAR 梯度提示驱动 SAM 提取，已排除陡坡假象。</small>'
             );
             samPolygon.addTo(candidateLayer);
 
-            // 4. 绘制冰裂缝走向构造区多边形 (Crevasse Field)
-            const crevassePolygon = new L.Polygon(liveCrevasseCoords, {
-                color: '#9b59b6',
-                weight: 1.5,
-                fillColor: '#8e44ad',
-                fillOpacity: 0.20,
-                dashArray: '2, 4'
-            });
-            crevassePolygon.bindTooltip(
-                '【光学冰面裂隙结构构造区】<br/>走向: 65° | 状态: 冰面均质稳定',
-                { direction: 'bottom', opacity: 0.95 }
-            );
-            crevassePolygon.addTo(candidateLayer);
-
+            candidateLayer.addTo(map);
             candidateVisible = true;
             candidateStatus = 'ready';
         } catch (error) {
+            candidateStatus = 'error';
+            candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
+        }
+    }; catch (error) {
             candidateStatus = 'error';
             candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
         }
