@@ -1,3 +1,87 @@
+<div class="plugin__mobile-header">
+    { title }
+</div>
+<section class="plugin__content">
+    <div
+        class="plugin__title plugin__title--chevron-back"
+        on:click={ () => bcast.emit('rqstOpen', 'menu') }
+    >
+        { title }
+    </div>
+
+    <!-- 1. 核心看板：InSAR 毫米位移与实时形变 -->
+    <div class="clean-card card-insar">
+        <div class="card-header">
+            <span class="card-tag tag-red">INSAR 毫米位移监测</span>
+            <span class="badge-status status-online">● 运行中</span>
+        </div>
+        <div class="displacement-display">
+            <span class="disp-value">{liveDisplacementMm}</span>
+            <span class="disp-unit">mm</span>
+            <span class="disp-state">({liveStatusText})</span>
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <span class="m-label">观测时相</span>
+                <span class="m-val">{liveDatePair}</span>
+            </div>
+            <div class="metric-item">
+                <span class="m-label">基岩不动点</span>
+                <span class="m-val">{liveAnchorCoherence} (相干性)</span>
+            </div>
+            <div class="metric-item">
+                <span class="m-label">NASA 39年基线</span>
+                <span class="m-val">{liveBaselineSpeed} m/yr</span>
+            </div>
+            <div class="metric-item">
+                <span class="m-label">DEM物理门禁</span>
+                <span class="m-val">{liveDemStatus}</span>
+            </div>
+        </div>
+        <div class="card-actions">
+            <button class="btn btn-red" on:click={focusCandidates}>聚焦形变区域</button>
+            <button class="btn btn-secondary" on:click={refreshLiveData}>刷新数据</button>
+        </div>
+    </div>
+
+    <!-- 2. CDSE 冰川异动候选图层 (18个监测点) -->
+    <div class="clean-card card-candidates">
+        <div class="card-header">
+            <span class="card-tag tag-orange">CDSE 冰川监测候选点</span>
+            <span class="badge-status status-ready">18 个就绪</span>
+        </div>
+        <p class="card-desc">红色为主要审查候选点（CAND-049），橙色为地形/碎屑复核点。</p>
+        <div class="card-actions">
+            <button class="btn btn-orange" on:click={toggleCandidateLayer}>{candidateVisible ? '隐藏候选图层' : '显示候选图层'}</button>
+            <button class="btn btn-secondary" on:click={focusCandidates}>对齐视角</button>
+        </div>
+    </div>
+
+    <!-- 3. NASA ITS_LIVE 全球冰川流速热力图层 -->
+    <div class="clean-card card-itslive">
+        <div class="card-header">
+            <span class="card-tag tag-blue">NASA ITS_LIVE 冰川流速底图</span>
+            <span class="badge-status status-ready">120m 分辨率</span>
+        </div>
+        <p class="card-desc">展示孔布冰川流动热力带（基准流速: 35.0 m/yr）。</p>
+        <div class="card-actions">
+            <button class="btn btn-blue" on:click={toggleItsliveLayer}>{itsliveVisible ? '隐藏流速底图' : '显示流速底图'}</button>
+            <button class="btn btn-secondary" on:click={focusCandidates}>聚焦主冰川</button>
+        </div>
+    </div>
+
+    <!-- 4. NASA 卫星真彩色底图 -->
+    <div class="clean-card card-gibs">
+        <div class="card-header">
+            <span class="card-tag tag-gray">NASA 卫星遥感真彩色</span>
+            <span class="badge-status status-ready">全球每日影像</span>
+        </div>
+        <div class="card-actions">
+            <button class="btn btn-gray" on:click={toggleGibsLayer}>{gibsVisible ? '隐藏卫星底图' : '显示卫星底图'}</button>
+            <button class="btn btn-secondary" on:click={focusEverest}>全景俯瞰</button>
+        </div>
+    </div>
+</section>
 
 
 <script lang="ts">
@@ -268,3 +352,119 @@
 
 
 
+
+
+
+<style lang="less">
+    .clean-card {
+        background: rgba(30, 39, 46, 0.85);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+        &.card-insar {
+            border-left: 4px solid #e74c3c;
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.15) 0%, rgba(30, 39, 46, 0.95) 100%);
+        }
+        &.card-candidates {
+            border-left: 4px solid #f39c12;
+        }
+        &.card-itslive {
+            border-left: 4px solid #3498db;
+        }
+        &.card-gibs {
+            border-left: 4px solid #7f8c8d;
+        }
+    }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .card-tag {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        &.tag-red { color: #ff6b6b; }
+        &.tag-orange { color: #feca57; }
+        &.tag-blue { color: #54a0ff; }
+        &.tag-gray { color: #c8d6e5; }
+    }
+    .badge-status {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+        &.status-online { background: rgba(39, 174, 96, 0.25); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
+        &.status-ready { background: rgba(255, 255, 255, 0.1); color: #dfe6e9; }
+    }
+    .displacement-display {
+        display: flex;
+        align-items: baseline;
+        margin: 6px 0 10px 0;
+        .disp-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #2ecc71;
+            font-family: monospace;
+        }
+        .disp-unit {
+            font-size: 14px;
+            color: #bdc3c7;
+            margin-left: 4px;
+            font-weight: 600;
+        }
+        .disp-state {
+            font-size: 12px;
+            color: #f1c40f;
+            margin-left: 10px;
+        }
+    }
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        background: rgba(0, 0, 0, 0.25);
+        padding: 8px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            .m-label { font-size: 10px; color: #95a5a6; }
+            .m-val { font-size: 11px; color: #f5f6fa; font-weight: 600; margin-top: 1px; }
+        }
+    }
+    .card-desc {
+        font-size: 11px;
+        color: #bdc3c7;
+        margin: 4px 0 10px 0;
+        line-height: 1.4;
+    }
+    .card-actions {
+        display: flex;
+        gap: 8px;
+    }
+    .btn {
+        flex: 1;
+        padding: 7px 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        &:hover { opacity: 0.88; }
+
+        &.btn-red { background: #e74c3c; color: white; }
+        &.btn-orange { background: #e67e22; color: white; }
+        &.btn-blue { background: #2980b9; color: white; }
+        &.btn-gray { background: #4b6584; color: white; }
+        &.btn-secondary { background: rgba(255, 255, 255, 0.12); color: #f5f6fa; }
+    }
+</style>
