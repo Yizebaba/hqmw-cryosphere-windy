@@ -1,4 +1,75 @@
+<div class="plugin__mobile-header">{title}</div>
+<section class="plugin__content">
+    <div class="plugin__title plugin__title--chevron-back" on:click={() => bcast.emit('rqstOpen', 'menu')}>{title}</div>
 
+    <p class="intro">
+        Stable public release: NASA GIBS map context plus provisional CDSE glacier-change candidates.
+        This plugin does not issue hazard decisions.
+    </p>
+
+    <div class="status-card" class:ready={gibsStatus === 'ready'}>
+        <span>NASA GIBS TRUE COLOR</span>
+        <strong>{gibsStatus.toUpperCase()}</strong>
+        <small>Public satellite context layer. Date changes the public NASA GIBS imagery only.</small>
+        <label class="field-label" for="gibs-date">OBSERVATION DATE</label>
+        <input id="gibs-date" type="date" bind:value={gibsDate} max={today} on:change={refreshGibsLayer} />
+        <label class="field-label" for="gibs-opacity">GIBS OPACITY {Math.round(gibsOpacity * 100)}%</label>
+        <input id="gibs-opacity" type="range" min="0" max="1" step="0.05" bind:value={gibsOpacity} on:input={updateGibsOpacity} />
+        <div class="actions">
+            <button on:click={toggleGibsLayer}>{gibsVisible ? 'HIDE GIBS' : 'SHOW GIBS'}</button>
+            <button on:click={focusEverest}>FOCUS EVEREST</button>
+        </div>
+        {#if gibsError}<div class="error">{gibsError}</div>{/if}
+    </div>
+
+    <div class="status-card" class:ready={candidateStatus === 'ready'}>
+        <span>CDSE PROVISIONAL CANDIDATES</span>
+        <strong>{candidateStatus.toUpperCase()}</strong>
+        <small>{candidateCount} screening candidates. Red is the primary review candidate; orange requires terrain or debris review.</small>
+        <div class="actions">
+            <button on:click={toggleCandidateLayer}>{candidateVisible ? 'HIDE CANDIDATES' : 'SHOW CANDIDATES'}</button>
+            <button on:click={focusCandidates}>FOCUS CANDIDATES</button>
+        </div>
+        {#if candidateError}<div class="error">{candidateError}</div>{/if}
+    </div>
+
+    <!-- NASA MEaSUREs ITS_LIVE 冰川流速热力图层卡片 -->
+    <div class="status-card" class:ready={itsliveStatus === 'ready'} style="border-left: 4px solid #3498db; margin-top: 10px;">
+        <span>NASA ITS_LIVE 冰川流速底图</span>
+        <strong style="color: #2980b9;">{itsliveStatus.toUpperCase()}</strong>
+        <small>NASA MEaSUREs 120m 全球冰川流速马赛克 (Landsat+S1/S2)<br/>孔布冰川基准流速: 35.0 m/yr</small>
+        <label class="field-label" for="itslive-opacity">流速图层透明度 {Math.round(itsliveOpacity * 100)}%</label>
+        <input id="itslive-opacity" type="range" min="0" max="1" step="0.05" bind:value={itsliveOpacity} on:input={updateItsliveOpacity} />
+        <div class="actions">
+            <button on:click={toggleItsliveLayer}>{itsliveVisible ? '隐藏流速图' : '显示流速图'}</button>
+            <button on:click={focusCandidates}>聚焦冰川流速</button>
+        </div>
+        {#if itsliveError}<div class="error">{itsliveError}</div>{/if}
+    </div>
+
+    <!-- 实时动态数据卡片 (自动远程读取，零缓存延迟) -->
+    <div class="status-card ready" style="border-left: 4px solid #e74c3c; margin-top: 10px;">
+        <span>INSAR & 物理反演实时监控</span>
+        <strong style="color: #27ae60;">{liveDisplacementMm} mm ({liveStatusText})</strong>
+        <small>
+            观测时相: {liveDatePair}<br/>
+            基岩锚点相干性: {liveAnchorCoherence}<br/>
+            NASA 39年流速基线: {liveBaselineSpeed} m/yr<br/>
+            冰裂缝形态: {liveCrevasseState}<br/>
+            DEM物理门禁: {liveDemStatus}
+        </small>
+        <div class="actions">
+            <button on:click={refreshLiveData} style="background: #2980b9; color: white;">刷新最新数据</button>
+            <button on:click={focusCandidates} style="background: #e74c3c; color: white;">聚焦形变多边形</button>
+        </div>
+    </div>
+
+    <details class="limits" open>
+        <summary>INTERPRETATION LIMITS</summary>
+        <p>Candidate points combine Sentinel-1 GRD change, InSAR coherence screening, Sentinel-2 optical triage, and DEM terrain checks.</p>
+        <p>They are provisional review targets only. They do not confirm glacier motion, a collapse, a hazard, or an event.</p>
+    </details>
+</section>
 
 <script lang="ts">
     import bcast from '@windy/broadcast';
@@ -66,8 +137,9 @@
             minZoom: 0,
             maxNativeZoom: 13,
             maxZoom: 19,
-            opacity: 0.85,
+            opacity: Number(itsliveOpacity),
             tileSize: 256,
+            layerBucketId: layerOrder.MAIN,
             noWrap: true,
             continuousWorld: true
         });
@@ -96,8 +168,9 @@
             minZoom: 0,
             maxNativeZoom: 9,
             maxZoom: 19,
-            opacity: 0.80,
+            opacity: Number(gibsOpacity),
             tileSize: 256,
+            layerBucketId: layerOrder.MAIN,
             subdomains: 'abc',
             noWrap: true,
             continuousWorld: true,
@@ -171,7 +244,8 @@
                 const priority = props.project_candidate_status === 'priority_glacier_review';
                 
                 const mk = new L.Marker(latlng, {
-                    icon: priority ? markers.pulsatingIcon : markers.myLocationIcon
+                    icon: priority ? markers.pulsatingIcon : markers.myLocationIcon,
+                    riseOnHover: true
                 });
                 
                 const area = props.approximate_area_km2 ? `${(props.approximate_area_km2 * 1000).toFixed(1)} km2` : 'N/A';
@@ -264,5 +338,24 @@
     });
 </script>
 
+<style lang="less">
+    .plugin__content { min-height: 100%; padding: 12px 14px 24px; color: #e8edf0; background: #11191e; }
+    .intro { color: #a8babf; font-size: 12px; line-height: 1.5; margin: 12px 0 18px; }
+    .status-card { border: 1px solid #304047; border-left: 3px solid #f2ad42; margin-top: 12px; padding: 10px; }
+    .status-card.ready { border-left-color: #51c7a3; }
+    .status-card > span { color: #d7e1e3; font-size: 12px; }
+    .status-card > strong { float: right; color: #f2ad42; font-size: 10px; letter-spacing: 1px; }
+    .status-card.ready > strong { color: #51c7a3; }
+    .status-card > small, .limits p { display: block; color: #a8babf; font-size: 11px; line-height: 1.45; margin: 8px 0; }
+    .field-label { display: block; color: #91a5aa; font-size: 10px; letter-spacing: 1px; margin: 12px 0 6px; }
+    input { box-sizing: border-box; width: 100%; background: #172126; border: 1px solid #33464d; color: #e8edf0; padding: 8px; }
+    input[type='range'] { accent-color: #52b6c7; padding: 0; }
+    .actions { display: flex; gap: 6px; margin-top: 10px; }
+    button { min-height: 32px; background: #172126; border: 1px solid #33464d; color: #d7e1e3; padding: 7px 9px; font-size: 10px; cursor: pointer; }
+    .error { color: #f2ad42; font-size: 11px; border: 1px solid #7b5c2c; padding: 8px; margin-top: 10px; }
+    .limits { border-top: 1px solid #304047; margin-top: 16px; padding-top: 10px; }
+    summary { color: #d7e1e3; cursor: pointer; font-size: 11px; letter-spacing: 1px; }
 
-
+    .candidate-analysis-image { display: block; width: 240px; max-width: 100%; margin: 8px 0 4px; border: 1px solid #33464d; }
+    .candidate-analysis-link { color: #52b6c7; font-size: 11px; }
+</style>
