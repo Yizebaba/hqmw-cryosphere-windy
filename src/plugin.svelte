@@ -402,7 +402,7 @@
     .candidate-analysis-link { color: #52b6c7; font-size: 11px; }
 
     
-    /* ================= 样式 1 (完全对标预览页): 纯外边框霓虹流光灯带 + 冰川白半透明 ================= */
+    /* ================= 样式 1 (全局穿透版): 纯外边框霓虹流光灯带 + 冰川白半透明 ================= */
     :global(.everest-neon-leaflet-popup .leaflet-popup-content-wrapper) {
         background: transparent !important;
         box-shadow: none !important;
@@ -414,99 +414,116 @@
         line-height: 1.5 !important;
     }
     :global(.everest-neon-leaflet-popup .leaflet-popup-tip) {
-        background: rgba(240, 248, 255, 0.75) !important;
+        background: rgba(240, 248, 255, 0.82) !important;
         backdrop-filter: blur(16px) !important;
         -webkit-backdrop-filter: blur(16px) !important;
     }
 
-    .popup-b-tube {
-        position: relative;
-        background: rgba(240, 248, 255, 0.75) !important; /* 严格对标预览页 75% 冰川白 */
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
+    :global(.popup-b-tube) {
+        position: relative !important;
+        background: rgba(240, 248, 255, 0.82) !important; /* 稳健 82% 冰川霜白，确保字字清晰黑亮！ */
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
         border-radius: 16px !important;
         padding: 20px 22px !important;
-        color: #1e293b !important;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
+        color: #0f172a !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
 
-    /* 纯边框外线霓虹变色流动光圈 */
-    .popup-b-tube::before {
-        content: '';
-        position: absolute;
-        inset: -3px;
-        border-radius: 19px;
-        padding: 3px;
-        background: linear-gradient(90deg, #ff007f, #00f2fe, #2ed573, #ffa502, #ff007f);
-        background-size: 300% 300%;
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        animation: borderTubeFlow 4s linear infinite;
-        box-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
+    /* 纯边框外线霓虹变色流动光圈 (跑马灯管) */
+    :global(.popup-b-tube::before) {
+        content: '' !important;
+        position: absolute !important;
+        inset: -3px !important;
+        border-radius: 19px !important;
+        padding: 3px !important;
+        background: linear-gradient(90deg, #ff007f, #00f2fe, #2ed573, #ffa502, #ff007f) !important;
+        background-size: 300% 300% !important;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+        -webkit-mask-composite: xor !important;
+        mask-composite: exclude !important;
+        animation: borderTubeFlow 4s linear infinite !important;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.65) !important;
     }
     @keyframes borderTubeFlow {
         0% { background-position: 0% 50%; }
         100% { background-position: 100% 50%; }
     }
 
-    .swiss-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-        padding-bottom: 12px;
-        margin-bottom: 14px;
+    :global(.swiss-header) {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.35) !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 14px !important;
     }
-    .swiss-title {
-        font-size: 16px; font-weight: 800; color: #0f172a;
+    :global(.swiss-title) {
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
     }
-    .swiss-badge {
-        font-size: 11px; font-weight: 700;
-        color: #0284c7; background: rgba(224, 242, 254, 0.85);
-        border: 1px solid rgba(2, 132, 199, 0.3);
-        padding: 3px 10px; border-radius: 12px;
+    :global(.swiss-badge) {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: #0284c7 !important;
+        background: rgba(224, 242, 254, 0.85) !important;
+        border: 1px solid rgba(2, 132, 199, 0.3) !important;
+        padding: 3px 10px !important;
+        border-radius: 12px !important;
     }
-    .swiss-hero {
-        background: rgba(255, 255, 255, 0.65);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        border-radius: 10px;
-        padding: 12px 14px;
-        margin-bottom: 14px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    :global(.swiss-hero) {
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.9) !important;
+        border-radius: 10px !important;
+        padding: 12px 14px !important;
+        margin-bottom: 14px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
     }
-    .swiss-val { font-size: 30px; font-weight: 900; color: #0284c7; font-family: monospace; }
-    .swiss-label { font-size: 11px; color: #64748b; font-weight: 600; }
-    .swiss-timeline {
-        border-left: 2px solid #0284c7;
-        padding-left: 14px;
-        margin: 14px 0 14px 4px;
-        font-size: 11px;
-        color: #334155;
-        line-height: 1.6;
+    :global(.swiss-val) {
+        font-size: 30px !important;
+        font-weight: 900 !important;
+        color: #0284c7 !important;
+        font-family: monospace !important;
     }
-    .timeline-node {
-        position: relative;
-        margin-bottom: 8px;
+    :global(.swiss-label) {
+        font-size: 11px !important;
+        color: #475569 !important;
+        font-weight: 600 !important;
     }
-    .timeline-node::before {
-        content: '';
-        position: absolute;
-        left: -19px; top: 4px;
-        width: 8px; height: 8px; border-radius: 50%;
-        background: #0284c7;
+    :global(.swiss-timeline) {
+        border-left: 2px solid #0284c7 !important;
+        padding-left: 14px !important;
+        margin: 14px 0 14px 4px !important;
+        font-size: 11px !important;
+        color: #1e293b !important;
+        line-height: 1.6 !important;
     }
-    .swiss-footer {
-        background: rgba(255, 255, 255, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        border-radius: 8px;
-        padding: 10px 12px;
-        font-size: 11px;
-        color: #475569;
-        line-height: 1.5;
+    :global(.timeline-node) {
+        position: relative !important;
+        margin-bottom: 8px !important;
+    }
+    :global(.timeline-node::before) {
+        content: '' !important;
+        position: absolute !important;
+        left: -19px !important;
+        top: 4px !important;
+        width: 8px !important;
+        height: 8px !important;
+        border-radius: 50% !important;
+        background: #0284c7 !important;
+    }
+    :global(.swiss-footer) {
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.9) !important;
+        border-radius: 8px !important;
+        padding: 10px 12px !important;
+        font-size: 11px !important;
+        color: #334155 !important;
+        line-height: 1.5 !important;
     }
 </style>
 
