@@ -317,7 +317,7 @@
             candidateStatus = 'error';
             candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
         }
-    }; catch (error) {
+    } catch (error) {
             candidateStatus = 'error';
             candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
         }
