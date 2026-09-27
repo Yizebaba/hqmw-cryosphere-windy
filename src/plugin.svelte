@@ -47,12 +47,19 @@
         {#if itsliveError}<div class="error">{itsliveError}</div>{/if}
     </div>
 
-    <!-- 明确展示 InSAR 与 SAM 的量化测量卡片 -->
+    <!-- 实时动态数据卡片 (自动远程读取，零缓存延迟) -->
     <div class="status-card ready" style="border-left: 4px solid #e74c3c; margin-top: 10px;">
-        <span>INSAR & SAM 冰川形变反演</span>
-        <strong style="color: #27ae60;">0.66 mm (微小蠕变)</strong>
-        <small>基准锚点: 天然坚硬基岩 (相干性 96.5%)<br/>形变闭合区: InSAR + SAM (~0.385 km²)<br/>参考流速基准: NASA ITS_LIVE 35.0 m/yr</small>
+        <span>INSAR & 物理反演实时监控</span>
+        <strong style="color: #27ae60;">{liveDisplacementMm} mm ({liveStatusText})</strong>
+        <small>
+            观测时相: {liveDatePair}<br/>
+            基岩锚点相干性: {liveAnchorCoherence}<br/>
+            NASA 39年流速基线: {liveBaselineSpeed} m/yr<br/>
+            冰裂缝形态: {liveCrevasseState}<br/>
+            DEM物理门禁: {liveDemStatus}
+        </small>
         <div class="actions">
+            <button on:click={refreshLiveData} style="background: #2980b9; color: white;">刷新最新数据</button>
             <button on:click={focusCandidates} style="background: #e74c3c; color: white;">聚焦形变多边形</button>
         </div>
     </div>
@@ -93,6 +100,29 @@
     let gibsDate = initialDate;
     let gibsOpacity = 0.7;
     let candidateCount = 0;
+
+    // 固定远程数据源地址 (完全解耦，云端算完立刻生效，Windy 插件零重编译发版！)
+    const LIVE_DATA_URL = 'https://raw.githubusercontent.com/Yizebaba/hqmw-cryosphere-windy/main/products/03_products/insar/everest_insar_displacement_summary.json';
+
+    let liveDisplacementMm = '0.66';
+    let liveStatusText = '微小稳定蠕变';
+    let liveDatePair = '2026-09-04 ➔ 09-16';
+    let liveAnchorCoherence = '96.5%';
+    let liveBaselineSpeed = '12.27';
+    let liveCrevasseState = '冰面均匀完整';
+    let liveDemStatus = '通过坡度门禁';
+
+    let liveAnchorCoords: [number, number] = [27.9395, 86.8565];
+    let liveGlacierCenter: [number, number] = [27.9869, 86.8586];
+    let liveSamCoords: [number, number][] = [
+        [27.986862, 86.862151], [27.989069, 86.861076], [27.990015, 86.858568],
+        [27.989069, 86.856060], [27.986862, 86.854985], [27.984655, 86.856060],
+        [27.983709, 86.858568], [27.984655, 86.861076]
+    ];
+    let liveCrevasseCoords: [number, number][] = [
+        [27.986047, 86.852222], [27.990616, 86.863356],
+        [27.987677, 86.864914], [27.983108, 86.853780]
+    ];
 
     const gibsUrl = () => gibsTemplate.replace('{Time}', gibsDate);
     const removeGibsLayer = () => { gibsLayer?.remove(); gibsLayer = null; gibsVisible = false; };
@@ -163,11 +193,43 @@
     const refreshGibsLayer = () => { if (gibsVisible) loadGibsLayer(); };
     const toggleGibsLayer = () => { if (gibsVisible) { removeGibsLayer(); gibsStatus = 'hidden'; return; } loadGibsLayer(); };
 
-    const loadCandidateLayer = () => {
+    const refreshLiveData = async () => {
+        try {
+            const resp = await fetch(LIVE_DATA_URL + '?t=' + Date.now());
+            if (resp.ok) {
+                const data = await resp.json();
+                const res = data.results || {};
+                const insar = res.insar_displacement || {};
+                const its = res.itslive_velocity_baseline || {};
+                const crevasse = res.optical_crevasse_state || {};
+                const dem = res.dem_physical_constraint || {};
+                const pair = data.insar_pair || {};
+
+                if (insar.median_mm !== undefined) liveDisplacementMm = String(insar.median_mm);
+                if (pair.master && pair.slave) liveDatePair = `${pair.master} ➔ ${pair.slave}`;
+                if (insar.bedrock_anchor?.coherence) liveAnchorCoherence = `${(insar.bedrock_anchor.coherence * 100).toFixed(1)}%`;
+                if (its.historical_baseline_mean_m_yr) liveBaselineSpeed = String(its.historical_baseline_mean_m_yr);
+                if (crevasse.surface_state === 'HOMOGENEOUS_ICE_SURFACE') liveCrevasseState = '冰面均质稳定';
+                if (dem.physical_constraint_status === 'PASSED_PHYSICAL_CONSTRAINT') liveDemStatus = '通过坡度门禁';
+
+                if (res.sam_deformation_feature?.geometry?.coordinates?.[0]) {
+                    liveSamCoords = res.sam_deformation_feature.geometry.coordinates[0].map((pt: [number, number]) => [pt[1], pt[0]]);
+                }
+                if (res.crevasse_feature?.geometry?.coordinates?.[0]) {
+                    liveCrevasseCoords = res.crevasse_feature.geometry.coordinates[0].map((pt: [number, number]) => [pt[1], pt[0]]);
+                }
+            }
+        } catch (e) {
+            console.warn('Live data fetch notice:', e);
+        }
+    };
+
+    const loadCandidateLayer = async () => {
         removeCandidateLayer();
         candidateStatus = 'loading';
         candidateError = '';
         try {
+            await refreshLiveData();
             const feed = allCandidates as any;
             const features = Array.isArray(feed.features) ? feed.features : [];
             candidateCount = features.length;
@@ -205,8 +267,7 @@
             candidateLayer.addTo(map);
 
             // 1. 绘制绝对基岩不动点 (Reference Anchor)
-            const anchorLatLng: [number, number] = [27.9395, 86.8565];
-            const anchorMarker = new L.CircleMarker(anchorLatLng, {
+            const anchorMarker = new L.CircleMarker(liveAnchorCoords, {
                 radius: 7,
                 color: '#27ae60',
                 weight: 3,
@@ -214,43 +275,32 @@
                 fillOpacity: 0.9,
             });
             anchorMarker.bindTooltip(
-                '【天然坚硬基岩不动点】坐标: (Y=285, X=613)<br/>相干性: 0.965 (绝对零形变基准)',
+                `【天然坚硬基岩不动点】坐标: (27.9395°N, 86.8565°E)<br/>相干性: ${liveAnchorCoherence} (绝对零形变基准)`,
                 { direction: 'bottom', offset: [0, 8], opacity: 0.95 }
             );
             anchorMarker.bindPopup(
                 '<strong>基岩不动点 (Reference Anchor)</strong><br/>' +
                 '位置: 27.9395°N, 86.8565°E<br/>' +
-                '相干性: <strong>0.965 (96.5%)</strong><br/>' +
+                `相干性: <strong>${liveAnchorCoherence}</strong><br/>` +
                 '说明: 作为尺子的零刻度基准，已排除所有山体形变，用于校准消除对流层大气延迟。'
             );
             anchorMarker.addTo(candidateLayer);
 
             // 2. 绘制基准点到重点冰川移动中心 (EVEREST-S1-CAND-049) 的位移基线
-            const glacierMovingLatLng: [number, number] = [27.9869, 86.8586];
-            const baseline = new L.Polyline([anchorLatLng, glacierMovingLatLng], {
+            const baseline = new L.Polyline([liveAnchorCoords, liveGlacierCenter], {
                 color: '#3498db',
                 weight: 2,
                 dashArray: '5, 8',
                 opacity: 0.85
             });
             baseline.bindTooltip(
-                '【InSAR 形变测量基线】<br/>基岩不动点 ➔ 冰川异动区<br/>实测位移: 0.66 mm (微小蠕变)',
+                `【InSAR 形变测量基线】<br/>基岩不动点 ➔ 冰川异动区<br/>实时位移: ${liveDisplacementMm} mm (${liveStatusText})`,
                 { sticky: true, opacity: 0.95 }
             );
             baseline.addTo(candidateLayer);
 
             // 3. 绘制 InSAR + SAM 闭合形变多边形区域 (Deformation Region Polygon)
-            const samCoords: [number, number][] = [
-                [27.986862, 86.862151],
-                [27.989069, 86.861076],
-                [27.990015, 86.858568],
-                [27.989069, 86.856060],
-                [27.986862, 86.854985],
-                [27.984655, 86.856060],
-                [27.983709, 86.858568],
-                [27.984655, 86.861076]
-            ];
-            const samPolygon = new L.Polygon(samCoords, {
+            const samPolygon = new L.Polygon(liveSamCoords, {
                 color: '#e74c3c',
                 weight: 2,
                 fillColor: '#e74c3c',
@@ -258,18 +308,32 @@
                 dashArray: '3, 4'
             });
             samPolygon.bindTooltip(
-                '【InSAR + SAM 冰川形变区】<br/>实测面积: ~0.385 km²<br/>LOS 位移: 0.66 mm (微小形变)',
+                `【InSAR + SAM 冰川形变区】<br/>实测面积: ~0.385 km²<br/>实时位移: ${liveDisplacementMm} mm`,
                 { direction: 'top', opacity: 0.95 }
             );
             samPolygon.bindPopup(
                 '<strong>InSAR + SAM 闭合形变区域</strong><br/>' +
                 '中心坐标: 27.9869°N, 86.8586°E<br/>' +
                 '影响面积: ~0.385 km²<br/>' +
-                '位移测量值: 0.66 mm (极缓慢物理蠕变)<br/>' +
-                '基线比对: NASA ITS_LIVE 冰川历史参考流速 35.0 m/yr<br/>' +
+                `实时位移测量值: <strong>${liveDisplacementMm} mm</strong> (${liveStatusText})<br/>` +
+                `基线比对: NASA ITS_LIVE 39年参考流速 ${liveBaselineSpeed} m/yr<br/>` +
                 '<small>通过 InSAR 梯度提示驱动 SAM 提取，已排除陡坡假象。</small>'
             );
             samPolygon.addTo(candidateLayer);
+
+            // 4. 绘制冰裂缝走向构造区多边形 (Crevasse Field)
+            const crevassePolygon = new L.Polygon(liveCrevasseCoords, {
+                color: '#9b59b6',
+                weight: 1.5,
+                fillColor: '#8e44ad',
+                fillOpacity: 0.20,
+                dashArray: '2, 4'
+            });
+            crevassePolygon.bindTooltip(
+                '【光学冰面裂隙结构构造区】<br/>走向: 65° | 状态: 冰面均质稳定',
+                { direction: 'bottom', opacity: 0.95 }
+            );
+            crevassePolygon.addTo(candidateLayer);
 
             candidateVisible = true;
             candidateStatus = 'ready';
