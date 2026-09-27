@@ -64,34 +64,7 @@
         </div>
     </div>
 
-    <details class="clean-card card-limits" open style="background: rgba(30, 39, 46, 0.95); border-left: 4px solid #f1c40f; border-radius: 8px; padding: 12px; margin-top: 14px;">
-        <summary style="font-size: 12px; font-weight: 700; cursor: pointer; color: #f1c40f; letter-spacing: 0.5px;">
-            ⚙️ 珠峰系统 v5.0 终极全源异构架构与多时相基准说明
-        </summary>
-        <div style="font-size: 11px; color: #dfe6e9; margin-top: 8px; line-height: 1.6;">
-            <div style="background: rgba(0,0,0,0.35); padding: 8px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #3498db;">
-                <b style="color: #54a0ff;">📅 观测与基准时间对比窗口:</b><br/>
-                • <b>当前干涉周期</b>: 2026-09-04 ➔ 2026-09-16 (12天整，Sentinel-1D 升轨12轨)<br/>
-                • <b>NASA 流速基准</b>: 1985 ➔ 2024 (39年长周期中位流速: 12.27 m/yr，当前13.1 m/yr无加速)<br/>
-                • <b>光学去云底图</b>: 2026-08-01 ➔ 2026-09-20 (Sentinel-2 多景融合)<br/>
-                • <b>下期卫星过境</b>: 预计 2026-09-28 (后台全自动嗅探，无需人工干预)
-            </div>
-
-            <b style="color: #f39c12;">🏗️ 系统五大平行灾害处理管道 (全源协同):</b>
-            <ol style="padding-left: 16px; margin: 4px 0 8px 0; color: #ced6e0;">
-                <li><b>冰川运动管道</b>: NASA ITS_LIVE 39年流速 Z-Score 异常检测 (0.06 无加速)</li>
-                <li><b>InSAR 形变管道</b>: 天然基岩锚点 (相干 96.5%) 绝对平差 ➔ 实测 0.66 mm 微动</li>
-                <li><b>冰面破碎管道</b>: S2 高频纹理梯度 ➔ 冰裂缝群走向建模 (65° 构造走向)</li>
-                <li><b>冰湖与雪崩管道</b>: GLOF 面积比对 (伊姆扎湖稳定) + 32.5° 坡度雪崩动力学</li>
-                <li><b>DEM 物理门禁层</b>: 坡度 >38° 叠掩假象硬核一票否决，过滤虚假位移</li>
-            </ol>
-
-            <div style="background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); padding: 6px 8px; border-radius: 4px; font-size: 10px; color: #ff7675;">
-                <b>⚠️ 科学防灾红线 (Detection ≠ Warning):</b><br/>
-                遥感初筛出位移 ≠ 发生灾害。微小位移 0.66 mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。
-            </div>
-        </div>
-    </details>
+    
 </section>
 
 <script lang="ts">
