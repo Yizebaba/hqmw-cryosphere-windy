@@ -237,7 +237,6 @@
                 pointToLayer: (feature: any, latlng: L.LatLng) => {
                     const props = feature?.properties || {};
                     const priority = props.project_candidate_status === 'priority_glacier_review';
-                    // 使用 Windy 绝对兼容的 CircleMarker 避免 tooltip/icon 崩溃
                     return new L.CircleMarker(latlng, {
                         radius: priority ? 10 : 6,
                         color: priority ? '#e74c3c' : '#f39c12',
@@ -260,54 +259,6 @@
                     layer.bindPopup(popup);
                 },
             });
-
-            // 1. 天然坚硬基岩不动点 (Reference Anchor) - 绿色醒目大圆圈
-            const anchorMarker = new L.CircleMarker(liveAnchorCoords, {
-                radius: 12,
-                color: '#27ae60',
-                weight: 4,
-                fillColor: '#2ecc71',
-                fillOpacity: 0.95,
-            });
-            anchorMarker.bindPopup(
-                '<strong>天然坚硬基岩不动点 (Reference Anchor)</strong><br/>' +
-                '位置: 27.9395°N, 86.8565°E<br/>' +
-                `雷达相干性: <strong>${liveAnchorCoherence}</strong> (绝对零形变基准)<br/>` +
-                '说明: 作为尺子的零刻度基准，已排除所有山体形变，用于校准消除对流层大气延迟。'
-            );
-            anchorMarker.addTo(candidateLayer);
-
-            // 2. 基准点到形变区的形变测量基线 (折线) - 蓝色高亮实线
-            const baseline = new L.Polyline([liveAnchorCoords, liveGlacierCenter], {
-                color: '#2980b9',
-                weight: 4,
-                dashArray: '6, 6',
-                opacity: 0.95
-            });
-            baseline.bindPopup(
-                `<strong>InSAR 冰川形变测量基线</strong><br/>` +
-                `起点: 天然基岩不动点 ➔ 终点: 孔布冰川异动区<br/>` +
-                `时相: ${liveDatePair}<br/>` +
-                `实测微小蠕变位移: <strong>${liveDisplacementMm} mm</strong> (${liveStatusText})`
-            );
-            baseline.addTo(candidateLayer);
-
-            // 3. InSAR + SAM 闭合形变多边形区域 (半透明红色醒目区域)
-            const samPolygon = new L.Polygon(liveSamCoords, {
-                color: '#c0392b',
-                weight: 3,
-                fillColor: '#e74c3c',
-                fillOpacity: 0.45
-            });
-            samPolygon.bindPopup(
-                '<strong>InSAR + SAM 闭合形变区域</strong><br/>' +
-                '中心坐标: 27.9869°N, 86.8586°E<br/>' +
-                '实测面积: ~0.385 km²<br/>' +
-                `实测位移: <strong>${liveDisplacementMm} mm</strong> (${liveStatusText})<br/>` +
-                `基线对比: NASA ITS_LIVE 39年参考流速 ${liveBaselineSpeed} m/yr<br/>` +
-                '<small>通过 InSAR 梯度提示驱动 SAM 提取，已排除陡坡假象。</small>'
-            );
-            samPolygon.addTo(candidateLayer);
 
             // 1. 天然坚硬基岩不动点 (Reference Anchor)
             const anchorMarker = new L.CircleMarker(liveAnchorCoords, {
@@ -354,7 +305,6 @@
                 '<small>通过 InSAR 梯度提示驱动 SAM 提取，已排除陡坡假象。</small>'
             );
 
-            // 统一组装成标准的 FeatureGroup 并直接调用 map.addLayer()
             candidateLayer = new L.FeatureGroup([geoJsonLayer, anchorMarker, baseline, samPolygon]);
             map.addLayer(candidateLayer);
             candidateVisible = true;
@@ -364,7 +314,6 @@
             candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
         }
     };
-
     const toggleCandidateLayer = () => { if (candidateVisible) { removeCandidateLayer(); candidateStatus = 'hidden'; return; } loadCandidateLayer(); };
 
     export const onopen = () => {
