@@ -335,31 +335,29 @@
                 
                 // 100% 复制自桌面预览文件的【样式 1 骨架模板】 (只保留骨架，所有文字由真实数据源动态填充)
                 const popupHTML = `
-                <div class="everest-running-conic-frame">
-                    <div class="everest-conic-inner">
-                        <div class="swiss-header">
-                            <span class="swiss-title">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>
-                            <span class="swiss-badge">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>
+                <div class="everest-clean-popup" style="background: rgba(255, 255, 255, 0.60) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 2px solid ${priority ? '#ef4444' : '#0284c7'} !important; border-radius: 12px; padding: 18px 20px; color: #0f172a; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; min-width: 310px; max-width: 360px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(148, 163, 184, 0.4); padding-bottom: 10px; margin-bottom: 12px;">
+                        <span style="font-size: 15px; font-weight: 800; color: #0f172a;">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>
+                        <span style="font-size: 11px; font-weight: 700; color: ${priority ? '#dc2626' : '#0284c7'}; background: ${priority ? 'rgba(254, 226, 226, 0.9)' : 'rgba(224, 242, 254, 0.85)'}; border: 1px solid ${priority ? 'rgba(220, 38, 38, 0.3)' : 'rgba(2, 132, 199, 0.3)'}; padding: 2px 8px; border-radius: 10px;">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.70); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                        <div>
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600;">InSAR 视线向位移</div>
+                            <div style="font-size: 28px; font-weight: 900; color: #0284c7; font-family: monospace;">${pointDisp} <span style="font-size: 14px; font-weight: normal; color: #64748b;">mm</span></div>
                         </div>
-                        <div class="swiss-hero">
-                            <div>
-                                <div class="swiss-label">InSAR 视线向位移</div>
-                                <div class="swiss-val">${pointDisp} <span style="font-size: 16px;">mm</span></div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 12px; font-weight: 800; color: #059669;">● ${liveStatusText}</div>
-                                <div class="swiss-label">坡度 ${slope} | ${area}</div>
-                            </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 12px; font-weight: 800; color: #059669; margin-bottom: 2px;">● ${liveStatusText}</div>
+                            <div style="font-size: 11px; color: #64748b;">坡度 ${slope} | ${area}</div>
                         </div>
-                        <div class="swiss-timeline">
-                            <div class="timeline-node"><b>雷达干涉对</b>: ${liveDatePair} (12天时间基线)</div>
-                            <div class="timeline-node"><b>NASA 39年基准</b>: ${liveBaselineSpeed} m/yr (当前13.1 m/yr, 无加速)</div>
-                            <div class="timeline-node"><b>DEM 物理门禁</b>: ${liveDemStatus}</div>
-                            <div class="timeline-node"><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>
-                        </div>
-                        <div class="swiss-footer">
-                            <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。
-                        </div>
+                    </div>
+                    <div style="border-left: 3px solid #0284c7; padding-left: 12px; margin: 10px 0 10px 4px; font-size: 11px; color: #1e293b; line-height: 1.6;">
+                        <div style="position: relative; margin-bottom: 6px;"><b>雷达干涉对</b>: ${liveDatePair} (12天时间基线)</div>
+                        <div style="position: relative; margin-bottom: 6px;"><b>NASA 39年基准</b>: ${liveBaselineSpeed} m/yr (当前13.1 m/yr, 无加速)</div>
+                        <div style="position: relative; margin-bottom: 6px;"><b>DEM 物理门禁</b>: ${liveDemStatus}</div>
+                        <div style="position: relative;"><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.60); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 6px; padding: 8px 10px; font-size: 10px; color: #334155; line-height: 1.4;">
+                        <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。
                     </div>
                 </div>
                 `;
@@ -470,7 +468,7 @@
     
     
     
-    /* ================= 真正的纯边框跑马灯 (背景纯净白，绝无光！) ================= */
+        /* ================= 纯净静止极简高质感卡片 (彻底移除跑马灯) ================= */
     :global(.everest-neon-leaflet-popup .leaflet-popup-content-wrapper) {
         background: transparent !important;
         box-shadow: none !important;
@@ -483,131 +481,6 @@
     }
     :global(.everest-neon-leaflet-popup .leaflet-popup-tip-container) {
         display: none !important;
-    }
-
-    /* 边框跑道：3 像素极细凹槽，overflow: hidden 截断光束 */
-    :global(.everest-running-conic-frame) {
-        position: relative !important;
-        border-radius: 16px !important;
-        padding: 3px !important; /* 严格 3 像素边框线 */
-        overflow: hidden !important;
-        background: #1e293b !important; /* 轨道暗底 */
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
-    }
-
-    /* 这根变色光纤只在 3 像素外围轨道里转圈，绝对不进入内部！ */
-    :global(.everest-running-conic-frame::before) {
-        content: '' !important;
-        position: absolute !important;
-        top: -60% !important;
-        left: -60% !important;
-        width: 220% !important;
-        height: 220% !important;
-        background: conic-gradient(
-            transparent 0deg,
-            transparent 240deg,
-            #ff007f 270deg,
-            #00f2fe 300deg,
-            #2ed573 330deg,
-            #ffa502 350deg,
-            #ff007f 360deg
-        ) !important;
-        animation: rotateBorderBeam 2.5s linear infinite !important;
-        z-index: 0 !important;
-    }
-
-    @keyframes rotateBorderBeam {
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    /* 内部卡片：100% 纯净高质感 60% 纯白半透明，稳稳盖住底层，背景绝对没有一丝跑马灯！ */
-    :global(.everest-conic-inner) {
-        position: relative !important;
-        z-index: 1 !important;
-        background: rgba(255, 255, 255, 0.60) !important; /* 纯正 60% 纯白半透明 */
-        backdrop-filter: blur(16px) saturate(160%) !important;
-        -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
-        border-radius: 13px !important;
-        padding: 18px 20px !important;
-        color: #0f172a !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    }
-
-    :global(.swiss-header) {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.35) !important;
-        padding-bottom: 10px !important;
-        margin-bottom: 12px !important;
-    }
-    :global(.swiss-title) {
-        font-size: 15px !important;
-        font-weight: 800 !important;
-        color: #0f172a !important;
-    }
-    :global(.swiss-badge) {
-        font-size: 11px !important;
-        font-weight: 700 !important;
-        color: #0284c7 !important;
-        background: rgba(224, 242, 254, 0.85) !important;
-        border: 1px solid rgba(2, 132, 199, 0.3) !important;
-        padding: 2px 8px !important;
-        border-radius: 10px !important;
-    }
-    :global(.swiss-hero) {
-        background: rgba(255, 255, 255, 0.65) !important;
-        border: 1px solid rgba(255, 255, 255, 0.85) !important;
-        border-radius: 8px !important;
-        padding: 10px 12px !important;
-        margin-bottom: 12px !important;
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-    }
-    :global(.swiss-val) {
-        font-size: 28px !important;
-        font-weight: 900 !important;
-        color: #0284c7 !important;
-        font-family: monospace !important;
-    }
-    :global(.swiss-label) {
-        font-size: 11px !important;
-        color: #64748b !important;
-        font-weight: 600 !important;
-    }
-    :global(.swiss-timeline) {
-        border-left: 2px solid #0284c7 !important;
-        padding-left: 12px !important;
-        margin: 10px 0 10px 4px !important;
-        font-size: 11px !important;
-        color: #1e293b !important;
-        line-height: 1.5 !important;
-    }
-    :global(.timeline-node) {
-        position: relative !important;
-        margin-bottom: 6px !important;
-    }
-    :global(.timeline-node::before) {
-        content: '' !important;
-        position: absolute !important;
-        left: -17px !important;
-        top: 4px !important;
-        width: 8px !important;
-        height: 8px !important;
-        border-radius: 50% !important;
-        background: #0284c7 !important;
-    }
-    :global(.swiss-footer) {
-        background: rgba(255, 255, 255, 0.55) !important;
-        border: 1px solid rgba(255, 255, 255, 0.75) !important;
-        border-radius: 6px !important;
-        padding: 8px 10px !important;
-        font-size: 10px !important;
-        color: #334155 !important;
-        line-height: 1.4 !important;
     }
 </style>
 
