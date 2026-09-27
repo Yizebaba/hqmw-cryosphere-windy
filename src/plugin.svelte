@@ -335,12 +335,12 @@
                 
                 // 100% 复制自桌面预览文件的【样式 1 骨架模板】 (只保留骨架，所有文字由真实数据源动态填充)
                 const popupHTML = `
-                <div class="everest-clean-popup" style="background: rgba(255, 255, 255, 0.60) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 2px solid ${priority ? '#ef4444' : '#0284c7'} !important; border-radius: 12px; padding: 18px 20px; color: #0f172a; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; min-width: 310px; max-width: 360px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(148, 163, 184, 0.4); padding-bottom: 10px; margin-bottom: 12px;">
+                <div class="everest-clean-popup" style="background: rgba(255, 255, 255, 0.50) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: none !important; outline: none !important; border-radius: 12px; padding: 18px 20px; color: #0f172a; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; min-width: 310px; max-width: 360px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding-bottom: 10px; margin-bottom: 12px;">
                         <span style="font-size: 15px; font-weight: 800; color: #0f172a;">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>
-                        <span style="font-size: 11px; font-weight: 700; color: ${priority ? '#dc2626' : '#0284c7'}; background: ${priority ? 'rgba(254, 226, 226, 0.9)' : 'rgba(224, 242, 254, 0.85)'}; border: 1px solid ${priority ? 'rgba(220, 38, 38, 0.3)' : 'rgba(2, 132, 199, 0.3)'}; padding: 2px 8px; border-radius: 10px;">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>
+                        <span style="font-size: 11px; font-weight: 700; color: ${priority ? '#dc2626' : '#0284c7'}; background: ${priority ? 'rgba(254, 226, 226, 0.9)' : 'rgba(224, 242, 254, 0.85)'}; border: none; padding: 2px 8px; border-radius: 10px;">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>
                     </div>
-                    <div style="background: rgba(255, 255, 255, 0.70); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
+                    <div style="background: rgba(255, 255, 255, 0.70); border: none; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
                         <div>
                             <div style="font-size: 11px; color: #64748b; font-weight: 600;">InSAR 视线向位移</div>
                             <div style="font-size: 28px; font-weight: 900; color: #0284c7; font-family: monospace;">${pointDisp} <span style="font-size: 14px; font-weight: normal; color: #64748b;">mm</span></div>
@@ -356,7 +356,7 @@
                         <div style="position: relative; margin-bottom: 6px;"><b>DEM 物理门禁</b>: ${liveDemStatus}</div>
                         <div style="position: relative;"><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>
                     </div>
-                    <div style="background: rgba(255, 255, 255, 0.60); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 6px; padding: 8px 10px; font-size: 10px; color: #334155; line-height: 1.4;">
+                    <div style="background: rgba(255, 255, 255, 0.60); border: none; border-radius: 6px; padding: 8px 10px; font-size: 10px; color: #334155; line-height: 1.4;">
                         <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。
                     </div>
                 </div>
