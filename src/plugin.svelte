@@ -223,7 +223,7 @@
         }
     };
 
-    const loadCandidateLayer = () => {
+        const loadCandidateLayer = () => {
         removeCandidateLayer();
         candidateStatus = 'loading';
         candidateError = '';
@@ -233,40 +233,37 @@
             const features = Array.isArray(feed.features) ? feed.features : [];
             candidateCount = features.length;
 
-            const geoJsonLayer = new L.GeoJSON(feed as never, {
-                pointToLayer: (feature: any, latlng: L.LatLng) => {
-                    const props = feature?.properties || {};
-                    const priority = props.project_candidate_status === 'priority_glacier_review';
-                    return new L.CircleMarker(latlng, {
-                        radius: priority ? 10 : 6,
-                        color: priority ? '#e74c3c' : '#f39c12',
-                        weight: priority ? 3 : 2,
-                        fillColor: priority ? '#ff4757' : '#ffa502',
-                        fillOpacity: 0.85
-                    });
-                },
-                onEachFeature: (feature: any, layer: L.Layer) => {
-                    const p = feature?.properties || {};
-                    const popup = document.createElement('div');
-                    const area = p.approximate_area_km2 ? `${(p.approximate_area_km2 * 1000).toFixed(1)} km2` : 'N/A';
-                    const slope = p.median_slope_degrees ? `${p.median_slope_degrees.toFixed(1)} deg` : 'N/A';
-                    const candidateId = p.candidate_id || 'CANDIDATE';
-                    popup.innerHTML = `<strong>${candidateId}</strong><br/>` +
-                        `状态: ${p.project_candidate_status || 'UNKNOWN'}<br/>` +
-                        `面积: ~${area}<br/>坡度: ${slope}<br/>` +
-                        `InSAR 实测位移: ${liveDisplacementMm} mm<br/>` +
-                        `<small>${p.interpretation_limit || ''}</small>`;
-                    layer.bindPopup(popup);
-                },
+            const mapItems: L.Layer[] = [];
+
+            // 1. 使用官方 100% 绝对稳定的 L.Marker 渲染所有候选点 (杜绝 LeafletGL radius 报错)
+            features.forEach((feat: any) => {
+                const coords = feat?.geometry?.coordinates;
+                if (!coords || coords.length < 2) return;
+                const latlng: [number, number] = [coords[1], coords[0]];
+                const props = feat?.properties || {};
+                const priority = props.project_candidate_status === 'priority_glacier_review';
+                
+                const mk = new L.Marker(latlng, {
+                    icon: priority ? markers.pulsatingIcon : markers.myLocationIcon
+                });
+                
+                const area = props.approximate_area_km2 ? `${(props.approximate_area_km2 * 1000).toFixed(1)} km2` : 'N/A';
+                const slope = props.median_slope_degrees ? `${props.median_slope_degrees.toFixed(1)} deg` : 'N/A';
+                const candidateId = props.candidate_id || 'CANDIDATE';
+                
+                mk.bindPopup(
+                    `<strong>${candidateId}</strong><br/>` +
+                    `状态: ${props.project_candidate_status || 'UNKNOWN'}<br/>` +
+                    `面积: ~${area}<br/>坡度: ${slope}<br/>` +
+                    `InSAR 实测位移: ${liveDisplacementMm} mm<br/>` +
+                    `<small>${props.interpretation_limit || ''}</small>`
+                );
+                mapItems.push(mk);
             });
 
-            // 1. 天然坚硬基岩不动点 (Reference Anchor)
-            const anchorMarker = new L.CircleMarker(liveAnchorCoords, {
-                radius: 10,
-                color: '#27ae60',
-                weight: 3,
-                fillColor: '#2ecc71',
-                fillOpacity: 0.95,
+            // 2. 天然坚硬基岩不动点 (Reference Anchor) - 使用绿色标头标记
+            const anchorMarker = new L.Marker(liveAnchorCoords, {
+                icon: markers.myLocationIcon
             });
             anchorMarker.bindPopup(
                 '<strong>天然坚硬基岩不动点 (Reference Anchor)</strong><br/>' +
@@ -274,8 +271,9 @@
                 `雷达相干性: <strong>${liveAnchorCoherence}</strong> (绝对零形变基准)<br/>` +
                 '说明: 作为尺子的零刻度基准，已排除所有山体形变，用于校准消除对流层大气延迟。'
             );
+            mapItems.push(anchorMarker);
 
-            // 2. 形变测量基线
+            // 3. 形变测量基线 (折线)
             const baseline = new L.Polyline([liveAnchorCoords, liveGlacierCenter], {
                 color: '#2980b9',
                 weight: 3,
@@ -288,8 +286,9 @@
                 `时相: ${liveDatePair}<br/>` +
                 `实测微小蠕变位移: <strong>${liveDisplacementMm} mm</strong> (${liveStatusText})`
             );
+            mapItems.push(baseline);
 
-            // 3. InSAR + SAM 闭合形变多边形
+            // 4. InSAR + SAM 闭合形变多边形
             const samPolygon = new L.Polygon(liveSamCoords, {
                 color: '#c0392b',
                 weight: 3,
@@ -304,8 +303,10 @@
                 `基线对比: NASA ITS_LIVE 39年参考流速 ${liveBaselineSpeed} m/yr<br/>` +
                 '<small>通过 InSAR 梯度提示驱动 SAM 提取，已排除陡坡假象。</small>'
             );
+            mapItems.push(samPolygon);
 
-            candidateLayer = new L.FeatureGroup([geoJsonLayer, anchorMarker, baseline, samPolygon]);
+            // 统一加入 FeatureGroup 批量添加到地图
+            candidateLayer = new L.FeatureGroup(mapItems);
             map.addLayer(candidateLayer);
             candidateVisible = true;
             candidateStatus = 'ready';
