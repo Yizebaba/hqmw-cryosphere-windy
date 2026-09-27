@@ -317,10 +317,6 @@
             candidateStatus = 'error';
             candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
         }
-    } catch (error) {
-            candidateStatus = 'error';
-            candidateError = error instanceof Error ? error.message : 'Could not load candidate layer.';
-        }
     };
 
     const toggleCandidateLayer = () => { if (candidateVisible) { removeCandidateLayer(); candidateStatus = 'hidden'; return; } loadCandidateLayer(); };
