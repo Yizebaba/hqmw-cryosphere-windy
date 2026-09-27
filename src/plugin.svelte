@@ -333,33 +333,34 @@
                 const pointVariance = ((coords[0] * 1000 + coords[1] * 2000) % 100) / 100.0;
                 const pointDisp = priority ? liveDisplacementMm : Number(Math.max(0.46, Math.min(2.75, 0.46 + pointVariance * 1.8))).toFixed(2);
 
-                                mk.bindPopup(
-                    `<div style="box-sizing: border-box; background: #ffffff !important; border: 3px solid ${priority ? '#ff0055' : '#00b4d8'} !important; box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 16px ${priority ? 'rgba(255,0,85,0.6)' : 'rgba(0,180,216,0.6)'} !important; border-radius: 14px; padding: 18px 20px; color: #0f172a !important; min-width: 310px; max-width: 360px; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif; line-height: 1.5;">` +
-                    `  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px;">` +
-                    `    <span style="font-size: 15px; font-weight: 800; color: #0f172a;">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>` +
-                    `    <span style="font-size: 11px; font-weight: 700; color: ${priority ? '#dc2626' : '#0284c7'}; background: ${priority ? '#fee2e2' : '#e0f2fe'}; border: 1px solid ${priority ? 'rgba(220,38,38,0.3)' : 'rgba(2,132,199,0.3)'}; padding: 2px 8px; border-radius: 6px;">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>` +
+                mk.bindPopup(
+                    `<div class="everest-real-chameleon-card">` +
+                    `` +
+                    `  <div class="swiss-header">` +
+                    `    <span class="swiss-title">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>` +
+                    `    <span class="swiss-badge">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>` +
                     `  </div>` +
-                    `  <div style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">` +
+                    `  <div class="swiss-hero">` +
                     `    <div>` +
-                    `      <div style="font-size: 11px; color: #64748b; font-weight: 600;">InSAR 视线向位移</div>` +
-                    `      <div style="font-size: 28px; font-weight: 900; color: #0284c7; font-family: monospace;">${pointDisp} <span style="font-size: 14px; font-weight: normal; color: #64748b;">mm</span></div>` +
+                    `      <div class="swiss-label">InSAR 视线向位移</div>` +
+                    `      <div class="swiss-val">${pointDisp} <span style="font-size: 16px;">mm</span></div>` +
                     `    </div>` +
                     `    <div style="text-align: right;">` +
-                    `      <div style="font-size: 12px; font-weight: 800; color: #059669; margin-bottom: 2px;">● ${liveStatusText}</div>` +
-                    `      <div style="font-size: 11px; color: #64748b;">坡度: ${slope} | ${area}</div>` +
+                    `      <div style="font-size: 12px; font-weight: 800; color: #059669;">● ${liveStatusText}</div>` +
+                    `      <div class="swiss-label">坡度: ${slope} | ${area}</div>` +
                     `    </div>` +
                     `  </div>` +
-                    `  <div style="border-left: 3px solid #0284c7; padding-left: 12px; margin: 12px 0; font-size: 11px; color: #1e293b; line-height: 1.6;">` +
-                    `    <div><b>雷达干涉对</b>: ${liveDatePair} (12天整)</div>` +
-                    `    <div><b>NASA 39年基准</b>: ${liveBaselineSpeed} m/yr (当前13.1, 无加速)</div>` +
-                    `    <div><b>DEM 物理门禁</b>: ${liveDemStatus} (排除了坡度>38°叠掩假象)</div>` +
-                    `    <div><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>` +
+                    `  <div class="swiss-timeline">` +
+                    `    <div class="timeline-node"><b>雷达干涉对</b>: ${liveDatePair} (12天时间基线)</div>` +
+                    `    <div class="timeline-node"><b>NASA 39年基准</b>: ${liveBaselineSpeed} m/yr (当前13.1 m/yr, 无加速)</div>` +
+                    `    <div class="timeline-node"><b>DEM 物理门禁</b>: ${liveDemStatus}</div>` +
+                    `    <div class="timeline-node"><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>` +
                     `  </div>` +
-                    `  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; font-size: 10px; color: #475569; line-height: 1.45;">` +
+                    `  <div class="swiss-footer">` +
                     `    <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。` +
                     `  </div>` +
-                    `</div>`,
-                    { minWidth: 320, maxWidth: 360 }
+                    `</div></div>`,
+                    { className: 'everest-neon-leaflet-popup', minWidth: 320, maxWidth: 360 }
                 );
                 mapItems.push(mk);
             });
