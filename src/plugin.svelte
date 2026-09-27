@@ -164,6 +164,65 @@
     const focusEverest = () => { centerMap({ lat: 27.9881, lon: 86.925, zoom: 10 }); };
     const focusCandidates = () => { centerMap({ lat: 27.9869, lon: 86.8586, zoom: 12 }); };
 
+        // 保证 12 色动态跑马灯动画 100% 全局生效，彻底消灭 Svelte 作用域摇树问题
+    const injectGlobalNeonStyles = () => {
+        if (typeof document === 'undefined') return;
+        const styleId = 'everest-chameleon-border-style';
+        if (document.getElementById(styleId)) return;
+        const st = document.createElement('style');
+        st.id = styleId;
+        st.textContent = `
+            @keyframes everestHueRotateFlow {
+                0% { filter: hue-rotate(0deg) saturate(220%); }
+                50% { filter: hue-rotate(180deg) saturate(250%); }
+                100% { filter: hue-rotate(360deg) saturate(220%); }
+            }
+            @keyframes everestGradientFlow {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            .everest-neon-leaflet-popup .leaflet-popup-content-wrapper {
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+            .everest-neon-leaflet-popup .leaflet-popup-content {
+                margin: 0 !important;
+                line-height: 1.5 !important;
+            }
+            .everest-neon-leaflet-popup .leaflet-popup-tip-container {
+                display: none !important;
+            }
+
+            /* 12 色豪华渐变跑马灯外线框容器 */
+            .everest-neon-wrapper {
+                position: relative;
+                border-radius: 18px;
+                padding: 3px; /* 3像素清晰灯带轨道 */
+                background: linear-gradient(135deg, 
+                    #ff0055, #ff5500, #ffaa00, #ffee00, 
+                    #00ff66, #00ffcc, #0099ff, #0022ff, 
+                    #7700ff, #cc00ff, #ff00aa, #ff0055
+                ) !important;
+                background-size: 400% 400% !important;
+                animation: everestGradientFlow 6s ease infinite, everestHueRotateFlow 4s linear infinite !important;
+                box-shadow: 0 0 20px rgba(0, 242, 254, 0.75), 0 0 35px rgba(255, 0, 128, 0.45), 0 15px 35px rgba(0,0,0,0.5) !important;
+            }
+
+            .everest-neon-inner-box {
+                background: rgba(240, 248, 255, 0.84) !important;
+                backdrop-filter: blur(20px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+                border-radius: 15px;
+                padding: 18px 20px !important;
+                color: #0f172a !important;
+            }
+        `;
+        document.head.appendChild(st);
+    };
+
     const loadGibsLayer = () => {
         removeGibsLayer();
         gibsStatus = 'loading';
@@ -275,7 +334,8 @@
                 const pointDisp = priority ? liveDisplacementMm : Number(Math.max(0.46, Math.min(2.75, 0.46 + pointVariance * 1.8))).toFixed(2);
 
                 mk.bindPopup(
-                    `<div class="popup-b-tube">` +
+                    `<div class="everest-neon-wrapper">` +
+                    `<div class="everest-neon-inner-box">` +
                     `  <div class="swiss-header">` +
                     `    <span class="swiss-title">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>` +
                     `    <span class="swiss-badge">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>` +
@@ -299,7 +359,7 @@
                     `  <div class="swiss-footer">` +
                     `    <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。` +
                     `  </div>` +
-                    `</div>`,
+                    `</div></div>`,
                     { className: 'everest-neon-leaflet-popup', minWidth: 320, maxWidth: 360 }
                 );
                 mapItems.push(mk);
@@ -362,6 +422,7 @@
     const toggleCandidateLayer = () => { if (candidateVisible) { removeCandidateLayer(); candidateStatus = 'hidden'; return; } loadCandidateLayer(); };
 
     export const onopen = () => {
+        injectGlobalNeonStyles();
         focusEverest();
         if (!gibsLayer && gibsVisible) loadGibsLayer();
         if (!itsliveLayer && itsliveVisible) loadItsliveLayer();
@@ -371,6 +432,7 @@
     onMount(() => {
         loadGibsLayer();
         loadCandidateLayer();
+        injectGlobalNeonStyles();
         focusEverest();
     });
 
