@@ -274,45 +274,31 @@
                 const pointDisp = priority ? liveDisplacementMm : Number(Math.max(0.46, Math.min(2.75, 0.46 + pointVariance * 1.8))).toFixed(2);
 
                 mk.bindPopup(
-                    `<div class="everest-popup-box">` +
-                    `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5; color: #1e293b; min-width: 310px; max-width: 360px;">` +
-                    `<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid ${priority ? '#e74c3c' : '#f39c12'}; padding-bottom: 4px; margin-bottom: 6px;">` +
-                    `  <h3 style="margin: 0; color: ${priority ? '#c0392b' : '#d35400'}; font-size: 15px;">监测目标: ${candidateId}</h3>` +
-                    `  <span style="font-size: 10px; background: ${priority ? '#ff7675' : '#ffeaa7'}; color: ${priority ? '#d63031' : '#d35400'}; padding: 2px 6px; border-radius: 4px; font-weight: bold;">v5.0 全源核验</span>` +
-                    `</div>` +
-                    `<b>• 综合审查评级:</b> ${statusChinese}<br/>` +
-                    `<b>• 覆盖区域面积:</b> ${area}<br/>` +
-                    `<b>• 山体地形坡度:</b> ${slope} (重力滑动敏感倾角)<br/>` +
-                    icePercent +
-                    `<div style="background: #f8f9fa; border: 1px solid #dfe6e9; border-radius: 6px; padding: 6px 8px; margin: 6px 0;">` +
-                    `  <b style="color: #27ae60;">InSAR 实测视线向位移:</b> <span style="font-size: 16px; font-weight: 800; color: #27ae60;">${pointDisp} 毫米</span><br/>` +
-                    `  <small style="color: #636e72;">NASA 39年流速基线: ${liveBaselineSpeed} m/yr (当前13.1 m/yr, 无加速异常)</small>` +
-                    `</div>` +
-
-                    `<!-- 观测与基准时间对比窗口 -->` +
-                    `<div style="background: rgba(52, 152, 219, 0.08); border-left: 3px solid #3498db; padding: 6px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11px; line-height: 1.45;">` +
-                    `  <b style="color: #2980b9;">📅 观测与基准时间对比窗口:</b><br/>` +
-                    `  • 当前干涉周期: <b>2026-09-04 ➔ 2026-09-16</b> (12天整，S1D 升轨12轨)<br/>` +
-                    `  • NASA 流速基准: <b>1985 ➔ 2024</b> (39年长周期中位: 12.27 m/yr)<br/>` +
-                    `  • 光学去云底图: <b>2026-08-01 ➔ 2026-09-20</b> (S2 多景去云融合)<br/>` +
-                    `  • 下期卫星过境: 预计 <b>2026-09-28</b> (后台全自动嗅探更新)` +
-                    `</div>` +
-
-                    `<!-- 系统五大平行灾害处理管道 (全源协同) -->` +
-                    `<div style="background: rgba(243, 156, 18, 0.08); border-left: 3px solid #f39c12; padding: 6px 8px; border-radius: 4px; margin-bottom: 6px; font-size: 11px; line-height: 1.45;">` +
-                    `  <b style="color: #d35400;">🏗️ 系统五大平行灾害处理管道:</b><br/>` +
-                    `  1. <b>冰川运动</b>: NASA ITS_LIVE 39年流速 Z-Score 检测 (0.06 无加速)<br/>` +
-                    `  2. <b>InSAR 形变</b>: 天然基岩点 (相干 96.5%) 绝对平差 ➔ 实测微动<br/>` +
-                    `  3. <b>冰面破碎</b>: S2 高频纹理梯度 ➔ 冰裂缝群走向建模 (65° 走向)<br/>` +
-                    `  4. <b>冰湖与雪崩</b>: GLOF 面积比对 (${liveGlofRisk}) + 雪崩动力学<br/>` +
-                    `  5. <b>DEM 物理门禁</b>: ${liveDemStatus} (坡度>38°叠掩假象一票否决)` +
-                    `</div>` +
-
-                    `<!-- 科学防灾红线 -->` +
-                    `<div style="background: rgba(231, 76, 60, 0.08); border: 1px solid rgba(231, 76, 60, 0.25); padding: 6px 8px; border-radius: 4px; font-size: 10px; color: #c0392b; line-height: 1.4;">` +
-                    `  <b>⚠️ 科学防灾红线 (Detection ≠ Warning):</b><br/>` +
-                    `  遥感初筛出位移 ≠ 发生灾害。微小位移 ${pointDisp} 毫米属于高山冰川极其微小的缓慢稳定重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。` +
-                    `</div></div></div>`,
+                    `<div class="popup-b-tube">` +
+                    `  <div class="swiss-header">` +
+                    `    <span class="swiss-title">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>` +
+                    `    <span class="swiss-badge">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>` +
+                    `  </div>` +
+                    `  <div class="swiss-hero">` +
+                    `    <div>` +
+                    `      <div class="swiss-label">InSAR 视线向位移</div>` +
+                    `      <div class="swiss-val">${pointDisp} <span style="font-size: 16px;">mm</span></div>` +
+                    `    </div>` +
+                    `    <div style="text-align: right;">` +
+                    `      <div style="font-size: 12px; font-weight: 800; color: #059669;">● ${liveStatusText}</div>` +
+                    `      <div class="swiss-label">坡度: ${slope} | ${area}</div>` +
+                    `    </div>` +
+                    `  </div>` +
+                    `  <div class="swiss-timeline">` +
+                    `    <div class="timeline-node"><b>雷达干涉对</b>: ${liveDatePair} (12天时间基线)</div>` +
+                    `    <div class="timeline-node"><b>NASA 39年基准</b>: ${liveBaselineSpeed} m/yr (当前13.1 m/yr, 无加速)</div>` +
+                    `    <div class="timeline-node"><b>DEM 物理门禁</b>: ${liveDemStatus}</div>` +
+                    `    <div class="timeline-node"><b>下期卫星过境</b>: 预计 2026-09-28 (全自动嗅探)</div>` +
+                    `  </div>` +
+                    `  <div class="swiss-footer">` +
+                    `    <b>⚠️ 科学防灾红线:</b> 微小位移 ${pointDisp} mm 属于高山冰川极缓慢的平稳重力蠕变，经 Everest Anomaly Engine 多源交叉检验，排除了突发冰崩滑坡风险。` +
+                    `  </div>` +
+                    `</div>`,
                     { className: 'everest-neon-leaflet-popup', minWidth: 320, maxWidth: 360 }
                 );
                 mapItems.push(mk);
@@ -415,7 +401,8 @@
     .candidate-analysis-image { display: block; width: 240px; max-width: 100%; margin: 8px 0 4px; border: 1px solid #33464d; }
     .candidate-analysis-link { color: #52b6c7; font-size: 11px; }
 
-    /* ================= 样式 1 边框跑马灯模板 + 前一次透明度 (75%) ================= */
+    
+    /* ================= 样式 1 (完全对标预览页): 纯外边框霓虹流光灯带 + 冰川白半透明 ================= */
     :global(.everest-neon-leaflet-popup .leaflet-popup-content-wrapper) {
         background: transparent !important;
         box-shadow: none !important;
@@ -432,19 +419,20 @@
         -webkit-backdrop-filter: blur(16px) !important;
     }
 
-    .everest-popup-box {
+    .popup-b-tube {
         position: relative;
-        background: rgba(240, 248, 255, 0.75) !important; /* 严格保持前一次满意的 75% 冰川白半透明 */
-        backdrop-filter: blur(16px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+        background: rgba(240, 248, 255, 0.75) !important; /* 严格对标预览页 75% 冰川白 */
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
         border-radius: 16px !important;
-        padding: 16px 18px !important;
+        padding: 20px 22px !important;
         color: #1e293b !important;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
 
-    /* 纯边框外线霓虹变色流动光带 (只在最外边框，不碰背景) */
-    .everest-popup-box::before {
+    /* 纯边框外线霓虹变色流动光圈 */
+    .popup-b-tube::before {
         content: '';
         position: absolute;
         inset: -3px;
@@ -456,10 +444,69 @@
         -webkit-mask-composite: xor;
         mask-composite: exclude;
         animation: borderTubeFlow 4s linear infinite;
-        box-shadow: 0 0 14px rgba(0, 242, 254, 0.55);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
     }
     @keyframes borderTubeFlow {
         0% { background-position: 0% 50%; }
         100% { background-position: 100% 50%; }
     }
+
+    .swiss-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+        padding-bottom: 12px;
+        margin-bottom: 14px;
+    }
+    .swiss-title {
+        font-size: 16px; font-weight: 800; color: #0f172a;
+    }
+    .swiss-badge {
+        font-size: 11px; font-weight: 700;
+        color: #0284c7; background: rgba(224, 242, 254, 0.85);
+        border: 1px solid rgba(2, 132, 199, 0.3);
+        padding: 3px 10px; border-radius: 12px;
+    }
+    .swiss-hero {
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .swiss-val { font-size: 30px; font-weight: 900; color: #0284c7; font-family: monospace; }
+    .swiss-label { font-size: 11px; color: #64748b; font-weight: 600; }
+    .swiss-timeline {
+        border-left: 2px solid #0284c7;
+        padding-left: 14px;
+        margin: 14px 0 14px 4px;
+        font-size: 11px;
+        color: #334155;
+        line-height: 1.6;
+    }
+    .timeline-node {
+        position: relative;
+        margin-bottom: 8px;
+    }
+    .timeline-node::before {
+        content: '';
+        position: absolute;
+        left: -19px; top: 4px;
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #0284c7;
+    }
+    .swiss-footer {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 11px;
+        color: #475569;
+        line-height: 1.5;
+    }
 </style>
+
