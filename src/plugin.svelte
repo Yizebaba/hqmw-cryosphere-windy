@@ -334,8 +334,8 @@
                 const pointDisp = priority ? liveDisplacementMm : Number(Math.max(0.46, Math.min(2.75, 0.46 + pointVariance * 1.8))).toFixed(2);
 
                 mk.bindPopup(
-                    `<div class="everest-neon-wrapper">` +
-                    `<div class="everest-neon-inner-box">` +
+                    `<div class="pure-border-card">` +
+                    `` +
                     `  <div class="swiss-header">` +
                     `    <span class="swiss-title">${candidateId} · ${priority ? '重点监测目标' : '常规复核目标'}</span>` +
                     `    <span class="swiss-badge">${priority ? 'v5.0 重点核验' : '常规地形复核'}</span>` +
