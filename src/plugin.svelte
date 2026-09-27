@@ -470,7 +470,7 @@
     
     
     
-    /* ================= 真正的 360 度飞速跑马灯边框 (Conic Gradient Rotate) ================= */
+    /* ================= 真正的纯边框跑马灯 (背景纯净白，绝无光！) ================= */
     :global(.everest-neon-leaflet-popup .leaflet-popup-content-wrapper) {
         background: transparent !important;
         box-shadow: none !important;
@@ -485,15 +485,17 @@
         display: none !important;
     }
 
-    /* 跑马灯外框：3像素彩色光管以 3 秒/圈的速度顺时针飞速旋转！ */
+    /* 边框跑道：3 像素极细凹槽，overflow: hidden 截断光束 */
     :global(.everest-running-conic-frame) {
         position: relative !important;
-        border-radius: 17px !important;
-        padding: 3px !important; /* 3像素清晰边框轨道 */
+        border-radius: 16px !important;
+        padding: 3px !important; /* 严格 3 像素边框线 */
         overflow: hidden !important;
+        background: #1e293b !important; /* 轨道暗底 */
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
     }
 
+    /* 这根变色光纤只在 3 像素外围轨道里转圈，绝对不进入内部！ */
     :global(.everest-running-conic-frame::before) {
         content: '' !important;
         position: absolute !important;
@@ -502,46 +504,47 @@
         width: 220% !important;
         height: 220% !important;
         background: conic-gradient(
-            #ff007f 0deg,
-            #00f2fe 72deg,
-            #2ed573 144deg,
-            #ffa502 216deg,
-            #9b59b6 288deg,
+            transparent 0deg,
+            transparent 240deg,
+            #ff007f 270deg,
+            #00f2fe 300deg,
+            #2ed573 330deg,
+            #ffa502 350deg,
             #ff007f 360deg
         ) !important;
-        animation: rotateConicBorder 3s linear infinite !important;
+        animation: rotateBorderBeam 2.5s linear infinite !important;
         z-index: 0 !important;
     }
 
-    @keyframes rotateConicBorder {
+    @keyframes rotateBorderBeam {
         100% {
             transform: rotate(360deg);
         }
     }
 
-    /* 内部卡片：严格设定为 60% 冰川霜白半透明 */
+    /* 内部卡片：100% 纯净高质感 60% 纯白半透明，稳稳盖住底层，背景绝对没有一丝跑马灯！ */
     :global(.everest-conic-inner) {
         position: relative !important;
         z-index: 1 !important;
-        background: rgba(240, 248, 255, 0.60) !important; /* 严格 60% 冰川霜白半透明 */
-        backdrop-filter: blur(16px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-        border-radius: 14px !important;
-        padding: 20px 22px !important;
+        background: rgba(255, 255, 255, 0.60) !important; /* 纯正 60% 纯白半透明 */
+        backdrop-filter: blur(16px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+        border-radius: 13px !important;
+        padding: 18px 20px !important;
         color: #0f172a !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
 
     :global(.swiss-header) {
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.4) !important;
-        padding-bottom: 12px !important;
-        margin-bottom: 14px !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.35) !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 12px !important;
     }
     :global(.swiss-title) {
-        font-size: 16px !important;
+        font-size: 15px !important;
         font-weight: 800 !important;
         color: #0f172a !important;
     }
@@ -550,47 +553,47 @@
         font-weight: 700 !important;
         color: #0284c7 !important;
         background: rgba(224, 242, 254, 0.85) !important;
-        border: 1px solid rgba(2, 132, 199, 0.4) !important;
-        padding: 3px 10px !important;
-        border-radius: 12px !important;
+        border: 1px solid rgba(2, 132, 199, 0.3) !important;
+        padding: 2px 8px !important;
+        border-radius: 10px !important;
     }
     :global(.swiss-hero) {
-        background: rgba(255, 255, 255, 0.60) !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        border-radius: 10px !important;
-        padding: 12px 14px !important;
-        margin-bottom: 14px !important;
+        background: rgba(255, 255, 255, 0.65) !important;
+        border: 1px solid rgba(255, 255, 255, 0.85) !important;
+        border-radius: 8px !important;
+        padding: 10px 12px !important;
+        margin-bottom: 12px !important;
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
     }
     :global(.swiss-val) {
-        font-size: 30px !important;
+        font-size: 28px !important;
         font-weight: 900 !important;
         color: #0284c7 !important;
         font-family: monospace !important;
     }
     :global(.swiss-label) {
         font-size: 11px !important;
-        color: #475569 !important;
+        color: #64748b !important;
         font-weight: 600 !important;
     }
     :global(.swiss-timeline) {
         border-left: 2px solid #0284c7 !important;
-        padding-left: 14px !important;
-        margin: 14px 0 14px 4px !important;
+        padding-left: 12px !important;
+        margin: 10px 0 10px 4px !important;
         font-size: 11px !important;
         color: #1e293b !important;
-        line-height: 1.6 !important;
+        line-height: 1.5 !important;
     }
     :global(.timeline-node) {
         position: relative !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 6px !important;
     }
     :global(.timeline-node::before) {
         content: '' !important;
         position: absolute !important;
-        left: -19px !important;
+        left: -17px !important;
         top: 4px !important;
         width: 8px !important;
         height: 8px !important;
@@ -598,13 +601,13 @@
         background: #0284c7 !important;
     }
     :global(.swiss-footer) {
-        background: rgba(255, 255, 255, 0.60) !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        border-radius: 8px !important;
-        padding: 10px 12px !important;
-        font-size: 11px !important;
+        background: rgba(255, 255, 255, 0.55) !important;
+        border: 1px solid rgba(255, 255, 255, 0.75) !important;
+        border-radius: 6px !important;
+        padding: 8px 10px !important;
+        font-size: 10px !important;
         color: #334155 !important;
-        line-height: 1.5 !important;
+        line-height: 1.4 !important;
     }
 </style>
 
