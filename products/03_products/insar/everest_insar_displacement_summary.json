@@ -1,6 +1,6 @@
 {
   "pipeline": "Everest Autonomous InSAR & Multi-Hazard Pipeline (v5.0)",
-  "timestamp_utc": "2026-11-24T01:29:25.654830",
+  "timestamp_utc": "2026-11-24T05:43:27.464734",
   "insar_pair": {
     "master": "2026-11-03",
     "slave": "2026-11-15"
@@ -118,10 +118,18 @@
     "realtime_seismic": {
       "status": "success",
       "source": "USGS Earthquake Hazards Program",
-      "total_events_in_radius": 0,
-      "nearby_earthquake_detected": false,
-      "max_magnitude": 0.0,
-      "events": []
+      "total_events_in_radius": 1,
+      "nearby_earthquake_detected": true,
+      "max_magnitude": 5.3,
+      "events": [
+        {
+          "place": "67 km WNW of Mangan, India",
+          "magnitude": 5.3,
+          "depth_km": 10,
+          "distance_km": 101.7,
+          "time": 1795483962417
+        }
+      ]
     },
     "realtime_weather": {
       "status": "success",
@@ -129,7 +137,7 @@
       "summit_temperature_c": -46.6,
       "precipitation_mm": 0.0,
       "snowfall_cm": 0.0,
-      "freezing_level_height_m": 4500.0,
+      "freezing_level_height_m": 4520.0,
       "wind_speed_kmh": 5.5,
       "is_high_freeze_thaw_melt": false,
       "is_heavy_rain_or_melt": false
@@ -177,10 +185,12 @@
       "uncertainty_reasons": [
         "LOW_INSAR_COHERENCE_NOISE"
       ],
-      "active_evidences": [],
+      "active_evidences": [
+        "Seismic vibration ground motion trigger"
+      ],
       "persistence_index": 0.4,
       "spatial_consistency_index": 0.5,
-      "evidence_score": 0.0,
+      "evidence_score": 0.2,
       "human_verification_required": false,
       "alert_dispatched": false
     },
